@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIIT STICK — stick-figure HIIT studio</title>
+<style>
+  :root{--bg:#0e1014;--panel:#161a22;--panel2:#1d2230;--line:#272d3a;--txt:#f1f0ec;--muted:#8b909c;--muted2:#646a78;--acc:#f0653f;--radius:12px;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased;line-height:1.4;overflow-x:hidden;}
+  button{font-family:inherit;}
+  a{color:inherit;}
+  .wrap{max-width:960px;margin:0 auto;padding:24px 18px 64px;}
+
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .dot{width:15px;height:15px;border-radius:50%;background:var(--acc);}
+  .brand h1{font-size:22px;letter-spacing:4px;font-weight:800;margin:0;}
+  .brand span{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .support{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:10px 14px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .support b{color:var(--txt);font-weight:700;}
+  .support a{color:var(--acc);font-weight:800;text-decoration:none;border:1px solid var(--acc);border-radius:999px;padding:5px 12px;}
+  .support a:hover{background:var(--acc);color:#fff;}
+
+  .step{margin-top:28px;}
+  .step-h{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .step-n{font-size:11px;font-weight:800;color:var(--acc);letter-spacing:2px;}
+  .step-t{font-size:15px;font-weight:700;}
+  .step-sub{font-size:12px;color:var(--muted);}
+
+  .chars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:620px){.chars{grid-template-columns:repeat(2,1fr);}}
+  .char{background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:8px 8px 10px;cursor:pointer;text-align:center;transition:border-color .15s,transform .1s;}
+  .char:hover{transform:translateY(-2px);}
+  .char.on{border-color:var(--ca);}
+  .char svg{width:100%;height:96px;display:block;}
+  .char .nm{font-size:12px;font-weight:700;margin-top:2px;}
+  .char .tag{font-size:10px;color:var(--muted);}
+
+  .cfg{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:620px){.cfg{grid-template-columns:1fr;}}
+  .field{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;}
+  .field .lab{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:10px;}
+  .pills{display:flex;flex-wrap:wrap;gap:7px;}
+  .pill{border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;cursor:pointer;transition:all .12s;}
+  .pill:hover{border-color:var(--muted);}
+  .pill.on{background:var(--acc);border-color:var(--acc);color:#fff;}
+
+  .stepper{display:flex;align-items:center;gap:14px;}
+  .stepper button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:20px;font-weight:700;cursor:pointer;line-height:1;}
+  .stepper button:hover{border-color:var(--acc);}
+  .stepper .val{font-size:24px;font-weight:800;min-width:30px;text-align:center;font-variant-numeric:tabular-nums;}
+  .stepper .vu{font-size:11px;color:var(--muted);}
+
+  .plan{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .plan .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .plan .biglab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .plan .meta{font-size:12px;color:var(--muted);}
+  .plan .meta b{color:var(--txt);font-weight:700;}
+
+  .libbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;}
+  .recbox{display:flex;align-items:center;gap:10px;}
+  .recbox .mini{display:flex;align-items:center;gap:8px;}
+  .recbox .mini button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-weight:700;cursor:pointer;}
+  .recbox .mini button:hover{border-color:var(--acc);}
+  .recbox .mini .v{min-width:18px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums;}
+  .count{font-size:12px;color:var(--muted);}
+  .count b{color:var(--acc);}
+
+  .catbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+  .catbar .pill{font-size:12px;padding:6px 12px;}
+
+  .lib{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:760px){.lib{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:520px){.lib{grid-template-columns:repeat(2,1fr);}}
+  .ex{position:relative;background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:6px;cursor:pointer;text-align:center;transition:border-color .15s,transform .1s;overflow:hidden;}
+  .ex:hover{transform:translateY(-2px);}
+  .ex.on{border-color:var(--acc);}
+  .ex svg{width:100%;height:72px;display:block;}
+  .ex .nm{font-size:11px;font-weight:700;margin-top:2px;line-height:1.15;}
+  .ex .ct{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .ex .gear{position:absolute;top:6px;right:7px;font-size:9px;color:var(--muted2);font-weight:700;}
+  .ex .chk{position:absolute;top:5px;left:6px;width:16px;height:16px;border-radius:50%;background:var(--acc);color:#fff;font-size:11px;font-weight:800;line-height:16px;display:none;}
+  .ex.on .chk{display:block;}
+  .empty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:20px;}
+
+  .music-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .mlink{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:12px;font-weight:600;padding:8px 13px;border-radius:999px;text-decoration:none;cursor:pointer;}
+  .mlink:hover{border-color:var(--acc);}
+  .mlink small{color:var(--muted);font-weight:500;}
+  .music-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .music-row input[type=text]{flex:1;min-width:200px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 12px;font-size:13px;}
+  .music-row button{border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;}
+  .music-row button:hover{border-color:var(--acc);}
+  .vol{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+  .vol input{accent-color:var(--acc);}
+  .mstat{font-size:12px;color:var(--muted);margin-top:8px;min-height:16px;}
+  .mnote{font-size:11px;color:var(--muted2);margin-top:6px;line-height:1.5;}
+
+  .startbar{margin-top:28px;display:flex;justify-content:center;}
+  .start{background:var(--acc);color:#fff;border:0;font-size:16px;font-weight:800;letter-spacing:1px;padding:15px 46px;border-radius:999px;cursor:pointer;transition:transform .1s,opacity .15s;}
+  .start:hover{transform:scale(1.03);}
+  .start:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
+  #run{position:absolute;inset:0;min-height:100vh;display:none;flex-direction:column;background:var(--bg);}
+  #run.show{display:flex;}
+  .run-top{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;font-size:12px;color:var(--muted);}
+  .run-top .quit{background:none;border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;}
+  .run-top .quit:hover{color:var(--txt);border-color:var(--muted);}
+  .pbar{height:4px;background:var(--line);}
+  .pbar>i{display:block;height:100%;background:var(--acc);width:0%;transition:width .2s linear;}
+  .stage-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 16px;}
+  .phase{font-size:14px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--acc);}
+  .phase.rest{color:#4db6e6;}.phase.ready{color:#e6c84d;}
+  #bigfig{width:min(60vw,330px);height:min(60vw,330px);max-height:40vh;}
+  .timer{font-size:clamp(64px,18vw,150px);font-weight:800;font-variant-numeric:tabular-nums;line-height:1;margin:2px 0;}
+  .exname{font-size:clamp(18px,5vw,30px);font-weight:800;}
+  .nextup{font-size:13px;color:var(--muted);margin-top:6px;min-height:18px;}
+  .counters{display:flex;gap:22px;justify-content:center;margin-top:10px;font-size:12px;color:var(--muted);}
+  .counters b{color:var(--txt);font-weight:800;}
+  .run-ctrl{display:flex;gap:12px;justify-content:center;padding:14px 0 26px;}
+  .cbtn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);font-size:14px;font-weight:700;padding:13px 26px;border-radius:999px;cursor:pointer;min-width:120px;transition:border-color .15s;}
+  .cbtn:hover{border-color:var(--acc);}
+  .cbtn.icon{min-width:54px;width:54px;padding:13px 0;}
+
+  #done{position:absolute;inset:0;min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg);padding:30px;}
+  #done.show{display:flex;}
+  #done .tick{font-size:54px;color:var(--acc);}
+  #done h2{font-size:30px;font-weight:800;margin:8px 0 2px;}
+  #done p{color:var(--muted);font-size:14px;margin:2px 0;}
+  #done .stats{display:flex;gap:26px;margin:22px 0 22px;}
+  #done .stat b{display:block;font-size:30px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums;}
+  #done .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  #done .coffee{margin:0 0 22px;font-size:13px;color:var(--muted);}
+  #done .coffee a{color:var(--acc);font-weight:800;text-decoration:none;}
+
+  svg .lb{stroke:#f1f0ec;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  svg .hd{stroke:#f1f0ec;stroke-width:5;fill:none;}
+  svg .eq{stroke:#5a6170;stroke-width:3;fill:none;stroke-linecap:round;}
+  svg .eqf{stroke:#363d4b;stroke-width:2.5;stroke-linecap:round;}
+  svg .db{fill:var(--ca,var(--acc));}
+  svg .bandl{stroke:var(--ca,var(--acc));stroke-width:3;fill:none;stroke-linecap:round;}
+  svg .hr{fill:var(--ca,var(--acc));}
+  svg .hrs{stroke:var(--ca,var(--acc));stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+</head>
+<body>
+
+<div id="build" class="wrap">
+  <div class="brand"><span class="dot"></span><h1>HIIT STICK</h1><span>stick-figure HIIT studio</span></div>
+  <div class="support"><b>100% free, always.</b> If it helps you, you can support it &mdash;
+    <a href="https://buymeacoffee.com/StevenAnteau" target="_blank" rel="noopener">&#9749; Buy me a coffee</a></div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">01</span><span class="step-t">Pick your athlete</span></div>
+    <div id="chars" class="chars"></div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">02</span><span class="step-t">Set the timer</span>
+      <span class="step-sub">total length is computed exactly from your settings</span></div>
+    <div class="cfg">
+      <div class="field"><div class="lab">Rounds per exercise</div>
+        <div class="stepper"><button data-r="-1">&minus;</button><div class="val" id="roundsVal">8</div><button data-r="1">+</button><span class="vu">cycles each</span></div></div>
+      <div class="field"><div class="lab">Interval style</div><div id="intervalPills" class="pills"></div></div>
+      <div class="field"><div class="lab">Lead-in countdown</div><div id="readyPills" class="pills"></div></div>
+      <div class="field"><div class="lab">Aim for a length (auto-sets rounds)</div><div id="aimPills" class="pills"></div></div>
+    </div>
+    <div class="plan">
+      <div><div class="big" id="planTotal">00:00</div><div class="biglab">Total length</div></div>
+      <div style="text-align:right"><div class="meta" id="planMeta"></div><div class="meta" id="planBreak"></div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">03</span><span class="step-t">Choose your moves</span>
+      <span class="step-sub">filter by focus, or view all &mdash; tap to add</span></div>
+    <div class="catbar" id="catbar"></div>
+    <div class="libbar">
+      <div class="recbox"><button class="pill" id="recBtn">Use recommendation</button>
+        <div class="mini"><button data-n="-1">&minus;</button><span class="v" id="recVal">6</span><button data-n="1">+</button></div></div>
+      <div class="count"><b id="selCount">0</b> selected</div>
+    </div>
+    <div id="lib" class="lib"></div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">04</span><span class="step-t">Soundtrack</span>
+      <span class="step-sub">optional &middot; copyright-free sources</span></div>
+    <div class="music-links" id="musicLinks"></div>
+    <div class="music-row">
+      <input type="text" id="musicUrl" placeholder="Paste a direct .mp3 URL to loop during the workout">
+      <button id="musicLoad">Load</button>
+      <div class="vol">Vol <input type="range" id="musicVol" min="0" max="1" step="0.05" value="0.6"></div>
+    </div>
+    <div class="mstat" id="musicStat"></div>
+    <div class="mnote">Pixabay &amp; Mixkit need no credit; Incompetech and Uppbeat ask for attribution. Confirm a track's license before publishing. Tip: download a track, host it with a direct link, and paste that URL above.</div>
+  </div>
+
+  <div class="startbar"><button id="startBtn" class="start" disabled>START WORKOUT</button></div>
+</div>
+
+<div id="run">
+  <div class="run-top"><span id="runClock">00:00</span><button class="quit" id="quitBtn">Quit</button></div>
+  <div class="pbar"><i id="pfill"></i></div>
+  <div class="stage-wrap">
+    <div class="phase" id="phase">WORK</div>
+    <svg id="bigfig" viewBox="0 0 100 118"></svg>
+    <div class="timer" id="timer">20</div>
+    <div class="exname" id="exname">Squat</div>
+    <div class="nextup" id="nextup"></div>
+    <div class="counters"><div>Round <b id="roundc">1/8</b></div><div>Exercise <b id="exc">1/4</b></div></div>
+  </div>
+  <div class="run-ctrl">
+    <button class="cbtn icon" id="soundBtn" title="Beeps">&#9834;</button>
+    <button class="cbtn" id="pauseBtn">Pause</button>
+    <button class="cbtn" id="skipBtn">Skip &raquo;</button>
+  </div>
+</div>
+
+<div id="done">
+  <div class="tick">&#10003;</div>
+  <h2>Workout complete</h2>
+  <p>Nice work &mdash; that's in the bank.</p>
+  <div class="stats">
+    <div class="stat"><b id="dTime">00:00</b><span>Total time</span></div>
+    <div class="stat"><b id="dEx">0</b><span>Exercises</span></div>
+    <div class="stat"><b id="dRounds">0</b><span>Rounds</span></div>
+  </div>
+  <p class="coffee">HIIT STICK is free forever &middot; <a href="https://buymeacoffee.com/StevenAnteau" target="_blank" rel="noopener">&#9749; Buy me a coffee</a></p>
+  <button class="start" id="againBtn">BUILD ANOTHER</button>
+</div>
+
+<audio id="music" loop></audio>
+
+<script>
+const Gw='<line class="eqf" x1="6" y1="108" x2="98" y2="108"/>';
+const G ='<line class="eqf" x1="10" y1="108" x2="94" y2="108"/>';
+const PBOX='<line class="eq" x1="60" y1="76" x2="100" y2="76"/><line class="eq" x1="64" y1="76" x2="64" y2="108"/><line class="eq" x1="96" y1="76" x2="96" y2="108"/><line class="eqf" x1="8" y1="108" x2="100" y2="108"/>';
+const PHIP='<line class="eq" x1="12" y1="58" x2="42" y2="58"/><line class="eq" x1="20" y1="58" x2="20" y2="74"/><line class="eq" x1="38" y1="58" x2="38" y2="74"/><line class="eqf" x1="12" y1="108" x2="96" y2="108"/>';
+const PDIP='<line class="eq" x1="10" y1="70" x2="40" y2="70"/><line class="eq" x1="14" y1="70" x2="14" y2="104"/><line class="eq" x1="36" y1="70" x2="36" y2="104"/><line class="eqf" x1="8" y1="108" x2="96" y2="108"/>';
+const Gn='<line class="eqf" x1="34" y1="108" x2="62" y2="108"/>';
+const Gl='<line class="eqf" x1="18" y1="108" x2="64" y2="108"/>';
+const PBAR='<line class="eq" x1="18" y1="8" x2="82" y2="8"/><line class="eqf" x1="24" y1="8" x2="24" y2="108"/><line class="eqf" x1="76" y1="8" x2="76" y2="108"/>';
+const PFLAT='<line class="eq" x1="18" y1="80" x2="78" y2="80"/><line class="eq" x1="28" y1="80" x2="28" y2="104"/><line class="eq" x1="68" y1="80" x2="68" y2="104"/><line class="eqf" x1="12" y1="108" x2="94" y2="108"/>';
+const PINC='<line class="eq" x1="24" y1="96" x2="70" y2="56"/><line class="eq" x1="30" y1="92" x2="30" y2="104"/><line class="eqf" x1="12" y1="108" x2="94" y2="108"/>';
+const PBULG='<line class="eq" x1="6" y1="86" x2="38" y2="86"/><line class="eq" x1="12" y1="86" x2="12" y2="104"/><line class="eq" x1="32" y1="86" x2="32" y2="104"/><line class="eqf" x1="8" y1="108" x2="96" y2="108"/>';
+const PDECL='<line class="eq" x1="6" y1="86" x2="34" y2="86"/><line class="eq" x1="10" y1="86" x2="10" y2="108"/><line class="eq" x1="30" y1="86" x2="30" y2="108"/><line class="eqf" x1="8" y1="108" x2="96" y2="108"/>';
+
+const EX={
+ idle:{label:'Ready',tags:[],view:'front',db:[],props:G,period:1600,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,46],hL:[40,58],eR:[56,46],hR:[60,58],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,20],r:9,sh:[50,33],hip:[50,64],eL:[44,48],hL:[40,60],eR:[56,48],hR:[60,60],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+
+ jumpingjack:{label:'Jumping jacks',tags:['cardio','noweights'],view:'front',db:[],props:G,period:780,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,44],hL:[44,58],eR:[56,44],hR:[56,58],kL:[48,86],fL:[48,108],kR:[52,86],fR:[52,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[38,24],hL:[30,12],eR:[62,24],hR:[70,12],kL:[40,86],fL:[30,108],kR:[60,86],fR:[70,108]}},
+ highknees:{label:'High knees',tags:['cardio','noweights'],view:'front',db:[],props:G,period:620,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,60],eL:[44,42],hL:[42,54],eR:[57,40],hR:[60,30],kL:[55,72],fL:[58,86],kR:[52,86],fR:[52,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,60],eL:[43,40],hL:[40,30],eR:[56,42],hR:[58,54],kL:[48,86],fL:[48,108],kR:[45,72],fR:[42,86]}},
+ buttkicks:{label:'Butt kicks',tags:['cardio','noweights'],view:'front',db:[],props:G,period:560,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,60],eL:[44,44],hL:[42,52],eR:[56,44],hR:[60,44],kL:[48,90],fL:[44,74],kR:[52,90],fR:[52,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,60],eL:[44,44],hL:[40,44],eR:[56,44],hR:[58,52],kL:[48,90],fL:[48,108],kR:[52,90],fR:[56,74]}},
+ mountainclimber:{label:'Mountain climbers',tags:['cardio','core','noweights'],view:'side',db:[],props:Gw,period:560,
+  A:{head:[22,72],r:7,sh:[34,72],hip:[62,82],eL:[36,90],hL:[36,106],eR:[36,90],hR:[36,106],kL:[52,86],fL:[46,98],kR:[78,92],fR:[92,106]},
+  B:{head:[22,72],r:7,sh:[34,72],hip:[62,82],eL:[36,90],hL:[36,106],eR:[36,90],hR:[36,106],kL:[78,92],fL:[92,106],kR:[52,86],fR:[46,98]}},
+ skater:{label:'Skater hops',tags:['cardio','lower','noweights'],view:'front',db:[],props:Gw,period:720,
+  A:{head:[40,20],r:9,sh:[42,33],hip:[44,62],eL:[34,48],hL:[24,60],eR:[50,54],hR:[48,70],kL:[40,86],fL:[36,108],kR:[52,84],fR:[60,100]},
+  B:{head:[60,20],r:9,sh:[58,33],hip:[56,62],eL:[50,54],hL:[52,70],eR:[66,48],hR:[76,60],kL:[48,84],fL:[40,100],kR:[60,86],fR:[64,108]}},
+ jumpinglunge:{label:'Jumping lunges',tags:['cardio','lower','noweights'],view:'side',db:[],props:'<line class="eqf" x1="18" y1="108" x2="70" y2="108"/>',period:760,
+  A:{head:[46,18],r:9,sh:[46,32],hip:[46,60],eL:[40,46],hL:[36,56],eR:[52,42],hR:[56,52],kL:[58,84],fL:[62,108],kR:[34,92],fR:[26,108]},
+  B:{head:[46,18],r:9,sh:[46,32],hip:[46,60],eL:[52,42],hL:[56,52],eR:[40,46],hR:[36,56],kL:[34,92],fL:[26,108],kR:[58,84],fR:[62,108]}},
+ squatjump:{label:'Squat jumps',tags:['cardio','lower','noweights'],view:'front',db:[],props:Gw,period:900,
+  A:{head:[50,30],r:9,sh:[50,42],hip:[50,74],eL:[44,52],hL:[40,64],eR:[56,52],hR:[60,64],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]},
+  B:{head:[50,10],r:9,sh:[50,22],hip:[50,52],eL:[44,12],hL:[42,2],eR:[56,12],hR:[58,2],kL:[46,72],fL:[44,90],kR:[54,72],fR:[56,90]}},
+ tuckjump:{label:'Tuck jumps',tags:['cardio','noweights'],view:'front',db:[],props:Gw,period:900,
+  A:{head:[50,28],r:9,sh:[50,40],hip:[50,70],eL:[44,50],hL:[40,60],eR:[56,50],hR:[60,60],kL:[42,88],fL:[44,108],kR:[58,88],fR:[56,108]},
+  B:{head:[50,12],r:9,sh:[50,24],hip:[50,52],eL:[44,18],hL:[38,12],eR:[56,18],hR:[62,12],kL:[44,64],fL:[40,78],kR:[56,64],fR:[60,78]}},
+ jumprope:{label:'Jump rope',tags:['cardio','noweights'],view:'front',db:[],props:Gw,period:480,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,46],hL:[40,60],eR:[56,46],hR:[60,60],kL:[48,88],fL:[48,108],kR:[52,88],fR:[52,108]},
+  B:{head:[50,14],r:9,sh:[50,27],hip:[50,58],eL:[44,44],hL:[38,58],eR:[56,44],hR:[62,58],kL:[48,84],fL:[48,102],kR:[52,84],fR:[52,102]}},
+
+ squat:{label:'Squats',tags:['lower','glutes','noweights'],view:'front',db:[],props:Gw,period:1100,
+  A:{head:[50,18],r:9,sh:[50,30],hip:[50,60],eL:[44,40],hL:[30,46],eR:[56,40],hR:[30,54],kL:[44,84],fL:[42,108],kR:[56,84],fR:[58,108]},
+  B:{head:[50,28],r:9,sh:[50,40],hip:[50,72],eL:[44,52],hL:[28,56],eR:[56,52],hR:[28,62],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]}},
+ sumo:{label:'Sumo squats',tags:['lower','glutes','noweights'],view:'front',db:[],props:Gw,period:1150,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,60],eL:[44,42],hL:[44,56],eR:[56,42],hR:[56,56],kL:[34,82],fL:[26,108],kR:[66,82],fR:[74,108]},
+  B:{head:[50,28],r:9,sh:[50,41],hip:[50,72],eL:[44,50],hL:[44,62],eR:[56,50],hR:[56,62],kL:[28,84],fL:[24,108],kR:[72,84],fR:[76,108]}},
+ lunge:{label:'Reverse lunge',tags:['lower','glutes','noweights'],view:'side',db:[],props:Gl,period:1150,
+  A:{head:[44,18],r:9,sh:[44,32],hip:[44,62],eL:[40,46],hL:[40,58],eR:[48,46],hR:[48,58],kL:[42,84],fL:[42,108],kR:[46,84],fR:[46,108]},
+  B:{head:[44,26],r:9,sh:[44,40],hip:[44,68],eL:[40,54],hL:[40,66],eR:[48,54],hR:[48,66],kL:[54,86],fL:[58,108],kR:[32,92],fR:[26,108]}},
+ sidelunge:{label:'Lateral lunge',tags:['lower','glutes','noweights'],view:'front',db:[],props:Gw,period:1150,
+  A:{head:[44,18],r:9,sh:[46,32],hip:[48,60],eL:[44,50],hL:[40,64],eR:[52,50],hR:[52,64],kL:[30,82],fL:[22,108],kR:[64,90],fR:[76,108]},
+  B:{head:[56,18],r:9,sh:[54,32],hip:[52,60],eL:[48,50],hL:[48,64],eR:[56,50],hR:[60,64],kL:[36,90],fL:[24,108],kR:[70,82],fR:[78,108]}},
+ curtsy:{label:'Curtsy lunge',tags:['lower','glutes','noweights'],view:'front',db:[],props:G,period:1150,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,46],hL:[40,56],eR:[56,46],hR:[60,56],kL:[46,84],fL:[46,108],kR:[54,84],fR:[54,108]},
+  B:{head:[50,24],r:9,sh:[50,37],hip:[50,66],eL:[44,50],hL:[40,60],eR:[56,50],hR:[60,60],kL:[44,86],fL:[44,108],kR:[58,90],fR:[64,104]}},
+ calfraise:{label:'Calf raises',tags:['lower','noweights'],view:'front',db:[],props:G,period:850,
+  A:{head:[50,20],r:9,sh:[50,33],hip:[50,64],eL:[46,48],hL:[42,60],eR:[54,48],hR:[58,60],kL:[47,88],fL:[46,108],kR:[53,88],fR:[54,108]},
+  B:{head:[50,14],r:9,sh:[50,27],hip:[50,58],eL:[46,42],hL:[42,54],eR:[54,42],hR:[58,54],kL:[47,82],fL:[46,104],kR:[53,82],fR:[54,104]}},
+ bridge:{label:'Glute bridge',tags:['glutes','lower','noweights'],view:'side',db:[],props:Gw,period:1200,
+  A:{head:[24,98],r:7,sh:[36,99],hip:[60,95],eL:[42,101],hL:[50,106],eR:[42,101],hR:[50,106],kL:[80,95],fL:[80,108],kR:[82,95],fR:[82,108]},
+  B:{head:[24,98],r:7,sh:[36,99],hip:[64,78],eL:[44,99],hL:[52,106],eR:[44,99],hR:[52,106],kL:[84,84],fL:[82,108],kR:[86,84],fR:[82,108]}},
+ slbridge:{label:'1-leg glute bridge',tags:['glutes','lower','noweights'],view:'side',db:[],props:Gw,period:1200,
+  A:{head:[24,98],r:7,sh:[36,99],hip:[58,94],eL:[42,101],hL:[50,106],eR:[42,101],hR:[50,106],kL:[80,94],fL:[80,108],kR:[82,90],fR:[94,86]},
+  B:{head:[24,98],r:7,sh:[36,99],hip:[62,76],eL:[44,99],hL:[52,106],eR:[44,99],hR:[52,106],kL:[84,82],fL:[80,108],kR:[88,68],fR:[98,60]}},
+ donkeykick:{label:'Donkey kicks',tags:['glutes','lower','noweights'],view:'side',db:[],props:Gw,period:700,
+  A:{head:[26,66],r:7,sh:[34,68],hip:[70,72],eL:[36,88],hL:[36,104],eR:[36,88],hR:[36,104],kL:[72,90],fL:[70,104],kR:[78,80],fR:[84,86]},
+  B:{head:[26,66],r:7,sh:[34,68],hip:[70,72],eL:[36,88],hL:[36,104],eR:[36,88],hR:[36,104],kL:[72,90],fL:[70,104],kR:[86,62],fR:[98,56]}},
+ firehydrant:{label:'Fire hydrants',tags:['glutes','lower','noweights'],view:'side',db:[],props:Gw,period:750,
+  A:{head:[26,66],r:7,sh:[34,68],hip:[70,72],eL:[36,88],hL:[36,104],eR:[36,88],hR:[36,104],kL:[70,90],fL:[68,104],kR:[74,84],fR:[80,90]},
+  B:{head:[26,66],r:7,sh:[34,68],hip:[70,72],eL:[36,88],hL:[36,104],eR:[36,88],hR:[36,104],kL:[70,90],fL:[68,104],kR:[84,72],fR:[92,80]}},
+ stepup:{label:'Step-ups',tags:['lower','glutes','noweights'],view:'side',db:[],props:PBOX,period:1100,gear:'box',
+  A:{head:[34,24],r:8,sh:[38,34],hip:[44,62],eL:[34,48],hL:[34,60],eR:[50,48],hR:[50,60],kL:[46,84],fL:[44,108],kR:[60,70],fR:[66,76]},
+  B:{head:[40,16],r:8,sh:[44,26],hip:[50,54],eL:[40,40],hL:[40,52],eR:[56,40],hR:[56,52],kL:[58,64],fL:[62,76],kR:[56,64],fR:[58,76]}},
+
+ plank:{label:'Plank',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1700,
+  A:{head:[24,76],r:8,sh:[36,74],hip:[66,86],eL:[40,106],hL:[58,106],eR:[40,106],hR:[58,106],kL:[80,96],fL:[92,108],kR:[80,96],fR:[92,108]},
+  B:{head:[24,79],r:8,sh:[36,77],hip:[66,90],eL:[40,106],hL:[58,106],eR:[40,106],hR:[58,106],kL:[80,98],fL:[92,108],kR:[80,98],fR:[92,108]}},
+ shouldertap:{label:'Plank shoulder taps',tags:['core','upper','noweights'],view:'side',db:[],props:Gw,period:900,
+  A:{head:[24,72],r:7,sh:[36,74],hip:[66,86],eL:[40,90],hL:[40,106],eR:[40,80],hR:[34,72],kL:[80,96],fL:[92,108],kR:[80,96],fR:[92,108]},
+  B:{head:[24,72],r:7,sh:[36,74],hip:[66,86],eL:[40,80],hL:[34,72],eR:[40,90],hR:[40,106],kL:[80,96],fL:[92,108],kR:[80,96],fR:[92,108]}},
+ crunch:{label:'Crunches',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[24,96],r:7,sh:[36,98],hip:[64,100],eL:[44,92],hL:[54,94],eR:[44,92],hR:[54,94],kL:[78,86],fL:[80,108],kR:[80,86],fR:[82,108]},
+  B:{head:[34,84],r:7,sh:[44,90],hip:[64,100],eL:[50,86],hL:[60,90],eR:[50,86],hR:[60,90],kL:[78,86],fL:[80,108],kR:[80,86],fR:[82,108]}},
+ situp:{label:'Sit-ups',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1200,
+  A:{head:[24,96],r:7,sh:[36,98],hip:[64,100],eL:[44,94],hL:[40,96],eR:[44,94],hR:[40,96],kL:[78,86],fL:[80,108],kR:[80,86],fR:[82,108]},
+  B:{head:[58,72],r:7,sh:[58,84],hip:[64,100],eL:[54,80],hL:[52,84],eR:[54,80],hR:[52,84],kL:[78,86],fL:[80,108],kR:[80,86],fR:[82,108]}},
+ bicycle:{label:'Bicycle crunch',tags:['core','noweights'],view:'side',db:[],props:Gw,period:720,
+  A:{head:[26,92],r:7,sh:[38,94],hip:[64,98],eL:[36,88],hL:[28,88],eR:[40,88],hR:[32,88],kL:[58,84],fL:[52,90],kR:[84,98],fR:[96,100]},
+  B:{head:[26,92],r:7,sh:[38,94],hip:[64,98],eL:[36,88],hL:[28,88],eR:[40,88],hR:[32,88],kL:[84,98],fL:[96,100],kR:[58,84],fR:[52,90]}},
+ flutterkick:{label:'Flutter kicks',tags:['core','noweights'],view:'side',db:[],props:Gw,period:600,
+  A:{head:[24,96],r:7,sh:[36,98],hip:[64,100],eL:[44,100],hL:[50,104],eR:[44,100],hR:[50,104],kL:[80,92],fL:[96,86],kR:[80,98],fR:[96,100]},
+  B:{head:[24,96],r:7,sh:[36,98],hip:[64,100],eL:[44,100],hL:[50,104],eR:[44,100],hR:[50,104],kL:[80,98],fL:[96,100],kR:[80,92],fR:[96,86]}},
+ legraise:{label:'Leg raises',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[24,98],r:7,sh:[36,99],hip:[60,100],eL:[44,101],hL:[50,106],eR:[44,101],hR:[50,106],kL:[78,100],fL:[96,100],kR:[80,100],fR:[96,100]},
+  B:{head:[24,98],r:7,sh:[36,99],hip:[60,100],eL:[44,101],hL:[50,106],eR:[44,101],hR:[50,106],kL:[72,80],fL:[70,58],kR:[74,80],fR:[72,58]}},
+ russiantwist:{label:'Russian twist',tags:['core','noweights'],view:'front',db:[],props:'<line class="eqf" x1="28" y1="96" x2="70" y2="96"/>',period:900,
+  A:{head:[46,30],r:9,sh:[48,44],hip:[50,72],eL:[42,52],hL:[32,56],eR:[46,52],hR:[34,58],kL:[40,80],fL:[34,96],kR:[58,80],fR:[64,96]},
+  B:{head:[54,30],r:9,sh:[52,44],hip:[50,72],eL:[54,52],hL:[66,56],eR:[58,52],hR:[68,58],kL:[40,80],fL:[34,96],kR:[58,80],fR:[64,96]}},
+ superman:{label:'Superman',tags:['core','glutes','noweights'],view:'side',db:[],props:Gw,period:1300,
+  A:{head:[22,96],r:7,sh:[34,98],hip:[66,100],eL:[24,98],hL:[12,100],eR:[24,98],hR:[12,100],kL:[80,100],fL:[94,102],kR:[80,100],fR:[94,102]},
+  B:{head:[20,88],r:7,sh:[34,92],hip:[66,96],eL:[22,86],hL:[10,80],eR:[22,86],hR:[10,80],kL:[82,90],fL:[96,82],kR:[82,90],fR:[96,82]}},
+ birddog:{label:'Bird dog',tags:['core','glutes','noweights'],view:'side',db:[],props:Gw,period:1400,
+  A:{head:[28,66],r:7,sh:[36,68],hip:[66,72],eL:[26,64],hL:[12,60],eR:[38,86],hR:[38,104],kL:[64,90],fL:[62,104],kR:[82,70],fR:[96,66]},
+  B:{head:[28,66],r:7,sh:[36,68],hip:[66,72],eL:[38,86],hL:[38,104],eR:[26,64],hR:[12,60],kL:[82,70],fL:[96,66],kR:[64,90],fR:[62,104]}},
+
+ pushup:{label:'Push-ups',tags:['upper','cardio','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[26,72],r:7,sh:[36,74],hip:[66,84],eL:[38,88],hL:[40,106],eR:[38,88],hR:[40,106],kL:[80,94],fL:[94,104],kR:[80,94],fR:[94,104]},
+  B:{head:[26,82],r:7,sh:[36,84],hip:[66,92],eL:[30,94],hL:[40,106],eR:[30,94],hR:[40,106],kL:[80,98],fL:[94,106],kR:[80,98],fR:[94,106]}},
+ pikepushup:{label:'Pike push-ups',tags:['upper','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[40,58],r:7,sh:[46,56],hip:[70,38],eL:[38,82],hL:[34,106],eR:[38,82],hR:[34,106],kL:[78,72],fL:[88,106],kR:[78,72],fR:[88,106]},
+  B:{head:[34,84],r:7,sh:[42,72],hip:[70,40],eL:[30,90],hL:[34,106],eR:[30,90],hR:[34,106],kL:[78,72],fL:[88,106],kR:[78,72],fR:[88,106]}},
+ dip:{label:'Tricep dips',tags:['upper','noweights'],view:'side',db:[],props:PDIP,period:1000,gear:'box',
+  A:{head:[44,40],r:8,sh:[42,50],hip:[44,74],eL:[34,62],hL:[26,70],eR:[34,62],hR:[26,70],kL:[60,84],fL:[80,104],kR:[62,84],fR:[82,104]},
+  B:{head:[44,52],r:8,sh:[42,62],hip:[44,84],eL:[30,72],hL:[26,70],eR:[30,72],hR:[26,70],kL:[60,90],fL:[80,104],kR:[62,90],fR:[82,104]}},
+
+ goblet:{label:'Goblet squat',tags:['lower','glutes','dumbbell'],view:'front',db:['chest'],props:G,period:1200,gear:'DB',
+  A:{head:[50,18],r:9,sh:[50,30],hip:[50,60],eL:[41,40],hL:[50,50],eR:[59,40],hR:[50,50],kL:[44,84],fL:[42,108],kR:[56,84],fR:[58,108]},
+  B:{head:[50,30],r:9,sh:[50,42],hip:[50,74],eL:[41,52],hL:[50,62],eR:[59,52],hR:[50,62],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]}},
+ dbsquat:{label:'DB squat',tags:['lower','glutes','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1150,gear:'DB',
+  A:{head:[50,18],r:9,sh:[50,30],hip:[50,60],eL:[42,40],hL:[42,32],eR:[58,40],hR:[58,32],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,28],r:9,sh:[50,40],hip:[50,72],eL:[42,50],hL:[42,42],eR:[58,50],hR:[58,42],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]}},
+ dblunge:{label:'DB reverse lunge',tags:['lower','glutes','dumbbell'],view:'side',db:['hL','hR'],props:Gl,period:1150,gear:'DB',
+  A:{head:[44,18],r:9,sh:[44,32],hip:[44,62],eL:[40,46],hL:[40,60],eR:[48,46],hR:[48,60],kL:[42,84],fL:[42,108],kR:[46,84],fR:[46,108]},
+  B:{head:[44,26],r:9,sh:[44,40],hip:[44,68],eL:[40,54],hL:[40,68],eR:[48,54],hR:[48,68],kL:[54,86],fL:[58,108],kR:[32,92],fR:[26,108]}},
+ rdl:{label:'Romanian deadlift',tags:['glutes','lower','dumbbell'],view:'side',db:['hL','hR'],props:Gn,period:1250,gear:'DB',
+  A:{head:[40,18],r:8,sh:[42,32],hip:[46,60],eL:[42,46],hL:[42,60],eR:[46,46],hR:[46,60],kL:[44,84],fL:[44,108],kR:[48,84],fR:[48,108]},
+  B:{head:[26,40],r:8,sh:[32,46],hip:[54,58],eL:[33,62],hL:[34,80],eR:[37,62],hR:[38,80],kL:[50,84],fL:[46,108],kR:[54,84],fR:[50,108]}},
+ hipthrust:{label:'Hip thrust',tags:['glutes','lower','dumbbell'],view:'side',db:['hip'],props:PHIP,period:1200,gear:'DB',
+  A:{head:[20,54],r:8,sh:[32,56],hip:[58,74],eL:[40,64],hL:[52,74],eR:[40,64],hR:[52,74],kL:[78,74],fL:[80,108],kR:[80,74],fR:[80,108]},
+  B:{head:[20,54],r:8,sh:[32,56],hip:[64,50],eL:[44,56],hL:[56,50],eR:[44,56],hR:[56,50],kL:[82,52],fL:[80,108],kR:[84,52],fR:[80,108]}},
+ thruster:{label:'DB thruster',tags:['upper','lower','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1200,gear:'DB',
+  A:{head:[50,28],r:9,sh:[50,40],hip:[50,72],eL:[42,46],hL:[42,36],eR:[58,46],hR:[58,36],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]},
+  B:{head:[50,20],r:9,sh:[50,32],hip:[50,62],eL:[45,22],hL:[46,8],eR:[55,22],hR:[54,8],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+ dbpushpress:{label:'DB push press',tags:['upper','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1000,gear:'DB',
+  A:{head:[50,24],r:9,sh:[50,36],hip:[50,66],eL:[42,44],hL:[42,36],eR:[58,44],hR:[58,36],kL:[44,84],fL:[44,108],kR:[56,84],fR:[56,108]},
+  B:{head:[50,22],r:9,sh:[50,34],hip:[50,62],eL:[45,22],hL:[46,8],eR:[55,22],hR:[54,8],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+ ohp:{label:'Overhead press',tags:['upper','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1150,gear:'DB',
+  A:{head:[50,24],r:9,sh:[50,36],hip:[50,66],eL:[40,42],hL:[42,34],eR:[60,42],hR:[58,34],kL:[45,88],fL:[45,108],kR:[55,88],fR:[55,108]},
+  B:{head:[50,24],r:9,sh:[50,36],hip:[50,66],eL:[45,24],hL:[46,10],eR:[55,24],hR:[54,10],kL:[45,88],fL:[45,108],kR:[55,88],fR:[55,108]}},
+ dbfrontraise:{label:'DB front raise',tags:['upper','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1100,gear:'DB',
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[45,44],hL:[44,58],eR:[55,44],hR:[56,58],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[46,44],hL:[46,30],eR:[54,44],hR:[54,30],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+ lateralraise:{label:'Lateral raise',tags:['upper','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1100,gear:'DB',
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[45,44],hL:[44,58],eR:[55,44],hR:[56,58],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[40,32],hL:[28,32],eR:[60,32],hR:[72,32],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+ curl:{label:'Bicep curls',tags:['upper','dumbbell'],view:'front',db:['hL','hR'],props:G,period:1000,gear:'DB',
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,46],hL:[42,60],eR:[56,46],hR:[58,60],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,46],hL:[46,34],eR:[56,46],hR:[54,34],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+ row:{label:'One-arm row',tags:['upper','dumbbell'],view:'side',db:['hL'],props:'<line class="eqf" x1="58" y1="108" x2="88" y2="108"/>',period:1200,gear:'DB',
+  A:{head:[26,48],r:8,sh:[36,50],hip:[72,57],eL:[34,66],hL:[34,80],eR:[52,66],hR:[58,78],kL:[70,82],fL:[70,108],kR:[74,82],fR:[74,108]},
+  B:{head:[26,48],r:8,sh:[36,50],hip:[72,57],eL:[33,52],hL:[42,60],eR:[52,66],hR:[58,78],kL:[70,82],fL:[70,108],kR:[74,82],fR:[74,108]}},
+ renegaderow:{label:'Renegade row',tags:['upper','core','dumbbell'],view:'side',db:['hL','hR'],props:Gw,period:1100,gear:'DB',
+  A:{head:[24,72],r:7,sh:[36,74],hip:[66,84],eL:[38,90],hL:[40,106],eR:[38,90],hR:[40,106],kL:[80,94],fL:[94,104],kR:[80,94],fR:[94,104]},
+  B:{head:[24,72],r:7,sh:[36,74],hip:[66,84],eL:[38,90],hL:[40,106],eR:[40,86],hR:[50,92],kL:[80,94],fL:[94,104],kR:[80,94],fR:[94,104]}},
+ swing:{label:'DB swing',tags:['dumbbell','cardio','glutes','lower'],view:'side',db:['chest'],props:Gn,period:880,gear:'DB',
+  A:{head:[30,40],r:8,sh:[36,46],hip:[56,62],eL:[44,60],hL:[48,76],eR:[44,60],hR:[48,76],kL:[52,84],fL:[48,108],kR:[56,84],fR:[52,108]},
+  B:{head:[44,20],r:8,sh:[44,34],hip:[46,62],eL:[40,40],hL:[34,32],eR:[40,40],hR:[34,32],kL:[44,84],fL:[44,108],kR:[48,84],fR:[48,108]}},
+
+ kbswing:{label:'Kettlebell swing',tags:['kettlebell','cardio','glutes','lower'],view:'side',db:['chest'],bell:true,props:Gn,period:860,gear:'KB',
+  A:{head:[30,40],r:8,sh:[36,46],hip:[56,62],eL:[44,60],hL:[48,76],eR:[44,60],hR:[48,76],kL:[52,84],fL:[48,108],kR:[56,84],fR:[52,108]},
+  B:{head:[44,20],r:8,sh:[44,34],hip:[46,62],eL:[40,40],hL:[34,32],eR:[40,40],hR:[34,32],kL:[44,84],fL:[44,108],kR:[48,84],fR:[48,108]}},
+ kbgoblet:{label:'KB goblet squat',tags:['kettlebell','lower','glutes'],view:'front',db:['chest'],bell:true,props:G,period:1200,gear:'KB',
+  A:{head:[50,18],r:9,sh:[50,30],hip:[50,60],eL:[41,40],hL:[50,50],eR:[59,40],hR:[50,50],kL:[44,84],fL:[42,108],kR:[56,84],fR:[58,108]},
+  B:{head:[50,30],r:9,sh:[50,42],hip:[50,74],eL:[41,52],hL:[50,62],eR:[59,52],hR:[50,62],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]}},
+ kbdeadlift:{label:'KB deadlift',tags:['kettlebell','glutes','lower'],view:'side',db:['chest'],bell:true,props:Gn,period:1250,gear:'KB',
+  A:{head:[28,42],r:8,sh:[34,48],hip:[54,62],eL:[40,64],hL:[42,80],eR:[40,64],hR:[42,80],kL:[50,84],fL:[46,108],kR:[54,84],fR:[50,108]},
+  B:{head:[40,20],r:8,sh:[42,34],hip:[46,62],eL:[44,56],hL:[44,72],eR:[44,56],hR:[44,72],kL:[44,84],fL:[44,108],kR:[48,84],fR:[48,108]}},
+ kbsumopull:{label:'KB sumo high pull',tags:['kettlebell','glutes','lower','cardio'],view:'front',db:['chest'],bell:true,props:Gw,period:1000,gear:'KB',
+  A:{head:[50,30],r:9,sh:[50,42],hip:[50,68],eL:[44,52],hL:[50,82],eR:[56,52],hR:[50,82],kL:[34,84],fL:[26,108],kR:[66,84],fR:[74,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,60],eL:[40,32],hL:[48,40],eR:[60,32],hR:[52,40],kL:[40,86],fL:[34,108],kR:[60,86],fR:[66,108]}},
+ kbhighpull:{label:'KB high pull',tags:['kettlebell','upper','cardio'],view:'side',db:['chest'],bell:true,props:Gn,period:950,gear:'KB',
+  A:{head:[28,42],r:8,sh:[34,48],hip:[54,62],eL:[40,64],hL:[42,78],eR:[40,64],hR:[42,78],kL:[50,84],fL:[46,108],kR:[54,84],fR:[50,108]},
+  B:{head:[40,20],r:8,sh:[42,34],hip:[46,62],eL:[34,34],hL:[40,40],eR:[34,34],hR:[40,40],kL:[44,84],fL:[44,108],kR:[48,84],fR:[48,108]}},
+ kbpress:{label:'KB single press',tags:['kettlebell','upper'],view:'front',db:['hR'],bell:true,props:G,period:1150,gear:'KB',
+  A:{head:[50,20],r:9,sh:[50,32],hip:[50,62],eL:[44,46],hL:[42,58],eR:[58,40],hR:[56,32],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,20],r:9,sh:[50,32],hip:[50,62],eL:[44,46],hL:[42,58],eR:[56,22],hR:[55,8],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+
+ bandpullapart:{label:'Band pull-aparts',tags:['band','upper'],view:'front',db:[],bandline:['hL','hR'],props:G,period:1000,gear:'band',
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,40],hL:[38,40],eR:[56,40],hR:[62,40],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[40,40],hL:[26,40],eR:[60,40],hR:[74,40],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]}},
+ bandsquat:{label:'Band squat',tags:['band','lower','glutes'],view:'front',db:[],props:G,period:1100,gear:'band',
+  A:{head:[50,18],r:9,sh:[50,30],hip:[50,60],eL:[44,40],hL:[42,32],eR:[56,40],hR:[58,32],kL:[46,86],fL:[46,108],kR:[54,86],fR:[54,108]},
+  B:{head:[50,28],r:9,sh:[50,40],hip:[50,72],eL:[44,50],hL:[42,42],eR:[56,50],hR:[58,42],kL:[36,86],fL:[42,108],kR:[64,86],fR:[58,108]}},
+ bandlateralwalk:{label:'Band lateral walk',tags:['band','glutes','lower'],view:'front',db:[],bandline:['fL','fR'],props:Gw,period:900,gear:'band',
+  A:{head:[48,20],r:9,sh:[48,33],hip:[48,64],eL:[44,46],hL:[40,58],eR:[52,46],hR:[56,58],kL:[38,84],fL:[34,108],kR:[58,84],fR:[62,108]},
+  B:{head:[52,20],r:9,sh:[52,33],hip:[52,64],eL:[48,46],hL:[44,58],eR:[56,46],hR:[60,58],kL:[42,84],fL:[38,108],kR:[62,84],fR:[66,108]}},
+ bandkickback:{label:'Band kickback',tags:['band','glutes','lower'],view:'side',db:[],props:'<line class="eqf" x1="24" y1="108" x2="48" y2="108"/>',period:850,gear:'band',
+  A:{head:[40,18],r:9,sh:[40,32],hip:[42,62],eL:[36,46],hL:[34,58],eR:[44,46],hR:[46,58],kL:[40,84],fL:[38,108],kR:[48,82],fR:[56,96]},
+  B:{head:[40,18],r:9,sh:[40,32],hip:[42,62],eL:[36,46],hL:[34,58],eR:[44,46],hR:[46,58],kL:[40,84],fL:[38,108],kR:[60,76],fR:[78,72]}},
+ bandrow:{label:'Band row',tags:['band','upper'],view:'side',db:[],bandline:['hL',[12,96]],props:Gl,period:1000,gear:'band',
+  A:{head:[34,22],r:8,sh:[40,36],hip:[44,64],eL:[40,48],hL:[24,52],eR:[48,48],hR:[26,54],kL:[42,86],fL:[40,108],kR:[48,86],fR:[46,108]},
+  B:{head:[34,22],r:8,sh:[40,36],hip:[44,64],eL:[44,44],hL:[52,52],eR:[50,44],hR:[54,54],kL:[42,86],fL:[40,108],kR:[48,86],fR:[46,108]}},
+
+ pullup:{label:'Pull-ups',tags:['pullup','upper'],view:'front',db:[],props:PBAR,period:1300,gear:'bar',
+  A:{head:[50,40],r:8,sh:[50,50],hip:[50,80],eL:[46,28],hL:[42,8],eR:[54,28],hR:[58,8],kL:[48,96],fL:[48,110],kR:[52,96],fR:[52,110]},
+  B:{head:[50,18],r:8,sh:[50,28],hip:[50,58],eL:[42,18],hL:[42,8],eR:[58,18],hR:[58,8],kL:[48,74],fL:[48,90],kR:[52,74],fR:[52,90]}},
+ hangingkneeraise:{label:'Hanging knee raise',tags:['pullup','core'],view:'front',db:[],props:PBAR,period:1100,gear:'bar',
+  A:{head:[50,30],r:8,sh:[50,40],hip:[50,70],eL:[46,20],hL:[44,8],eR:[54,20],hR:[56,8],kL:[48,88],fL:[48,108],kR:[52,88],fR:[52,108]},
+  B:{head:[50,30],r:8,sh:[50,40],hip:[50,70],eL:[46,20],hL:[44,8],eR:[54,20],hR:[56,8],kL:[46,72],fL:[44,86],kR:[54,72],fR:[56,86]}},
+ toestobar:{label:'Toes to bar',tags:['pullup','core'],view:'front',db:[],props:PBAR,period:1200,gear:'bar',
+  A:{head:[50,30],r:8,sh:[50,40],hip:[50,70],eL:[46,20],hL:[44,8],eR:[54,20],hR:[56,8],kL:[48,88],fL:[48,108],kR:[52,88],fR:[52,108]},
+  B:{head:[50,30],r:8,sh:[50,40],hip:[50,70],eL:[46,20],hL:[44,8],eR:[54,20],hR:[56,8],kL:[48,60],fL:[46,30],kR:[52,60],fR:[54,30]}},
+ deadhang:{label:'Dead hang',tags:['pullup','core','upper'],view:'front',db:[],props:PBAR,period:1800,gear:'bar',
+  A:{head:[50,30],r:8,sh:[50,40],hip:[50,70],eL:[46,20],hL:[44,8],eR:[54,20],hR:[56,8],kL:[48,88],fL:[48,108],kR:[52,88],fR:[52,108]},
+  B:{head:[51,31],r:8,sh:[51,41],hip:[51,71],eL:[47,20],hL:[44,8],eR:[55,20],hR:[56,8],kL:[49,88],fL:[49,108],kR:[53,88],fR:[53,108]}},
+
+ bulgarian:{label:'Bulgarian split squat',tags:['lower','glutes','bench'],view:'side',db:[],props:PBULG,period:1150,gear:'bench',
+  A:{head:[56,24],r:8,sh:[56,36],hip:[56,64],eL:[52,48],hL:[52,60],eR:[60,48],hR:[60,60],kL:[42,80],fL:[20,86],kR:[58,86],fR:[58,108]},
+  B:{head:[56,32],r:8,sh:[56,44],hip:[56,72],eL:[52,56],hL:[52,68],eR:[60,56],hR:[60,68],kL:[44,88],fL:[20,86],kR:[64,88],fR:[60,108]}},
+ boxjump:{label:'Box jumps',tags:['cardio','lower','bench'],view:'side',db:[],props:PBOX,period:1000,gear:'box',
+  A:{head:[34,30],r:8,sh:[38,40],hip:[44,66],eL:[34,52],hL:[30,62],eR:[48,52],hR:[52,62],kL:[42,86],fL:[40,108],kR:[50,86],fR:[50,108]},
+  B:{head:[64,30],r:8,sh:[64,40],hip:[64,66],eL:[60,28],hL:[58,18],eR:[68,28],hR:[70,18],kL:[62,70],fL:[66,76],kR:[66,70],fR:[68,76]}},
+ dbbench:{label:'DB bench press',tags:['upper','dumbbell','bench'],view:'side',db:['chest'],props:PFLAT,period:1100,gear:'DB',
+  A:{head:[22,72],r:8,sh:[34,74],hip:[70,77],eL:[44,72],hL:[48,70],eR:[44,72],hR:[48,70],kL:[80,86],fL:[80,104],kR:[84,86],fR:[84,104]},
+  B:{head:[22,72],r:8,sh:[34,74],hip:[70,77],eL:[44,62],hL:[48,52],eR:[44,62],hR:[48,52],kL:[80,86],fL:[80,104],kR:[84,86],fR:[84,104]}},
+ inclinepress:{label:'Incline DB press',tags:['upper','dumbbell','bench'],view:'side',db:['chest'],props:PINC,period:1150,gear:'DB',
+  A:{head:[30,66],r:8,sh:[40,62],hip:[64,76],eL:[40,54],hL:[40,46],eR:[40,54],hR:[40,46],kL:[72,84],fL:[80,104],kR:[74,84],fR:[82,104]},
+  B:{head:[30,66],r:8,sh:[40,62],hip:[64,76],eL:[40,40],hL:[40,28],eR:[40,40],hR:[40,28],kL:[72,84],fL:[80,104],kR:[74,84],fR:[82,104]}},
+ declinepushup:{label:'Decline push-ups',tags:['upper','bench','noweights'],view:'side',db:[],props:PDECL,period:1100,gear:'bench',
+  A:{head:[80,74],r:7,sh:[70,76],hip:[42,80],eL:[74,90],hL:[76,106],eR:[74,90],hR:[76,106],kL:[28,84],fL:[14,86],kR:[28,84],fR:[14,86]},
+  B:{head:[80,84],r:7,sh:[70,86],hip:[42,84],eL:[80,94],hL:[76,106],eR:[80,94],hR:[76,106],kL:[28,84],fL:[14,86],kR:[28,84],fR:[14,86]}},
+
+ vup:{label:'V-ups',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[24,98],r:7,sh:[36,99],hip:[60,100],eL:[26,98],hL:[14,98],eR:[26,98],hR:[14,98],kL:[78,100],fL:[96,100],kR:[80,100],fR:[96,100]},
+  B:{head:[40,80],r:7,sh:[44,84],hip:[60,98],eL:[50,76],hL:[62,66],eR:[50,76],hR:[62,66],kL:[70,82],fL:[78,64],kR:[72,82],fR:[80,64]}},
+ hollowhold:{label:'Hollow hold',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1700,
+  A:{head:[24,90],r:7,sh:[36,92],hip:[60,96],eL:[26,88],hL:[14,84],eR:[26,88],hR:[14,84],kL:[80,92],fL:[96,86],kR:[82,92],fR:[96,86]},
+  B:{head:[24,92],r:7,sh:[36,93],hip:[60,97],eL:[26,89],hL:[14,86],eR:[26,89],hR:[14,86],kL:[80,93],fL:[96,88],kR:[82,93],fR:[96,88]}},
+ toetouch:{label:'Toe touches',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[24,96],r:7,sh:[36,97],hip:[58,100],eL:[44,99],hL:[50,104],eR:[44,99],hR:[50,104],kL:[66,76],fL:[64,54],kR:[68,76],fR:[66,54]},
+  B:{head:[36,84],r:7,sh:[44,88],hip:[58,100],eL:[48,78],hL:[58,62],eR:[48,78],hR:[58,62],kL:[66,76],fL:[64,54],kR:[68,76],fR:[66,54]}},
+ reversecrunch:{label:'Reverse crunch',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1000,
+  A:{head:[24,96],r:7,sh:[36,98],hip:[62,100],eL:[44,100],hL:[50,106],eR:[44,100],hR:[50,106],kL:[82,94],fL:[92,100],kR:[84,94],fR:[94,100]},
+  B:{head:[24,96],r:7,sh:[36,98],hip:[62,100],eL:[44,100],hL:[50,106],eR:[44,100],hR:[50,106],kL:[64,86],fL:[56,94],kR:[66,86],fR:[58,94]}},
+ sideplank:{label:'Side plank',tags:['core','noweights'],view:'side',db:[],props:Gw,period:1600,
+  A:{head:[20,70],r:7,sh:[30,74],hip:[60,90],eL:[30,90],hL:[30,106],eR:[30,60],hR:[30,46],kL:[78,98],fL:[92,106],kR:[78,98],fR:[92,106]},
+  B:{head:[20,72],r:7,sh:[30,76],hip:[60,92],eL:[30,92],hL:[30,106],eR:[30,62],hR:[30,48],kL:[78,100],fL:[92,108],kR:[78,100],fR:[92,108]}},
+
+ frogpump:{label:'Frog pumps',tags:['glutes','noweights'],view:'side',db:[],props:Gw,period:1100,
+  A:{head:[24,98],r:7,sh:[36,99],hip:[58,96],eL:[42,101],hL:[50,106],eR:[42,101],hR:[50,106],kL:[70,98],fL:[60,100],kR:[72,98],fR:[64,100]},
+  B:{head:[24,98],r:7,sh:[36,99],hip:[60,82],eL:[44,99],hL:[52,106],eR:[44,99],hR:[52,106],kL:[72,86],fL:[60,92],kR:[74,86],fR:[64,92]}},
+ singlelegdeadlift:{label:'1-leg deadlift',tags:['glutes','lower','noweights'],view:'side',db:[],props:'<line class="eqf" x1="28" y1="108" x2="52" y2="108"/>',period:1250,
+  A:{head:[40,18],r:9,sh:[40,32],hip:[42,62],eL:[36,46],hL:[36,60],eR:[44,46],hR:[44,60],kL:[40,84],fL:[38,108],kR:[46,84],fR:[48,108]},
+  B:{head:[22,54],r:9,sh:[28,58],hip:[50,60],eL:[26,68],hL:[24,82],eR:[28,68],hR:[26,82],kL:[46,82],fL:[40,108],kR:[66,56],fR:[86,50]}},
+
+ fastfeet:{label:'Fast feet',tags:['cardio','noweights'],view:'front',db:[],props:Gw,period:380,
+  A:{head:[50,20],r:9,sh:[50,33],hip:[50,62],eL:[44,46],hL:[40,54],eR:[56,46],hR:[60,54],kL:[46,84],fL:[44,100],kR:[54,86],fR:[54,108]},
+  B:{head:[50,20],r:9,sh:[50,33],hip:[50,62],eL:[44,46],hL:[40,54],eR:[56,46],hR:[60,54],kL:[46,86],fL:[44,108],kR:[54,84],fR:[54,100]}},
+ crossjacks:{label:'Cross jacks',tags:['cardio','noweights'],view:'front',db:[],props:Gw,period:800,
+  A:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[38,24],hL:[30,12],eR:[62,24],hR:[70,12],kL:[40,86],fL:[32,108],kR:[60,86],fR:[68,108]},
+  B:{head:[50,18],r:9,sh:[50,31],hip:[50,62],eL:[44,30],hL:[58,30],eR:[56,30],hR:[42,30],kL:[52,86],fL:[58,108],kR:[48,86],fR:[42,108]}},
+
+ armcircles:{label:'Arm circles',tags:['mobility','upper'],view:'front',db:[],props:Gw,period:1400,
+  A:{head:[50,20],r:9,sh:[50,33],hip:[50,72],eL:[44,40],hL:[26,30],eR:[56,40],hR:[74,30],kL:[44,90],fL:[42,108],kR:[56,90],fR:[58,108]},
+  B:{head:[50,20],r:9,sh:[50,33],hip:[50,72],eL:[44,44],hL:[28,54],eR:[56,44],hR:[72,54],kL:[44,90],fL:[42,108],kR:[56,90],fR:[58,108]}},
+ legswing:{label:'Leg swings',tags:['mobility','lower'],view:'side',db:[],props:'<line class="eqf" x1="30" y1="108" x2="54" y2="108"/>',period:1300,
+  A:{head:[44,20],r:9,sh:[44,33],hip:[44,64],eL:[40,46],hL:[42,58],eR:[48,46],hR:[50,58],kL:[42,86],fL:[42,108],kR:[58,80],fR:[70,76]},
+  B:{head:[44,20],r:9,sh:[44,33],hip:[44,64],eL:[40,46],hL:[42,58],eR:[48,46],hR:[50,58],kL:[42,86],fL:[42,108],kR:[40,86],fR:[30,96]}},
+ catcow:{label:'Cat-cow',tags:['mobility','core'],view:'side',db:[],props:Gw,period:1700,
+  A:{head:[16,58],r:7,sh:[28,66],hip:[64,66],eL:[28,86],hL:[30,104],eR:[28,86],hR:[30,104],kL:[64,88],fL:[64,104],kR:[66,88],fR:[66,104]},
+  B:{head:[22,74],r:7,sh:[28,58],hip:[64,58],eL:[28,86],hL:[30,104],eR:[28,86],hR:[30,104],kL:[64,88],fL:[64,104],kR:[66,88],fR:[66,104]}},
+ childpose:{label:"Child's pose",tags:['mobility'],view:'side',db:[],props:Gw,period:1700,
+  A:{head:[30,80],r:7,sh:[40,82],hip:[68,90],eL:[24,86],hL:[10,92],eR:[24,86],hR:[10,92],kL:[72,98],fL:[80,104],kR:[74,98],fR:[82,104]},
+  B:{head:[30,81],r:7,sh:[40,83],hip:[68,91],eL:[24,87],hL:[10,93],eR:[24,87],hR:[10,93],kL:[72,98],fL:[80,104],kR:[74,98],fR:[82,104]}},
+ cobra:{label:'Cobra stretch',tags:['mobility','core'],view:'side',db:[],props:Gw,period:1500,
+  A:{head:[24,94],r:7,sh:[34,96],hip:[66,100],eL:[30,90],hL:[28,104],eR:[30,90],hR:[28,104],kL:[80,102],fL:[94,104],kR:[80,102],fR:[94,104]},
+  B:{head:[20,82],r:7,sh:[32,88],hip:[66,100],eL:[30,92],hL:[28,104],eR:[30,92],hR:[28,104],kL:[80,102],fL:[94,104],kR:[80,102],fR:[94,104]}},
+ forwardfold:{label:'Forward fold',tags:['mobility','lower'],view:'side',db:[],props:'<line class="eqf" x1="28" y1="108" x2="56" y2="108"/>',period:1500,
+  A:{head:[40,20],r:9,sh:[40,33],hip:[42,62],eL:[40,46],hL:[40,58],eR:[44,46],hR:[44,58],kL:[42,84],fL:[42,108],kR:[46,84],fR:[46,108]},
+  B:{head:[44,66],r:9,sh:[42,60],hip:[46,58],eL:[44,76],hL:[44,96],eR:[46,76],hR:[46,96],kL:[44,84],fL:[42,108],kR:[48,84],fR:[46,108]}},
+ quadstretch:{label:'Quad stretch',tags:['mobility','lower'],view:'side',db:[],props:'<line class="eqf" x1="34" y1="108" x2="58" y2="108"/>',period:1700,
+  A:{head:[48,20],r:9,sh:[48,33],hip:[48,64],eL:[44,46],hL:[40,58],eR:[52,46],hR:[58,64],kL:[46,86],fL:[46,108],kR:[54,82],fR:[60,68]},
+  B:{head:[48,21],r:9,sh:[48,34],hip:[48,65],eL:[44,47],hL:[40,59],eR:[52,47],hR:[58,65],kL:[46,86],fL:[46,108],kR:[54,83],fR:[60,69]}}
+};
+
+const KEYS=['head','sh','hip','eL','hL','eR','hR','kL','fL','kR','fR'];
+function lpose(A,B,p){const o={r:A.r};for(const k of KEYS){o[k]=[A[k][0]+(B[k][0]-A[k][0])*p,A[k][1]+(B[k][1]-A[k][1])*p];}return o;}
+function hair(J,ex,style){const h=J.head,r=J.r,hx=h[0],hy=h[1];
+ if(style==='none')return'';
+ if(style==='short')return `<path class="hr" d="M${hx-r},${hy} A${r},${r} 0 0 1 ${hx+r},${hy} Z"/>`;
+ if(style==='bun')return `<path class="hr" d="M${hx-r},${hy} A${r},${r} 0 0 1 ${hx+r},${hy} Z"/><circle class="hr" cx="${hx}" cy="${hy-r+1}" r="${(r*0.55).toFixed(1)}"/>`;
+ if(style==='spike')return `<path class="hrs" d="M${hx-4},${hy-r+2} l-1,-6 M${hx},${hy-r} l0,-7 M${hx+4},${hy-r+2} l1,-6"/>`;
+ if(style==='pony')return (ex.view==='front')?`<path class="hrs" d="M${hx+r-1},${hy-3} q9,2 6,11"/>`:`<path class="hrs" d="M${hx-r+1},${hy-4} q-9,2 -5,11"/>`;
+ return'';}
+function fig(ex,p,char){const J=lpose(ex.A,ex.B,p);
+ const L=(a,b,c)=>`M${a[0]},${a[1]} L${b[0]},${b[1]}`+(c?` L${c[0]},${c[1]}`:'');
+ let s=ex.props||'';
+ s+=`<path class="lb" d="${L(J.sh,J.hip)}"/>`;
+ s+=`<path class="lb" d="${L(J.sh,J.eL,J.hL)}"/>`;
+ s+=`<path class="lb" d="${L(J.sh,J.eR,J.hR)}"/>`;
+ s+=`<path class="lb" d="${L(J.hip,J.kL,J.fL)}"/>`;
+ s+=`<path class="lb" d="${L(J.hip,J.kR,J.fR)}"/>`;
+ s+=`<circle class="hd" cx="${J.head[0]}" cy="${J.head[1]}" r="${J.r}"/>`;
+ s+=hair(J,ex,char?char.hair:'none');
+ for(const d of (ex.db||[])){let x,y,w=14;
+  if(d==='chest'){x=J.hL[0];y=J.hL[1];}else if(d==='hip'){x=J.hip[0];y=J.hip[1];w=18;}else{x=J[d][0];y=J[d][1];}
+  if(ex.bell){s+=`<circle class="db" cx="${x.toFixed(1)}" cy="${(y+1).toFixed(1)}" r="5"/><rect class="db" x="${(x-3).toFixed(1)}" y="${(y-6).toFixed(1)}" width="6" height="3" rx="1"/>`;}
+  else{s+=`<rect class="db" x="${(x-w/2).toFixed(1)}" y="${(y-3).toFixed(1)}" width="${w}" height="6" rx="2"/>`;}}
+ if(ex.bandline){const rp=k=>Array.isArray(k)?k:J[k];const a=rp(ex.bandline[0]),b=rp(ex.bandline[1]);s+=`<line class="bandl" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;}
+ return s;}
+function phaseOf(clock,period,off){const ph=((clock/period)+(off||0))%1;return (1-Math.cos(ph*2*Math.PI))/2;}
+
+const CHARS=[
+ {id:'blaze',name:'Blaze',acc:'#f0653f',hair:'short',tag:'Classic',demo:'squat'},
+ {id:'nova', name:'Nova', acc:'#ff5d8f',hair:'pony', tag:'Powerhouse',demo:'jumpingjack'},
+ {id:'volt', name:'Volt', acc:'#2fd4a0',hair:'spike',tag:'Sprinter',demo:'highknees'},
+ {id:'luna', name:'Luna', acc:'#9b7bff',hair:'bun',  tag:'Flow',demo:'kbswing'}
+];
+
+const MUSIC=[
+ ['Pixabay Music','https://pixabay.com/music/search/workout/','no credit'],
+ ['YouTube Audio Library','https://www.youtube.com/audiolibrary','free'],
+ ['Uppbeat','https://uppbeat.io/','credit'],
+ ['Incompetech','https://incompetech.com/music/royalty-free/music.html','CC-BY'],
+ ['Free Music Archive','https://freemusicarchive.org/','per-track'],
+ ['Mixkit','https://mixkit.co/free-stock-music/','no credit']
+];
+
+const CATS=[['all','All'],['noweights','No weights'],['dumbbell','Dumbbells'],['kettlebell','Kettlebells'],['band','Bands'],['pullup','Pull-up bar'],['bench','Bench'],['glutes','Glutes'],['upper','Upper body'],['core','Core'],['lower','Lower body'],['cardio','Cardio'],['mobility','Mobility']];
+const TAGLABEL={noweights:'no weights',dumbbell:'dumbbell',kettlebell:'kettlebell',band:'band',pullup:'pull-up bar',bench:'bench',glutes:'glutes',upper:'upper',core:'core',lower:'lower',cardio:'cardio',mobility:'mobility'};
+
+const REC_ORDER=['jumpingjack','squat','mountainclimber','pushup','highknees','plank','skater','lunge','bicycle','squatjump','sumo','crunch','jumpinglunge','curtsy','flutterkick','buttkicks','sidelunge','superman','tuckjump','russiantwist','calfraise','birddog','donkeykick','situp','legraise','firehydrant','slbridge','shouldertap','jumprope','pikepushup','dip','goblet','swing','thruster','kbswing','dbsquat','bulgarian','vup','pullup','frogpump','singlelegdeadlift','fastfeet','crossjacks','declinepushup','dbbench','reversecrunch'];
+
+const cfg={char:CHARS[0],rounds:8,work:20,rest:10,ready:10,recN:6,selected:[]};
+let manualEdit=false,catFilter='all';
+
+const INTERVALS=[[20,10,'Tabata 20/10'],[30,15,'30/15'],[40,20,'40/20'],[45,15,'45/15']];
+const READYS=[[5,'5s'],[10,'10s'],[15,'15s']];
+const AIMS=[10,15,20,30];
+
+const charsEl=document.getElementById('chars');
+CHARS.forEach((c,i)=>{const d=document.createElement('div');d.className='char'+(i===0?' on':'');d.style.setProperty('--ca',c.acc);
+ d.innerHTML=`<svg viewBox="0 0 100 110" style="--ca:${c.acc}"></svg><div class="nm" style="color:${c.acc}">${c.name}</div><div class="tag">${c.tag}</div>`;
+ d.addEventListener('click',()=>{cfg.char=c;[...charsEl.children].forEach(x=>x.classList.remove('on'));d.classList.add('on');document.documentElement.style.setProperty('--acc',c.acc);});
+ charsEl.appendChild(d);});
+
+function pillGroup(host,items,isOn,onPick){host.innerHTML='';
+ items.forEach(it=>{const b=document.createElement('button');b.className='pill'+(isOn(it)?' on':'');b.textContent=it.label;
+  b.addEventListener('click',()=>{onPick(it);[...host.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');updatePlan();});host.appendChild(b);});}
+pillGroup(document.getElementById('intervalPills'),INTERVALS.map(i=>({w:i[0],r:i[1],label:i[2]})),it=>it.w===cfg.work&&it.r===cfg.rest,it=>{cfg.work=it.w;cfg.rest=it.r;});
+pillGroup(document.getElementById('readyPills'),READYS.map(r=>({val:r[0],label:r[1]})),it=>it.val===cfg.ready,it=>{cfg.ready=it.val;});
+pillGroup(document.getElementById('aimPills'),AIMS.map(m=>({min:m,label:m+' min'})),()=>false,it=>{aimFor(it.min);});
+
+function setRounds(v){cfg.rounds=Math.max(1,Math.min(20,v));document.getElementById('roundsVal').textContent=cfg.rounds;updatePlan();}
+document.querySelectorAll('.stepper button').forEach(b=>b.addEventListener('click',()=>setRounds(cfg.rounds+(+b.dataset.r))));
+function setRecN(v){cfg.recN=Math.max(1,Math.min(30,v));document.getElementById('recVal').textContent=cfg.recN;if(!manualEdit)applyRecommendation();}
+document.querySelectorAll('.recbox .mini button').forEach(b=>b.addEventListener('click',()=>setRecN(cfg.recN+(+b.dataset.n))));
+document.getElementById('recBtn').addEventListener('click',()=>{manualEdit=false;applyRecommendation();});
+
+const catbar=document.getElementById('catbar');
+CATS.forEach((c,i)=>{const b=document.createElement('button');b.className='pill'+(i===0?' on':'');b.textContent=c[1];
+ b.addEventListener('click',()=>{catFilter=c[0];[...catbar.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderLibFilter();});catbar.appendChild(b);});
+
+const LIB=Object.keys(EX).filter(k=>k!=='idle');
+const libEl=document.getElementById('lib');
+const exSvgs={},exCards={};
+LIB.forEach(key=>{const ex=EX[key];const d=document.createElement('div');d.className='ex';d.dataset.key=key;
+ d.innerHTML=`<div class="chk">&#10003;</div>${ex.gear?`<div class="gear">${ex.gear}</div>`:''}<svg viewBox="0 0 100 116"></svg><div class="nm">${ex.label}</div><div class="ct">${TAGLABEL[ex.tags[0]]||''}</div>`;
+ d.addEventListener('click',()=>{toggleEx(key,d);manualEdit=true;});
+ libEl.appendChild(d);exSvgs[key]=d.querySelector('svg');exCards[key]=d;});
+const emptyMsg=document.createElement('div');emptyMsg.className='empty';emptyMsg.textContent='No moves in this focus yet.';emptyMsg.style.display='none';libEl.appendChild(emptyMsg);
+
+function renderLibFilter(){let shown=0;LIB.forEach(k=>{const vis=(catFilter==='all'||EX[k].tags.includes(catFilter));exCards[k].style.display=vis?'':'none';if(vis)shown++;});emptyMsg.style.display=shown?'none':'block';}
+function toggleEx(key,el){const i=cfg.selected.indexOf(key);if(i>=0){cfg.selected.splice(i,1);el.classList.remove('on');}else{cfg.selected.push(key);el.classList.add('on');}refreshSel();}
+function recommendList(){let pool=(catFilter==='all')?REC_ORDER.slice():REC_ORDER.filter(k=>EX[k]&&EX[k].tags.includes(catFilter));
+ if(catFilter!=='all'){LIB.forEach(k=>{if(EX[k].tags.includes(catFilter)&&!pool.includes(k))pool.push(k);});}
+ return pool.filter(k=>EX[k]).slice(0,cfg.recN);}
+function applyRecommendation(){cfg.selected=recommendList();LIB.forEach(k=>exCards[k].classList.toggle('on',cfg.selected.includes(k)));refreshSel();}
+function refreshSel(){document.getElementById('selCount').textContent=cfg.selected.length;document.getElementById('startBtn').disabled=cfg.selected.length===0;updatePlan();}
+
+function N(){return cfg.selected.length||cfg.recN;}
+function totalSeconds(){const n=N(),work=n*cfg.rounds,rests=work-1;return cfg.ready+work*cfg.work+Math.max(0,rests)*cfg.rest;}
+function fmt(s){s=Math.max(0,Math.round(s));const m=Math.floor(s/60),ss=s%60;return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;}
+function aimFor(min){const T=min*60,n=N();setRounds(Math.round((T-cfg.ready+cfg.rest)/(n*(cfg.work+cfg.rest))));}
+function updatePlan(){const n=N();document.getElementById('planTotal').textContent=fmt(totalSeconds());
+ document.getElementById('planMeta').innerHTML=`<b>${n}</b> exercises × <b>${cfg.rounds}</b> rounds`;
+ document.getElementById('planBreak').innerHTML=`${cfg.work}s work · ${cfg.rest}s rest · ${cfg.ready}s lead-in`;}
+
+const musicEl=document.getElementById('music');
+const mlinks=document.getElementById('musicLinks');
+MUSIC.forEach(m=>{const a=document.createElement('a');a.className='mlink';a.href=m[1];a.target='_blank';a.rel='noopener';a.innerHTML=`${m[0]} <small>${m[2]}</small>`;mlinks.appendChild(a);});
+document.getElementById('musicLoad').addEventListener('click',()=>{const u=document.getElementById('musicUrl').value.trim();
+ if(!u){document.getElementById('musicStat').textContent='Paste a direct .mp3 link first.';return;}
+ musicEl.src=u;musicEl.load();document.getElementById('musicStat').textContent='Track loaded — it will loop during your workout.';});
+document.getElementById('musicVol').addEventListener('input',e=>{musicEl.volume=parseFloat(e.target.value);});
+musicEl.volume=0.6;
+function musicPlay(){if(musicEl.src){musicEl.play().catch(()=>{});}}
+function musicPause(){if(musicEl.src){musicEl.pause();}}
+
+let screen='build',last=null,previewClock=0;
+function mainLoop(ts){if(last==null)last=ts;const dt=ts-last;last=ts;previewClock+=dt;
+ if(screen==='build'){
+  [...charsEl.children].forEach((el,i)=>{const c=CHARS[i],ex=EX[c.demo];el.querySelector('svg').innerHTML=fig(ex,phaseOf(previewClock,ex.period,i*0.2),c);});
+  LIB.forEach((key,i)=>{if(exCards[key].style.display==='none')return;const ex=EX[key];exSvgs[key].innerHTML=fig(ex,phaseOf(previewClock,ex.period,i*0.13),cfg.char);});
+ }else if(screen==='run'){runTick(dt);}
+ requestAnimationFrame(mainLoop);}
+
+const RUN={sched:[],i:0,rem:0,running:false,sound:true,total:0,elapsed:0,lastCeil:0,animClock:0,rounds:0};
+let actx=null;
+function beep(freq,dur,vol){if(!RUN.sound)return;try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();
+ const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=freq;o.type='sine';o.connect(g);g.connect(actx.destination);
+ g.gain.setValueAtTime(vol||0.12,actx.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+(dur||0.12));o.start();o.stop(actx.currentTime+(dur||0.12));}catch(e){}}
+function buildSchedule(){const list=cfg.selected.slice(),R0=cfg.rounds,s=[];
+ s.push({type:'ready',dur:cfg.ready,ex:'idle',name:'Get ready'});
+ list.forEach((key,ei)=>{for(let r=0;r<R0;r++){s.push({type:'work',dur:cfg.work,ex:key,name:EX[key].label,round:r+1,rounds:R0,exIndex:ei,exTotal:list.length});
+  const lastOne=(ei===list.length-1&&r===R0-1);if(!lastOne)s.push({type:'rest',dur:cfg.rest,ex:'idle',name:'Rest'});}});return s;}
+function nextWorkName(i){for(let j=i+1;j<RUN.sched.length;j++)if(RUN.sched[j].type==='work')return RUN.sched[j].name;return 'Finish';}
+function startWorkout(){document.documentElement.style.setProperty('--acc',cfg.char.acc);document.getElementById('bigfig').style.setProperty('--ca',cfg.char.acc);
+ RUN.sched=buildSchedule();RUN.i=0;RUN.rem=RUN.sched[0].dur;RUN.running=true;RUN.rounds=cfg.rounds*cfg.selected.length;RUN.total=totalSeconds();RUN.elapsed=0;RUN.lastCeil=Math.ceil(RUN.rem);RUN.animClock=0;RUN.sound=true;
+ document.getElementById('soundBtn').style.opacity=1;document.getElementById('pauseBtn').textContent='Pause';show('run');applyInterval(true);musicPlay();}
+function applyInterval(first){const it=RUN.sched[RUN.i];const ph=document.getElementById('phase');
+ ph.className='phase'+(it.type==='rest'?' rest':it.type==='ready'?' ready':'');
+ ph.textContent=it.type==='ready'?'GET READY':it.type==='rest'?'REST':'WORK';
+ document.getElementById('exname').textContent=it.type==='work'?it.name:(it.type==='rest'?'Rest':'Get ready');
+ if(it.type==='work'){document.getElementById('roundc').textContent=`${it.round}/${it.rounds}`;document.getElementById('exc').textContent=`${it.exIndex+1}/${it.exTotal}`;
+  document.getElementById('nextup').textContent=it.round===it.rounds?'Up next: '+nextWorkName(RUN.i):'';}
+ else{document.getElementById('nextup').textContent='Up next: '+nextWorkName(RUN.i);}
+ if(!first){if(it.type==='work')beep(1180,0.16,0.16);else beep(640,0.16,0.13);}}
+function advance(){RUN.i++;if(RUN.i>=RUN.sched.length){finish();return;}RUN.rem=RUN.sched[RUN.i].dur;RUN.lastCeil=Math.ceil(RUN.rem);applyInterval(false);}
+function runTick(dt){const it=RUN.sched[RUN.i];
+ if(RUN.running){RUN.rem-=dt/1000;RUN.elapsed+=dt/1000;RUN.animClock+=dt;const c=Math.ceil(RUN.rem);if(c<RUN.lastCeil){RUN.lastCeil=c;if(c>=1&&c<=3)beep(900,0.08,0.10);}if(RUN.rem<=0){advance();return;}}
+ document.getElementById('timer').textContent=Math.max(0,Math.ceil(RUN.rem));
+ document.getElementById('runClock').textContent=fmt(RUN.elapsed)+' / '+fmt(RUN.total);
+ document.getElementById('pfill').style.width=Math.min(100,(RUN.elapsed/RUN.total)*100)+'%';
+ const ex=EX[it.ex],per=it.type==='work'?ex.period:1600;document.getElementById('bigfig').innerHTML=fig(ex,phaseOf(RUN.animClock,per,0),cfg.char);}
+function finish(){musicPause();document.getElementById('dTime').textContent=fmt(RUN.total);document.getElementById('dEx').textContent=cfg.selected.length;document.getElementById('dRounds').textContent=RUN.rounds;show('done');}
+
+document.getElementById('startBtn').addEventListener('click',startWorkout);
+document.getElementById('pauseBtn').addEventListener('click',e=>{RUN.running=!RUN.running;e.target.textContent=RUN.running?'Pause':'Resume';if(RUN.running)musicPlay();else musicPause();});
+document.getElementById('skipBtn').addEventListener('click',()=>{RUN.rem=0;advance();});
+document.getElementById('quitBtn').addEventListener('click',()=>{RUN.running=false;musicPause();show('build');});
+document.getElementById('againBtn').addEventListener('click',()=>show('build'));
+document.getElementById('soundBtn').addEventListener('click',e=>{RUN.sound=!RUN.sound;e.target.style.opacity=RUN.sound?1:0.4;});
+function show(s){screen=s;document.getElementById('build').style.display=s==='build'?'block':'none';document.getElementById('run').classList.toggle('show',s==='run');document.getElementById('done').classList.toggle('show',s==='done');window.scrollTo(0,0);}
+
+renderLibFilter();applyRecommendation();updatePlan();document.documentElement.style.setProperty('--acc',cfg.char.acc);requestAnimationFrame(mainLoop);
+</script>
+</body>
+</html>
