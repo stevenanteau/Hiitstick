@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HIIT Stick — free HIIT workout builder & printable habit tracker</title>
-<meta name="description" content="Two free tools, no accounts, no ads: build your own stick-figure HIIT workout with a timer, or design a printable habit tracker PDF with hand-drawn doodles. Free forever.">
+<meta name="description" content="Three free tools, no accounts, no ads: build a stick-figure HIIT workout, design a printable habit tracker PDF, or generate journaling prompts from 80+ traditions. Free forever.">
 <meta property="og:title" content="HIIT Stick — free fitness tools">
 <meta property="og:description" content="Build a custom HIIT workout or design a printable doodle habit tracker. 100% free, always.">
 <meta property="og:type" content="website">
@@ -24,8 +24,8 @@
   .sub{color:#7a7264;margin:8px 0 0;text-align:center;font-size:1.05rem}
   .free{margin:10px 0 0;text-align:center;font-size:.95rem;color:#7a7264}
   .free b{color:var(--accent2)}
-  .cards{display:flex;gap:24px;margin:42px 0 0;flex-wrap:wrap;justify-content:center;max-width:900px}
-  .card{flex:1 1 320px;max-width:400px;background:#fff;border:2px solid var(--line);border-radius:20px;
+  .cards{display:flex;gap:24px;margin:42px 0 0;flex-wrap:wrap;justify-content:center;max-width:1200px}
+  .card{flex:1 1 300px;max-width:380px;background:#fff;border:2px solid var(--line);border-radius:20px;
     padding:34px 30px;text-decoration:none;color:var(--ink);text-align:center;
     box-shadow:0 6px 20px rgba(90,70,40,.08);transition:transform .12s,border-color .12s,box-shadow .12s}
   .card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(90,70,40,.14)}
@@ -38,6 +38,8 @@
     padding:10px 22px;border-radius:999px;color:#fff}
   .hiit .go{background:var(--accent)}
   .habit .go{background:var(--accent2)}
+  .journal .go{background:#7b5ea7}
+  .card.journal:hover{border-color:#7b5ea7}
   .coffee{margin-top:40px}
   .coffee a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;
     font-size:.9rem;padding:9px 18px;border-radius:999px;background:#ffdd00;color:#403200;
@@ -71,6 +73,20 @@
       <h2>Doodle Habit Tracker</h2>
       <p>Make a printable habit tracker PDF with cute hand-drawn doodles — your habits, your dates, your layout.</p>
       <span class="go">Make a tracker →</span>
+    </a>
+
+    <a class="card journal" href="/journal">
+      <svg viewBox="0 0 100 100" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="34" cy="20" r="7" fill="#2b2b2b" stroke="none"/>
+        <path d="M32 29 Q26 42 30 56 M30 56 Q44 66 60 58"/>
+        <path d="M36 34 Q48 40 55 47"/>
+        <path d="M52 52 Q61 44 72 47 M52 52 Q62 57 72 52 M72 47 L72 52"/>
+        <path d="M55 47 L59 41"/>
+        <path d="M12 88 L88 88"/>
+      </svg>
+      <h2>Journal Prompt Generator</h2>
+      <p>547 journaling prompts from Stoics, Zen masters and therapists — filter by theme, save favorites, print a 30-day pack.</p>
+      <span class="go">Get a prompt →</span>
     </a>
   </div>
 
