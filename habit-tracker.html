@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Printable Habit Tracker PDF Maker — Doodle Habit Tracker</title>
+<meta name="description" content="Make a free printable habit tracker PDF with cute hand-drawn doodle icons. Pick your dates, habits and layout — download a custom monthly habit tracker sheet in seconds. No account, no watermark, free forever.">
+<meta property="og:title" content="Doodle Habit Tracker — free printable habit tracker PDF maker">
+<meta property="og:description" content="Design a custom printable habit tracker with hand-drawn doodles and download it as a PDF. Free forever — no account needed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/habit-tracker">
+<link rel="canonical" href="https://hiitstick.com/habit-tracker">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#faf7f0; --ink:#2b2b2b; --accent:#e07a5f; --accent2:#3d8168;
+    --line:#e5ddcf; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif}
+  header{padding:26px 28px 6px}
+  .headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .toplinks{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:6px}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:800;font-size:.85rem;
+    padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fffdf9;color:#6f6759;
+    transition:transform .1s}
+  .pill:hover{transform:translateY(-1px);border-color:var(--accent);color:var(--accent)}
+  .pill.coffee{background:#ffdd00;border-color:#e8c900;color:#403200}
+  .pill.coffee:hover{color:#403200;border-color:#c9ae00}
+  .freenote{margin:6px 0 0;color:#7a7264;font-size:.85rem}
+  .freenote b{color:var(--accent2)}
+  h1{font-family:'Patrick Hand',cursive;font-size:2.3rem;margin:0;letter-spacing:.5px}
+  h1 .tick{color:var(--accent2)}
+  header p{margin:4px 0 0;color:#7a7264}
+  .wrap{display:flex;gap:24px;padding:20px 28px 40px;align-items:flex-start;flex-wrap:wrap}
+  .panel{flex:0 0 360px;max-width:100%;display:flex;flex-direction:column;gap:16px}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 2px 6px rgba(90,70,40,.05)}
+  .card h2{font-family:'Patrick Hand',cursive;font-size:1.25rem;margin:0 0 10px;font-weight:400}
+  label.small{font-size:.78rem;font-weight:700;color:#8a8172;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+  input[type=text],input[type=date],select{
+    width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;
+    font-family:inherit;font-size:.95rem;background:#fffdf9;color:var(--ink);outline:none}
+  input:focus,select:focus{border-color:var(--accent)}
+  .row{display:flex;gap:10px}
+  .row>div{flex:1}
+  .orient-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .orient-btn{border:1.5px solid var(--line);border-radius:10px;background:#fffdf9;cursor:pointer;
+    padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;font-size:.72rem;font-weight:700;color:#6f6759}
+  .orient-btn svg{display:block}
+  .orient-btn.sel{border-color:var(--accent);background:#fdf0ec;color:var(--accent)}
+  .habit-add{display:flex;gap:8px}
+  .habit-add input{flex:1}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:9px 16px;
+    font-family:inherit;font-weight:800;font-size:.95rem;cursor:pointer}
+  button.primary:hover{filter:brightness(1.06)}
+  button.big{width:100%;padding:14px;font-size:1.1rem;border-radius:12px;background:var(--accent2)}
+  button.big:disabled{background:#b9b2a4;cursor:default}
+  ul.habits{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  ul.habits li{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:10px;padding:5px 8px;background:#fffdf9}
+  .chip{width:38px;height:38px;flex:0 0 38px;border:1.5px dashed #cfc6b4;border-radius:9px;background:#fff;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .chip:hover{border-color:var(--accent)}
+  .chip svg{width:30px;height:30px}
+  li .name{flex:1;font-weight:700;font-size:.95rem;border:none;background:transparent;font-family:inherit;color:var(--ink);outline:none;min-width:0}
+  li .del{border:none;background:none;color:#c2b9a8;font-size:1.15rem;cursor:pointer;padding:2px 6px}
+  li .del:hover{color:var(--accent)}
+  .hint{font-size:.78rem;color:#9b927f;margin-top:8px}
+  .preview{flex:1 1 480px;min-width:320px}
+  .preview .sheet{background:#fff;border:1.5px solid var(--line);border-radius:6px;
+    box-shadow:0 10px 30px rgba(90,70,40,.13);width:100%;height:auto;display:block}
+  .preview h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.2rem;margin:0 0 10px;color:#8a8172}
+  /* icon picker modal */
+  .overlay{position:fixed;inset:0;background:rgba(43,38,30,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .overlay.open{display:flex}
+  .picker{background:#fff;border-radius:16px;padding:20px;max-width:520px;width:100%;max-height:80vh;overflow:auto}
+  .picker h3{font-family:'Patrick Hand',cursive;margin:0 0 12px;font-weight:400}
+  .picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+  .pick{border:1.5px solid var(--line);border-radius:10px;background:#fffdf9;cursor:pointer;padding:8px 4px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;font-size:.66rem;color:#7a7264}
+  .pick:hover{border-color:var(--accent);background:#fdf0ec}
+  .pick svg{width:36px;height:36px}
+  .err{color:#b3452e;font-size:.85rem;margin-top:8px;display:none}
+  .ghost{width:100%;margin-top:10px;background:#fffdf9;border:1.5px dashed #cfc6b4;color:#8a8172;
+    border-radius:9px;padding:9px;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .picker.wide{max-width:680px}
+  .picker h4{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.1rem;margin:16px 0 8px;color:var(--accent)}
+  .picker h4:first-of-type{margin-top:4px}
+  .ideas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+  .idea{border:1.5px solid var(--line);border-radius:10px;background:#fffdf9;cursor:pointer;padding:6px 10px;
+    display:flex;align-items:center;gap:9px;font-family:inherit;font-size:.84rem;font-weight:700;color:#5f584c;text-align:left}
+  .idea svg{width:26px;height:26px;flex:0 0 26px}
+  .idea:hover{border-color:var(--accent);background:#fdf0ec}
+  .idea.added{border-color:var(--accent2);background:#eaf3ee;color:var(--accent2)}
+  .closex{float:right;border:none;background:none;font-size:1.3rem;cursor:pointer;color:#a89e8b;padding:0 4px}
+  .closex:hover{color:var(--accent)}
+  .presets{margin-top:10px}
+  .preset{flex:1;background:#fffdf9;border:1.5px solid var(--line);border-radius:8px;padding:6px 4px;
+    font-family:inherit;font-size:.72rem;font-weight:700;color:#8a8172;cursor:pointer}
+  .preset:hover{border-color:var(--accent);color:var(--accent)}
+  .check-row{display:flex;gap:8px;align-items:center;font-size:.85rem;font-weight:700;color:#6f6759;margin-top:10px;cursor:pointer}
+  .check-row input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+  ul.habits li{display:block}
+  .htop{display:flex;align-items:center;gap:8px}
+  .grip{cursor:grab;color:#cfc6b4;font-size:.9rem;letter-spacing:-2px;padding:2px;user-select:none}
+  li.dragging{opacity:.4}
+  .freq{border:none;background:#f3efe6;border-radius:6px;font-size:.66rem;font-weight:800;color:#8a8172;
+    padding:5px 7px;cursor:pointer;font-family:inherit;flex:0 0 auto;max-width:70px}
+  .freq:hover{background:#ece5d4}
+  .dayrow{display:flex;gap:4px;margin:7px 0 2px 46px}
+  .daybtn{width:27px;height:27px;border-radius:7px;border:1.5px solid var(--line);background:#fff;
+    font-size:.68rem;font-weight:800;color:#b0a795;cursor:pointer;font-family:inherit;padding:0}
+  .daybtn.on{background:var(--accent2);border-color:var(--accent2);color:#fff}
+  #iconSearch{margin-bottom:12px}
+  .slider-row{margin-top:10px}
+  .slider-row .lblline{display:flex;justify-content:space-between;align-items:center}
+  .slider-row .val{font-size:.75rem;font-weight:800;color:var(--accent)}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin-top:2px}
+  details.adv{margin-top:14px;border-top:1.5px dashed var(--line);padding-top:10px}
+  .adv summary{cursor:pointer;font-weight:800;font-size:.85rem;color:#8a8172;user-select:none;list-style-position:inside}
+  .adv summary:hover{color:var(--accent)}
+  .adv .inner{padding-top:10px}
+  .dcrow{display:flex;gap:5px;margin:4px 0 4px}
+  .dc{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:0}
+  .dc span{font-size:.66rem;font-weight:800;color:#8a8172}
+  .dc input[type=color]{width:100%;height:26px;border:1.5px solid var(--line);border-radius:6px;padding:1px;background:#fff;cursor:pointer}
+  .dc.set input[type=color]{border-color:var(--accent);border-style:solid}
+  .dc .dcx{border:none;background:none;font-size:.62rem;color:#c2b9a8;cursor:pointer;padding:1px 4px;font-family:inherit}
+  .dc .dcx:hover{color:var(--accent)}
+  .adv input[type=color].big{width:100%;height:32px;border:1.5px solid var(--line);border-radius:8px;padding:2px;background:#fff;cursor:pointer}
+  footer{padding:0 28px 30px;color:#a89e8b;font-size:.8rem}
+  @media (max-width:820px){.panel{flex:1 1 100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="headrow">
+    <div>
+      <h1>Doodle Habit Tracker <span class="tick">✓</span></h1>
+      <p>Build a printable habit sheet with little doodles — pick your dates, your habits, your layout, and download the PDF.</p>
+      <p class="freenote"><b>This tool is free — and always will be.</b> No accounts, no watermarks, nothing uploaded anywhere.</p>
+    </div>
+    <div class="toplinks">
+      <a class="pill coffee" href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="pill" href="/hiit">🏋️ HIIT Stick — build a free HIIT workout</a>
+      <a class="pill" href="/">🏠 Home</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+
+    <div class="card">
+      <h2>1 · Title</h2>
+      <input type="text" id="title" value="My Habit Tracker" maxlength="60">
+    </div>
+
+    <div class="card">
+      <h2>2 · Dates</h2>
+      <div class="row">
+        <div><label class="small">From</label><input type="date" id="dateFrom"></div>
+        <div><label class="small">To</label><input type="date" id="dateTo"></div>
+      </div>
+      <div class="row presets">
+        <button class="preset" data-preset="month">This month</button>
+        <button class="preset" data-preset="30">Next 30 days</button>
+        <button class="preset" data-preset="nextmonth">Next month</button>
+      </div>
+      <div class="hint">Up to 92 days. Weekends get a light shade.</div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Habits</h2>
+      <div class="habit-add">
+        <input type="text" id="habitInput" placeholder="e.g. yoga, clean up, read…" maxlength="28">
+        <button class="primary" id="addBtn">Add</button>
+      </div>
+      <ul class="habits" id="habitList"></ul>
+      <div class="hint">The doodle is picked automatically — click it to choose a different one. Up to 15 habits.</div>
+      <button class="ghost" id="ideasBtn">💡 Need ideas? Pick from the list</button>
+    </div>
+
+    <div class="card">
+      <h2>4 · Layout</h2>
+      <label class="small">Grid orientation</label>
+      <div class="orient-grid" id="orientGrid"></div>
+      <div style="height:12px"></div>
+      <div class="row">
+        <div>
+          <label class="small">Paper (A4)</label>
+          <select id="pageOrient">
+            <option value="p">Portrait</option>
+            <option value="l">Landscape</option>
+          </select>
+        </div>
+      </div>
+      <div class="slider-row">
+        <div class="lblline">
+          <label class="small" style="margin:0">Hand-drawn wobble</label>
+          <span class="val" id="wobbleVal">1×</span>
+        </div>
+        <input type="range" id="wobbleSlider" min="0" max="3" step="0.25" value="1">
+      </div>
+      <label class="check-row"><input type="checkbox" id="totalsChk" checked> <span id="totalsLbl">Totals column</span></label>
+
+      <details class="adv">
+        <summary>Advanced options</summary>
+        <div class="inner">
+          <label class="small">Color specific weekdays</label>
+          <div class="dcrow" id="dayColorRow"></div>
+          <div class="hint" style="margin:0 0 10px">Pick a color to highlight that day's column — ✕ resets it.</div>
+          <div class="row">
+            <div><label class="small">Ink color</label><input type="color" class="big" id="inkColor" value="#2b2b2b"></div>
+            <div><label class="small">Accent color</label><input type="color" class="big" id="accentColor" value="#e07a5f"></div>
+          </div>
+          <div style="height:10px"></div>
+          <label class="small">Inside each cell</label>
+          <select id="cellMarker">
+            <option value="none">Nothing (empty cells)</option>
+            <option value="circle">Little circle to fill in</option>
+            <option value="box">Little box to tick</option>
+          </select>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <button class="big primary" id="pdfBtn">⬇ Download PDF</button>
+      <button class="ghost" id="shareBtn">🔗 Copy share link</button>
+      <div class="err" id="errBox"></div>
+    </div>
+  </div>
+
+  <div class="preview">
+    <h2>Preview</h2>
+    <canvas class="sheet" id="previewCanvas"></canvas>
+  </div>
+</div>
+
+<footer>Everything happens in your browser — nothing is uploaded anywhere.</footer>
+
+<div class="overlay" id="overlay">
+  <div class="picker">
+    <h3>Pick a doodle</h3>
+    <input type="text" id="iconSearch" placeholder="Search doodles… (e.g. run, clean, pray)">
+    <div class="picker-grid" id="pickerGrid"></div>
+  </div>
+</div>
+
+<div class="overlay" id="ideasOverlay">
+  <div class="picker wide">
+    <button class="closex" id="ideasClose">✕</button>
+    <h3>Habit ideas — click to add</h3>
+    <div id="ideasGrid"></div>
+  </div>
+</div>
+
+<script>
+/* ================= ICONS ================= */
+const ICONS = {"check":{"kw":["done","habit","daily","task","goal","default"],"ops":[["M",25,54],["L",44,72],["L",78,30]]},"broom":{"kw":["clean","cleaning","clean up","tidy","sweep","chores","vacuum","housework"],"ops":[["M",66,10],["L",50,52],["M",38,56],["Q",50,46,62,56],["L",70,88],["L",30,86],["L",38,56],["M",44,66],["L",41,82],["M",55,66],["L",58,82]]},"dumbbell":{"kw":["workout","gym","lift","weights","exercise","strength","train"],"ops":[["M",34,50],["L",66,50],["M",28,32],["L",28,68],["M",16,40],["L",16,60],["M",72,32],["L",72,68],["M",84,40],["L",84,60]]},"yoga":{"kw":["yoga","down dog","downward dog","asana","sun salutation"],"ops":[["M",10,88],["L",90,88],["M",18,86],["L",56,38],["L",86,86],["F",25,66,6]]},"run":{"kw":["run","running","jog","jogging","cardio","sprint"],"ops":[["F",63,19,6],["M",60,27],["L",48,54],["M",57,32],["L",75,42],["M",57,32],["L",39,38],["M",48,54],["L",67,63],["L",62,82],["M",48,54],["L",36,72],["L",18,74]]},"walk":{"kw":["walk","walking","steps","stroll","10000 steps","hike"],"ops":[["F",52,16,6],["M",52,24],["L",52,54],["M",52,32],["L",65,48],["M",52,32],["L",39,48],["M",52,54],["L",65,84],["M",52,54],["L",39,84]]},"bike":{"kw":["bike","cycle","cycling","ride","spin"],"ops":[["O",27,68,15],["O",73,68,15],["M",27,68],["L",42,46],["L",63,46],["L",73,68],["M",42,46],["L",52,68],["L",63,46],["M",63,46],["L",58,36],["L",68,34],["M",42,46],["L",38,38],["M",32,38],["L",44,38]]},"swim":{"kw":["swim","swimming","pool","laps"],"ops":[["F",60,50,6],["M",26,58],["Q",38,38,52,54],["M",12,76],["Q",22,68,32,76],["Q",42,84,52,76],["Q",62,68,72,76],["Q",82,84,92,76]]},"meditate":{"kw":["meditate","meditation","mindfulness","breathe","breathing","calm","zen"],"ops":[["F",50,18,7],["M",50,28],["L",50,52],["M",50,34],["Q",28,40,24,60],["F",23,63,4],["M",50,34],["Q",72,40,76,60],["F",77,63,4],["M",30,72],["Q",50,56,70,72],["M",30,72],["Q",50,86,70,72]]},"stretch":{"kw":["stretch","stretching","posture","mobility","flexibility"],"ops":[["F",50,20,6],["M",50,28],["L",50,58],["M",50,34],["L",30,14],["M",50,34],["L",70,14],["M",50,58],["L",38,84],["M",50,58],["L",62,84]]},"book":{"kw":["read","reading","book","novel","pages"],"ops":[["M",50,32],["L",50,74],["M",50,32],["Q",30,20,14,28],["L",14,70],["Q",32,62,50,74],["M",50,32],["Q",70,20,86,28],["L",86,70],["Q",68,62,50,74]]},"pencil":{"kw":["write","writing","journal","diary","notes","blog","gratitude journal","morning pages"],"ops":[["M",24,80],["L",30,62],["L",70,20],["L",82,32],["L",42,74],["L",24,80],["M",30,62],["L",42,74]]},"water":{"kw":["water","hydrate","hydration","drink water","8 glasses"],"ops":[["M",32,16],["L",68,16],["M",32,16],["L",38,84],["L",62,84],["L",68,16],["M",37,42],["L",63,42]]},"pill":{"kw":["vitamins","pill","pills","meds","medication","medicine","supplements"],"ops":[["O",36,40,18],["M",28,48],["L",44,32],["M",56,62],["L",70,62],["Q",80,62,80,70],["Q",80,78,70,78],["L",56,78],["Q",46,78,46,70],["Q",46,62,56,62],["M",63,62],["L",63,78]]},"apple":{"kw":["eat healthy","fruit","apple","nutrition","diet","healthy eating"],"ops":[["M",50,38],["Q",26,34,26,58],["Q",27,80,42,84],["Q",50,87,58,84],["Q",73,80,74,58],["Q",74,34,50,38],["M",50,36],["Q",50,26,58,20],["M",54,28],["Q",66,20,70,30],["Q",60,36,54,28]]},"coffee":{"kw":["coffee","tea","caffeine","matcha"],"ops":[["M",28,42],["L",70,42],["M",28,42],["L",34,80],["L",64,80],["L",70,42],["M",70,48],["Q",84,50,70,62],["M",42,20],["Q",46,26,42,32],["M",56,18],["Q",60,24,56,30]]},"moon":{"kw":["sleep","bed","bedtime","early night","rest","nap"],"ops":[["M",58,16],["Q",30,26,32,52],["Q",34,78,60,84],["Q",44,92,30,82],["Q",14,70,18,48],["Q",22,24,46,15],["Q",52,13,58,16],["M",76,28],["L",76,40],["M",70,34],["L",82,34]]},"sun":{"kw":["wake up","wake early","morning","sunrise","early rise","get up"],"ops":[["O",50,50,16],["M",50,24],["L",50,12],["M",50,76],["L",50,88],["M",24,50],["L",12,50],["M",76,50],["L",88,50],["M",68,32],["L",76,24],["M",32,32],["L",24,24],["M",32,68],["L",24,76],["M",68,68],["L",76,76]]},"toothbrush":{"kw":["teeth","brush teeth","floss","dental","toothbrush"],"ops":[["M",16,86],["L",56,46],["L",76,26],["M",60,42],["L",50,32],["M",67,35],["L",57,25],["M",74,28],["L",64,18]]},"shower":{"kw":["shower","bathe","bath","wash up"],"ops":[["M",18,14],["L",44,14],["L",44,22],["O",44,32,10],["M",34,50],["L",31,60],["M",44,52],["L",42,62],["M",54,50],["L",52,60],["M",30,70],["L",27,80],["M",48,72],["L",46,82],["M",62,66],["L",60,76]]},"laundry":{"kw":["laundry","clothes","fold clothes","wash clothes"],"ops":[["M",32,22],["Q",50,36,68,22],["M",32,22],["L",18,36],["L",28,46],["L",36,40],["L",36,82],["L",64,82],["L",64,40],["L",72,46],["L",82,36],["L",68,22]]},"dishes":{"kw":["dishes","wash dishes","kitchen","clean kitchen"],"ops":[["O",46,56,26],["O",46,56,11],["O",80,24,6],["O",88,38,4]]},"plant":{"kw":["plant","water plants","garden","gardening","flowers"],"ops":[["M",34,64],["L",66,64],["M",36,64],["L",41,86],["L",59,86],["L",64,64],["M",50,64],["L",50,42],["M",50,54],["Q",32,52,29,36],["Q",47,37,50,54],["M",50,46],["Q",68,42,71,26],["Q",53,29,50,46]]},"paw":{"kw":["dog","walk dog","pet","cat","feed pet"],"ops":[["O",50,64,14],["F",30,46,6],["F",43,37,6],["F",57,37,6],["F",70,46,6]]},"music":{"kw":["music","practice music","sing","singing","piano"],"ops":[["M",62,20],["L",62,64],["F",54,68,9],["M",62,20],["Q",80,26,74,44]]},"guitar":{"kw":["guitar","instrument","ukulele","bass"],"ops":[["O",36,72,16],["O",48,58,10],["M",55,50],["L",80,20],["M",76,14],["L",86,24],["F",39,69,4]]},"laptop":{"kw":["code","coding","computer","work","program","side project","study online"],"ops":[["M",30,28],["L",70,28],["L",70,56],["L",30,56],["L",30,28],["M",24,64],["L",30,56],["M",76,64],["L",70,56],["M",24,64],["L",76,64]]},"gradcap":{"kw":["study","learn","homework","class","course","school","lecture"],"ops":[["M",50,22],["L",84,38],["L",50,54],["L",16,38],["L",50,22],["M",32,46],["L",32,60],["Q",50,70,68,60],["L",68,46],["M",84,38],["L",84,54],["F",84,58,3]]},"speech":{"kw":["language","speak","spanish","french","duolingo","vocabulary","practice language"],"ops":[["M",26,24],["L",74,24],["Q",84,24,84,34],["L",84,52],["Q",84,62,74,62],["L",46,62],["L",30,76],["L",35,62],["L",26,62],["Q",16,62,16,52],["L",16,34],["Q",16,24,26,24],["F",36,43,3],["F",50,43,3],["F",64,43,3]]},"phone":{"kw":["call","call family","call friends","call mom","phone call","text","check in"],"ops":[["M",38,14],["L",62,14],["L",62,86],["L",38,86],["L",38,14],["M",46,22],["L",54,22],["F",50,76,3]]},"nophone":{"kw":["no phone","screen time","digital detox","less phone","no social media","offline"],"ops":[["M",38,14],["L",62,14],["L",62,86],["L",38,86],["L",38,14],["M",46,22],["L",54,22],["M",24,20],["L",76,84]]},"piggy":{"kw":["save","saving","money","budget","finance","no spend"],"ops":[["O",48,56,24],["M",44,33],["L",48,24],["L",54,31],["M",68,54],["Q",78,50,80,58],["Q",80,64,72,64],["M",38,79],["L",38,87],["M",58,79],["L",58,87],["F",60,48,3],["M",42,34],["L",54,32],["M",26,50],["Q",18,46,24,40]]},"heart":{"kw":["gratitude","grateful","self care","kindness","love","date night","family time"],"ops":[["M",50,80],["C",22,58,18,34,36,28],["C",46,25,50,34,50,38],["C",50,34,54,25,64,28],["C",82,34,78,58,50,80]]},"paintbrush":{"kw":["draw","paint","art","creative","sketch","craft"],"ops":[["M",78,12],["L",50,44],["M",54,40],["L",62,48],["M",50,44],["Q",34,54,28,74],["Q",24,84,16,86],["Q",30,88,40,78],["Q",52,66,58,52]]},"camera":{"kw":["photo","photography","picture","camera"],"ops":[["M",22,32],["L",38,32],["L",44,24],["L",56,24],["L",62,32],["L",78,32],["L",78,72],["L",22,72],["L",22,32],["O",50,52,12]]},"nomeat":{"kw":["no meat","meatless","vegetarian","vegan","plant based","plant-based"],"ops":[["O",40,38,18],["M",52,52],["L",66,66],["F",72,72,5],["F",64,80,5],["M",16,20],["L",84,80]]},"bible":{"kw":["bible","scripture","devotional","quran","torah","holy book","read bible"],"ops":[["M",26,18],["L",74,18],["L",74,84],["L",26,84],["L",26,18],["M",50,34],["L",50,60],["M",40,42],["L",60,42]]},"pray":{"kw":["pray","prayer","praying","rosary"],"ops":[["M",46,14],["Q",24,40,32,80],["M",54,14],["Q",76,40,68,80],["M",50,24],["L",50,80],["M",32,80],["L",68,80]]},"bulb":{"kw":["inspiration","idea","ideas","brainstorm","create","think"],"ops":[["O",50,38,18],["M",44,46],["Q",50,52,56,46],["M",42,58],["L",42,68],["L",58,68],["L",58,58],["M",45,76],["L",55,76]]},"envelope":{"kw":["email","emails","check emails","inbox","inbox zero","mail","respond to emails"],"ops":[["M",16,28],["L",84,28],["L",84,72],["L",16,72],["L",16,28],["M",18,32],["L",50,54],["L",82,32]]},"bed":{"kw":["make bed","bed","tidy bed"],"ops":[["M",14,38],["L",14,80],["M",14,64],["L",86,64],["M",86,50],["L",86,80],["M",20,56],["Q",22,46,32,48],["Q",42,50,42,56],["M",42,56],["L",86,52]]},"alarm":{"kw":["alarm","no snooze","wake alarm","get up on time"],"ops":[["O",50,54,24],["M",50,54],["L",50,40],["M",50,54],["L",61,58],["M",32,35],["Q",20,26,29,17],["M",68,35],["Q",80,26,71,17],["M",35,75],["L",29,84],["M",65,75],["L",71,84]]},"carrot":{"kw":["veggies","vegetables","carrot","salad","eat greens","greens"],"ops":[["M",40,34],["Q",50,42,60,34],["M",40,34],["L",48,86],["M",60,34],["L",52,86],["M",50,32],["L",41,16],["M",50,32],["L",51,12],["M",50,32],["L",61,18],["M",44,54],["L",51,54],["M",46,68],["L",51,68]]},"nosugar":{"kw":["no sugar","no sweets","no candy","sugar free","no dessert","no soda"],"ops":[["O",50,50,14],["M",37,44],["L",23,34],["L",27,50],["L",23,64],["L",37,55],["M",63,44],["L",77,34],["L",73,50],["L",77,64],["L",63,55],["M",18,16],["L",84,84]]},"noalcohol":{"kw":["no alcohol","sober","no drinking","dry january","no wine","no beer"],"ops":[["M",34,16],["L",66,16],["Q",64,42,50,46],["Q",36,42,34,16],["M",50,46],["L",50,74],["M",36,78],["L",64,78],["M",18,12],["L",82,84]]},"nosmoke":{"kw":["no smoking","quit smoking","no vaping","no cigarettes","smoke free"],"ops":[["M",14,60],["L",70,60],["L",70,74],["L",14,74],["L",14,60],["M",60,60],["L",60,74],["M",78,52],["Q",84,42,78,34],["M",20,22],["L",84,84]]},"noburger":{"kw":["no junk food","no fast food","no takeout","eat clean","no burgers"],"ops":[["M",26,44],["Q",26,24,50,24],["Q",74,24,74,44],["M",24,54],["L",76,54],["M",26,64],["L",74,64],["M",28,72],["Q",30,82,50,82],["Q",70,82,72,72],["M",14,14],["L",86,86]]},"calendar":{"kw":["plan","schedule","calendar","plan week","review calendar","appointments"],"ops":[["M",20,24],["L",80,24],["L",80,80],["L",20,80],["L",20,24],["M",34,16],["L",34,30],["M",66,16],["L",66,30],["M",20,38],["L",80,38],["F",34,52,3],["F",50,52,3],["F",66,52,3],["F",34,66,3],["F",50,66,3]]},"checklist":{"kw":["to-do","todo","to do list","plan the day","tasks","checklist","review tasks"],"ops":[["M",26,14],["L",74,14],["L",74,86],["L",26,86],["L",26,14],["M",33,31],["L",37,35],["L",44,26],["M",50,31],["L",66,31],["M",33,51],["L",37,55],["L",44,46],["M",50,51],["L",66,51],["M",33,71],["L",37,75],["L",44,66],["M",50,71],["L",66,71]]},"people":{"kw":["socialize","friends","meet friend","meetup","hang out","community","networking"],"ops":[["F",36,24,6],["M",36,32],["L",36,54],["M",36,38],["L",26,48],["M",36,38],["L",46,48],["M",36,54],["L",28,78],["M",36,54],["L",44,78],["F",66,30,5],["M",66,37],["L",66,57],["M",66,42],["L",58,51],["M",66,42],["L",74,51],["M",66,57],["L",60,78],["M",66,57],["L",72,78]]},"controller":{"kw":["gaming","video games","play games","game"],"ops":[["M",30,36],["L",70,36],["Q",84,36,82,54],["Q",80,69,71,65],["L",62,57],["L",38,57],["L",29,65],["Q",20,69,18,54],["Q",16,36,30,36],["M",31,47],["L",43,47],["M",37,41],["L",37,53],["F",62,44,3],["F",70,50,3]]},"tv":{"kw":["watch a show","movie night","movie","film","netflix","tv show"],"ops":[["M",18,30],["L",82,30],["L",82,72],["L",18,72],["L",18,30],["M",38,72],["L",32,82],["M",62,72],["L",68,82],["M",42,28],["L",32,12],["M",58,28],["L",68,12]]},"notv":{"kw":["no tv","less tv","no netflix","no streaming","no shows"],"ops":[["M",18,30],["L",82,30],["L",82,72],["L",18,72],["L",18,30],["M",38,72],["L",32,82],["M",62,72],["L",68,82],["M",12,20],["L",88,84]]},"clock":{"kw":["deep work","focus time","time block","pomodoro","on time","punctual"],"ops":[["O",50,50,30],["M",50,50],["L",50,30],["M",50,50],["L",64,56]]},"pan":{"kw":["cook","cooking","meal prep","cook dinner","breakfast","home cooking"],"ops":[["O",40,56,22],["F",45,51,5],["M",61,49],["L",88,39],["M",30,24],["Q",34,29,30,34]]},"cart":{"kw":["groceries","grocery","shopping","shop","errands"],"ops":[["M",18,24],["L",28,24],["L",38,60],["L",72,60],["L",80,32],["L",33,32],["F",42,74,5],["F",66,74,5]]},"trash":{"kw":["take out trash","trash","declutter","garbage","throw away","recycle"],"ops":[["M",24,34],["L",76,34],["M",42,34],["L",42,26],["L",58,26],["L",58,34],["M",30,34],["L",36,84],["L",64,84],["L",70,34],["M",43,44],["L",45,74],["M",57,44],["L",55,74]]},"skincare":{"kw":["skincare","moisturize","sunscreen","face routine","lotion"],"ops":[["M",36,44],["L",64,44],["L",64,84],["L",36,84],["L",36,44],["M",46,44],["L",46,28],["L",62,28],["L",62,36],["F",72,44,3.5]]},"tooth":{"kw":["floss","flossing","tooth","dentist","dental"],"ops":[["M",32,32],["Q",32,16,44,19],["Q",50,21,56,19],["Q",68,16,68,32],["Q",68,44,62,52],["Q",60,74,54,74],["Q",50,74,50,62],["Q",50,74,46,74],["Q",40,74,38,52],["Q",32,44,32,32],["M",76,20],["L",76,32],["M",70,26],["L",82,26]]},"snowflake":{"kw":["cold shower","ice bath","cold plunge","cold exposure"],"ops":[["M",50,14],["L",50,86],["M",19,32],["L",81,68],["M",81,32],["L",19,68],["M",41,23],["L",50,32],["L",59,23],["M",41,77],["L",50,68],["L",59,77]]},"ball":{"kw":["sports","play sports","basketball","soccer","football","tennis","practice sport"],"ops":[["O",50,50,30],["M",50,20],["L",50,80],["M",20,50],["L",80,50],["M",29,32],["Q",44,50,29,68],["M",71,32],["Q",56,50,71,68]]},"dance":{"kw":["dance","dancing","zumba"],"ops":[["F",58,16,6],["M",56,24],["Q",47,38,49,52],["M",54,30],["L",72,18],["M",54,32],["L",36,36],["M",49,52],["L",64,64],["L",60,84],["M",49,52],["L",34,64],["L",18,60]]},"hourglass":{"kw":["fasting","fast","intermittent fasting","patience","wait"],"ops":[["M",30,16],["L",70,16],["L",54,50],["L",70,84],["L",30,84],["L",46,50],["L",30,16],["M",42,76],["L",58,76]]},"kite":{"kw":["play with kids","kids","children","family fun","playtime"],"ops":[["M",50,12],["L",70,38],["L",50,64],["L",30,38],["L",50,12],["M",50,12],["L",50,64],["M",30,38],["L",70,38],["M",50,64],["Q",60,76,50,82],["Q",40,88,48,94]]},"newspaper":{"kw":["news","read news","newspaper","current events"],"ops":[["M",24,26],["L",76,26],["L",76,78],["L",24,78],["L",24,26],["M",31,36],["L",69,36],["M",31,46],["L",48,46],["L",48,62],["L",31,62],["L",31,46],["M",55,46],["L",69,46],["M",55,54],["L",69,54],["M",55,62],["L",69,62],["M",31,70],["L",69,70]]},"headphones":{"kw":["podcast","listen","audiobook","music listening"],"ops":[["M",26,52],["Q",26,20,50,20],["Q",74,20,74,52],["M",22,52],["L",30,52],["L",30,74],["L",22,74],["L",22,52],["M",70,52],["L",78,52],["L",78,74],["L",70,74],["L",70,52]]},"church":{"kw":["church","mass","worship","service","temple","mosque"],"ops":[["M",30,50],["L",30,84],["L",70,84],["L",70,50],["M",24,52],["L",50,32],["L",76,52],["M",50,28],["L",50,12],["M",44,18],["L",56,18],["M",44,84],["L",44,68],["Q",50,62,56,68],["L",56,84]]},"star":{"kw":["affirmations","manifest","dream","wish","review goals","highlight"],"ops":[["M",50,14],["L",59,38],["L",84,38],["L",64,54],["L",72,80],["L",50,64],["L",28,80],["L",36,54],["L",16,38],["L",41,38],["L",50,14]]},"target":{"kw":["goal","goals","focus","target","priority","top priority"],"ops":[["O",50,50,30],["O",50,50,18],["F",50,50,6]]},"chart":{"kw":["invest","investing","stocks","trading","track progress","metrics"],"ops":[["M",20,16],["L",20,80],["L",84,80],["M",28,68],["L",44,52],["L",56,60],["L",74,34],["M",64,34],["L",74,34],["L",74,44]]},"pushup":{"kw":["push-ups","pushups","push ups","plank","core","abs","situps","sit-ups"],"ops":[["M",12,84],["L",88,84],["F",80,42,6],["M",74,46],["L",30,66],["M",64,51],["L",62,82],["M",30,66],["L",25,82]]},"smile":{"kw":["smile","be positive","positivity","happiness","good mood","no complaining"],"ops":[["O",50,50,30],["F",40,42,3.5],["F",60,42,3.5],["M",36,58],["Q",50,70,64,58]]},"nocoffee":{"kw":["no coffee","less caffeine","no caffeine","decaf"],"ops":[["M",30,40],["L",68,40],["M",30,40],["L",36,78],["L",62,78],["L",68,40],["M",68,46],["Q",80,48,68,60],["M",18,14],["L",82,84]]},"mediccross":{"kw":["doctor","health check","medical","therapy","appointment","checkup"],"ops":[["O",50,50,30],["M",50,36],["L",50,64],["M",36,50],["L",64,50]]},"scale":{"kw":["weigh in","weight","weigh","track weight"],"ops":[["M",26,26],["L",74,26],["Q",80,26,80,32],["L",80,74],["Q",80,80,74,80],["L",26,80],["Q",20,80,20,74],["L",20,32],["Q",20,26,26,26],["M",38,42],["Q",50,32,62,42],["M",50,46],["L",57,36]]},"megaphone":{"kw":["share","post","promote","announce","social post","content"],"ops":[["M",20,44],["L",20,58],["L",28,58],["L",58,72],["L",58,28],["L",28,44],["L",20,44],["M",66,36],["L",74,30],["M",68,50],["L",78,50],["M",66,62],["L",74,68]]},"receipt":{"kw":["pay bills","bills","expenses","track spending","budget review","receipts"],"ops":[["M",30,14],["L",70,14],["L",70,80],["L",64,74],["L",58,80],["L",52,74],["L",46,80],["L",40,74],["L",34,80],["L",30,74],["L",30,14],["M",38,30],["L",62,30],["M",38,42],["L",62,42],["M",38,54],["L",54,54]]},"car":{"kw":["car","drive","commute","car wash","oil change"],"ops":[["M",14,62],["L",18,48],["L",34,44],["L",42,32],["L",62,32],["L",70,44],["L",86,48],["L",88,62],["L",14,62],["O",32,66,8],["O",70,66,8],["M",46,34],["L",46,44]]},"puzzle":{"kw":["puzzle","brain games","chess","crossword","sudoku"],"ops":[["M",26,34],["L",42,34],["Q",38,20,50,20],["Q",62,20,58,34],["L",74,34],["L",74,50],["Q",88,46,88,58],["Q",88,70,74,66],["L",74,82],["L",26,82],["L",26,34]]}};
+
+/* ---- render icon ops as SVG (for UI chips & picker) ---- */
+function iconSvg(name){
+  let d="",extra="";
+  for(const op of ICONS[name].ops){
+    const [t,...a]=op;
+    if(t==="M")d+=`M${a[0]} ${a[1]}`;
+    else if(t==="L")d+=`L${a[0]} ${a[1]}`;
+    else if(t==="Q")d+=`Q${a[0]} ${a[1]} ${a[2]} ${a[3]}`;
+    else if(t==="C")d+=`C${a[0]} ${a[1]} ${a[2]} ${a[3]} ${a[4]} ${a[5]}`;
+    else if(t==="Z")d+="Z";
+    else if(t==="O")extra+=`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="none"/>`;
+    else if(t==="F")extra+=`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="currentColor" stroke="none"/>`;
+  }
+  return `<svg viewBox="0 0 100 100" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">${d?`<path d="${d}"/>`:""}${extra}</svg>`;
+}
+
+/* ---- draw icon ops on a canvas (no transforms: safe for jsPDF context2d) ---- */
+function drawIcon(ctx,name,x,y,size){
+  const s=size/100, X=v=>x+v*s, Y=v=>y+v*s;
+  ctx.lineWidth=7*s; ctx.lineCap="round"; ctx.lineJoin="round";
+  ctx.beginPath();
+  let started=false;
+  const flush=()=>{ if(started){ctx.stroke();} ctx.beginPath(); started=false; };
+  for(const op of ICONS[name].ops){
+    const [t,...a]=op;
+    if(t==="M"){ctx.moveTo(X(a[0]),Y(a[1]));started=true;}
+    else if(t==="L")ctx.lineTo(X(a[0]),Y(a[1]));
+    else if(t==="Q")ctx.quadraticCurveTo(X(a[0]),Y(a[1]),X(a[2]),Y(a[3]));
+    else if(t==="C")ctx.bezierCurveTo(X(a[0]),Y(a[1]),X(a[2]),Y(a[3]),X(a[4]),Y(a[5]));
+    else if(t==="Z")ctx.closePath();
+    else if(t==="O"){flush();ctx.beginPath();ctx.arc(X(a[0]),Y(a[1]),a[2]*s,0,Math.PI*2);ctx.stroke();ctx.beginPath();}
+    else if(t==="F"){flush();ctx.beginPath();ctx.arc(X(a[0]),Y(a[1]),a[2]*s,0,Math.PI*2);ctx.fill();ctx.beginPath();}
+  }
+  flush();
+}
+
+/* ---- auto-match habit name -> icon ---- */
+function matchIcon(text){
+  const q=text.toLowerCase().trim();
+  if(!q)return "check";
+  let best="check",score=0;
+  for(const [name,def] of Object.entries(ICONS)){
+    for(const kw of [name,...def.kw]){
+      let s=0;
+      const words=q.split(/\s+/);
+      if(q===kw)s=100;
+      else{
+        const wi=words.indexOf(kw);
+        if(wi>=0)s=Math.max(s,80+wi);           // later words win: "walk the dog" -> dog
+        if(q.includes(kw))s=Math.max(s,60+kw.length);
+        else if(kw.includes(q)&&q.length>=3)s=Math.max(s,40+q.length);
+      }
+      if(s>score){score=s;best=name;}
+    }
+  }
+  return best;
+}
+
+/* ================= STATE ================= */
+const ALLDAYS=()=>[1,1,1,1,1,1,1];
+const state={
+  habits:[ {name:"Clean up",icon:"broom",days:ALLDAYS()},{name:"Workout",icon:"dumbbell",days:ALLDAYS()},{name:"Yoga",icon:"yoga",days:ALLDAYS()} ],
+  orient:"days-left",   // days-left | days-top | days-bottom | days-right
+  page:"p",
+  wobble:1,             // 0 = ruler-straight … 3 = very sketchy
+  totals:true,
+  dayColors:["","","","","","",""],   // per-weekday highlight (Sun..Sat), "" = default
+  ink:"#2b2b2b",
+  accent:"#e07a5f",
+  marker:"none",        // none | circle | box
+  pickerTarget:null
+};
+
+const ORIENTS=[
+  ["days-left","Days left · habits top"],
+  ["days-top","Days top · habits left"],
+  ["days-bottom","Days bottom · habits left"],
+  ["days-right","Days right · habits top"]
+];
+/* tiny layout thumbnails */
+function orientThumb(key){
+  const days="#e07a5f", hab="#3d8168";
+  const map={
+    "days-left"  :`<rect x="4" y="12" width="8" height="24" rx="2" fill="${days}"/><rect x="14" y="4" width="26" height="6" rx="2" fill="${hab}"/><rect x="14" y="12" width="26" height="24" rx="2" fill="#eee"/>`,
+    "days-top"   :`<rect x="14" y="4" width="26" height="6" rx="2" fill="${days}"/><rect x="4" y="12" width="8" height="24" rx="2" fill="${hab}"/><rect x="14" y="12" width="26" height="24" rx="2" fill="#eee"/>`,
+    "days-bottom":`<rect x="14" y="34" width="26" height="6" rx="2" fill="${days}"/><rect x="4" y="4" width="8" height="28" rx="2" fill="${hab}"/><rect x="14" y="4" width="26" height="28" rx="2" fill="#eee"/>`,
+    "days-right" :`<rect x="32" y="12" width="8" height="24" rx="2" fill="${days}"/><rect x="4" y="4" width="26" height="6" rx="2" fill="${hab}"/><rect x="4" y="12" width="26" height="24" rx="2" fill="#eee"/>`
+  };
+  return `<svg width="44" height="42" viewBox="0 0 44 42">${map[key]}</svg>`;
+}
+
+/* ================= UI ================= */
+const $=id=>document.getElementById(id);
+const habitList=$("habitList"),overlay=$("overlay"),pickerGrid=$("pickerGrid");
+
+function todayISO(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function setPreset(kind){
+  const now=new Date();let f,t;
+  if(kind==="month"){f=new Date(now.getFullYear(),now.getMonth(),1);t=new Date(now.getFullYear(),now.getMonth()+1,0);}
+  else if(kind==="30"){f=new Date(now);t=new Date(now);t.setDate(t.getDate()+29);}
+  else{f=new Date(now.getFullYear(),now.getMonth()+1,1);t=new Date(now.getFullYear(),now.getMonth()+2,0);}
+  $("dateFrom").value=todayISO(f);$("dateTo").value=todayISO(t);
+}
+setPreset("month");
+document.querySelectorAll(".preset").forEach(b=>b.onclick=()=>{setPreset(b.dataset.preset);refresh();});
+
+function renderOrient(){
+  $("orientGrid").innerHTML=ORIENTS.map(([k,label])=>
+    `<button class="orient-btn ${state.orient===k?"sel":""}" data-k="${k}">${orientThumb(k)}${label}</button>`).join("");
+  $("orientGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.orient=b.dataset.k;renderOrient();refresh();});
+}
+
+const DAY_LETTERS=["S","M","T","W","T","F","S"];
+let dragIdx=null;
+function freqLabel(days){
+  if(days.every(x=>x))return "daily";
+  if(!days.some(x=>x))return "–";
+  return DAY_LETTERS.filter((c,d)=>days[d]).join("·");
+}
+function renderHabits(){
+  habitList.innerHTML="";
+  state.habits.forEach((h,i)=>{
+    if(!h.days)h.days=ALLDAYS();
+    const li=document.createElement("li");
+    li.innerHTML=`<div class="htop">
+        <span class="grip" title="Drag to reorder">⋮⋮</span>
+        <button class="chip" title="Change doodle">${iconSvg(h.icon)}</button>
+        <input class="name" value="${h.name.replace(/"/g,"&quot;")}" maxlength="28">
+        <button class="freq" title="Which days?">${freqLabel(h.days)}</button>
+        <button class="del" title="Remove">✕</button>
+      </div>
+      <div class="dayrow" style="display:none">${DAY_LETTERS.map((c,d)=>
+        `<button class="daybtn ${h.days[d]?"on":""}" data-d="${d}">${c}</button>`).join("")}</div>`;
+    li.querySelector(".chip").onclick=()=>{state.pickerTarget=i;$("iconSearch").value="";filterPicker("");overlay.classList.add("open");$("iconSearch").focus();};
+    li.querySelector(".del").onclick=()=>{state.habits.splice(i,1);renderHabits();refresh();};
+    const nameInput=li.querySelector(".name");
+    nameInput.oninput=()=>{h.name=nameInput.value;refreshSoon();};
+    const dayrow=li.querySelector(".dayrow");
+    li.querySelector(".freq").onclick=e=>{dayrow.style.display=dayrow.style.display==="none"?"flex":"none";};
+    dayrow.querySelectorAll(".daybtn").forEach(b=>b.onclick=()=>{
+      const d=+b.dataset.d;h.days[d]=h.days[d]?0:1;
+      b.classList.toggle("on",!!h.days[d]);
+      li.querySelector(".freq").textContent=freqLabel(h.days);
+      refreshSoon();
+    });
+    // drag to reorder (grip only, so text inputs stay usable)
+    const grip=li.querySelector(".grip");
+    grip.onmousedown=()=>{li.draggable=true;};
+    li.addEventListener("dragstart",()=>{dragIdx=i;li.classList.add("dragging");});
+    li.addEventListener("dragend",()=>{li.draggable=false;li.classList.remove("dragging");});
+    li.addEventListener("dragover",e=>e.preventDefault());
+    li.addEventListener("drop",e=>{
+      e.preventDefault();
+      if(dragIdx!=null&&dragIdx!==i){
+        const [m]=state.habits.splice(dragIdx,1);
+        state.habits.splice(i,0,m);
+        dragIdx=null;renderHabits();refresh();
+      }
+    });
+    habitList.appendChild(li);
+  });
+}
+
+function addHabit(){
+  const inp=$("habitInput"),v=inp.value.trim();
+  if(!v)return;
+  if(state.habits.length>=15)return showErr("Maximum 15 habits.");
+  state.habits.push({name:v,icon:matchIcon(v),days:ALLDAYS()});
+  inp.value="";inp.focus();
+  renderHabits();refresh();
+}
+$("addBtn").onclick=addHabit;
+$("habitInput").addEventListener("keydown",e=>{if(e.key==="Enter")addHabit();});
+
+/* picker */
+pickerGrid.innerHTML=Object.keys(ICONS).map(n=>
+  `<button class="pick" data-n="${n}" data-kw="${(n+" "+ICONS[n].kw.join(" ")).replace(/"/g,"")}">${iconSvg(n)}${n}</button>`).join("");
+pickerGrid.querySelectorAll(".pick").forEach(b=>b.onclick=()=>{
+  if(state.pickerTarget!=null){state.habits[state.pickerTarget].icon=b.dataset.n;renderHabits();refresh();}
+  overlay.classList.remove("open");
+});
+function filterPicker(q){
+  q=q.toLowerCase().trim();
+  pickerGrid.querySelectorAll(".pick").forEach(b=>
+    b.style.display=(!q||b.dataset.kw.includes(q))?"":"none");
+}
+$("iconSearch").addEventListener("input",e=>filterPicker(e.target.value));
+overlay.onclick=e=>{if(e.target===overlay)overlay.classList.remove("open");};
+
+/* ---- ideas list ---- */
+const IDEAS=[
+ ["Fitness",[["Workout","dumbbell"],["Run","run"],["Walk 10k steps","walk"],["Yoga","yoga"],["Stretch","stretch"],["Bike ride","bike"],["Swim","swim"],["Play sports","ball"],["Push-ups","pushup"],["Dance","dance"],["Cold shower","snowflake"]]],
+ ["Food & health",[["Drink water","water"],["Take vitamins","pill"],["Eat fruit","apple"],["Eat veggies","carrot"],["No meat","nomeat"],["No sugar","nosugar"],["No alcohol","noalcohol"],["No smoking","nosmoke"],["No junk food","noburger"],["No coffee","nocoffee"],["Fasting","hourglass"],["Cook at home","pan"],["Weigh in","scale"],["Take meds","mediccross"]]],
+ ["Rest & routine",[["Sleep by 10pm","moon"],["Wake up early","sun"],["No snooze","alarm"],["Make bed","bed"],["Shower","shower"],["Skincare","skincare"],["Brush & floss","tooth"]]],
+ ["Mind",[["Meditate","meditate"],["Read","book"],["Journal","pencil"],["Gratitude","heart"],["Study","gradcap"],["Practice a language","speech"],["Listen to a podcast","headphones"],["Puzzle / brain game","puzzle"],["Review goals","target"],["Inspiration","bulb"],["Smile / stay positive","smile"]]],
+ ["Faith",[["Read the Bible","bible"],["Pray","pray"],["Attend church","church"]]],
+ ["Home",[["Clean up","broom"],["Dishes","dishes"],["Laundry","laundry"],["Take out trash","trash"],["Water plants","plant"],["Groceries","cart"],["Walk the dog","paw"]]],
+ ["Work & money",[["Check emails","envelope"],["Plan the day","checklist"],["Review calendar","calendar"],["Deep work","clock"],["Code / side project","laptop"],["Track spending","receipt"],["Save money","piggy"],["Invest","chart"],["Post content","megaphone"]]],
+ ["Fun & social",[["Call family","phone"],["Meet a friend","people"],["Play with kids","kite"],["Practice guitar","guitar"],["Play music","music"],["Draw / paint","paintbrush"],["Photography","camera"],["Watch a show","tv"],["Gaming","controller"],["Read the news","newspaper"],["Go for a drive","car"]]],
+ ["Less of…",[["No phone","nophone"],["No TV","notv"],["Screen-free evening","star"]]]
+];
+const ideasOverlay=$("ideasOverlay");
+$("ideasGrid").innerHTML=IDEAS.map(([cat,items])=>
+  `<h4>${cat}</h4><div class="ideas-grid">`+
+  items.map(([label,icon])=>`<button class="idea" data-label="${label}" data-icon="${icon}">${iconSvg(icon)}<span>${label}</span></button>`).join("")+
+  `</div>`).join("");
+$("ideasGrid").querySelectorAll(".idea").forEach(b=>b.onclick=()=>{
+  if(state.habits.length>=15){showErr("Maximum 15 habits.");ideasOverlay.classList.remove("open");return;}
+  if(state.habits.some(h=>h.name.toLowerCase()===b.dataset.label.toLowerCase()))return;
+  state.habits.push({name:b.dataset.label,icon:b.dataset.icon,days:ALLDAYS()});
+  b.classList.add("added");
+  renderHabits();refresh();
+});
+$("ideasBtn").onclick=()=>{
+  $("ideasGrid").querySelectorAll(".idea").forEach(b=>
+    b.classList.toggle("added",state.habits.some(h=>h.name.toLowerCase()===b.dataset.label.toLowerCase())));
+  ideasOverlay.classList.add("open");
+};
+$("ideasClose").onclick=()=>ideasOverlay.classList.remove("open");
+ideasOverlay.onclick=e=>{if(e.target===ideasOverlay)ideasOverlay.classList.remove("open");};
+
+function showErr(msg){const e=$("errBox");e.textContent=msg;e.style.display="block";setTimeout(()=>e.style.display="none",4000);}
+
+/* ================= SHEET RENDERING ================= */
+const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function getDays(){
+  const f=new Date($("dateFrom").value+"T00:00:00"),t=new Date($("dateTo").value+"T00:00:00");
+  if(isNaN(f)||isNaN(t)||t<f)return null;
+  const days=[];
+  for(let d=new Date(f);d<=t;d.setDate(d.getDate()+1)){days.push(new Date(d));if(days.length>92)return null;}
+  return days;
+}
+
+/* ---- wobbly line helpers (deterministic, so preview & PDF match) ---- */
+function wline(ctx,x1,y1,x2,y2,mm){
+  if(!(state.wobble>0)){ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);return;}
+  let h=(Math.abs(x1*7.13+y1*13.7+x2*17.3+y2*23.1)*1000)&0x7fffffff;
+  const rnd=()=>{h=(h*1103515245+12345)&0x7fffffff;return h/0x7fffffff;};
+  const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;
+  const n=Math.max(1,Math.round(len/(35*mm)));
+  const px=-dy/len,py=dx/len,amp=0.55*mm*state.wobble;
+  ctx.moveTo(x1,y1);
+  let prevx=x1,prevy=y1;
+  for(let i=1;i<=n;i++){
+    const t=i/n;
+    const ex=i===n?x2:x1+dx*t+(rnd()-0.5)*amp*0.6;
+    const ey=i===n?y2:y1+dy*t+(rnd()-0.5)*amp*0.6;
+    const cx=(prevx+ex)/2+px*(rnd()-0.5)*2*amp;
+    const cy=(prevy+ey)/2+py*(rnd()-0.5)*2*amp;
+    ctx.quadraticCurveTo(cx,cy,ex,ey);
+    prevx=ex;prevy=ey;
+  }
+}
+function wrect(ctx,x,y,w,h,mm){
+  ctx.beginPath();
+  wline(ctx,x,y,x+w,y,mm);wline(ctx,x+w,y,x+w,y+h,mm);
+  wline(ctx,x+w,y+h,x,y+h,mm);wline(ctx,x,y+h,x,y,mm);
+  ctx.stroke();
+}
+
+/* mix a hex color toward white; f = how much of the color survives (0..1) */
+function mixHex(hex,f){
+  const n=parseInt(hex.slice(1),16),r=n>>16&255,g=n>>8&255,b=n&255;
+  const m=v=>Math.round(255-(255-v)*f);
+  return "#"+((1<<24)|(m(r)<<16)|(m(g)<<8)|m(b)).toString(16).slice(1);
+}
+
+/* draws the whole sheet on ctx. W,H in px. ff = font family for text. */
+function renderSheet(ctx,W,H,ff){
+  ff=ff||"'Patrick Hand',cursive";
+  const days=getDays()||[];
+  const habits=state.habits;
+  const mm=W/(state.page==="p"?210:297);   // px per mm
+  const ink=state.ink,accent=state.accent;
+  const faint=mixHex(ink,0.30),sub=mixHex(ink,0.55);
+  const shade="#f3f0e9",offShade="#e7e3d8";
+  const dayOn=(h,d)=>!h.days||!!h.days[d.getDay()];
+  const nTarget=h=>days.reduce((a,d)=>a+(dayOn(h,d)?1:0),0);
+  const colFor=d=>{
+    const c=state.dayColors[d.getDay()];
+    if(c)return mixHex(c,0.35);            // soften user color so writing stays legible
+    return (d.getDay()===0||d.getDay()===6)?shade:null;
+  };
+
+  ctx.fillStyle="#ffffff";ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle=ink;ctx.fillStyle=ink;
+
+  // title
+  const title=$("title").value.trim()||"Habit Tracker";
+  ctx.font=`${10*mm}px ${ff}`;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillText(title,W/2,13*mm);
+  // little underline squiggle
+  const tw=Math.min(ctx.measureText(title).width,W*0.7);
+  ctx.beginPath();ctx.lineWidth=0.5*mm;ctx.strokeStyle=accent;
+  ctx.moveTo(W/2-tw/2,18.5*mm);
+  ctx.quadraticCurveTo(W/2,20.5*mm,W/2+tw/2,18.5*mm);ctx.stroke();
+
+  if(!days.length||!habits.length){
+    ctx.font=`${6*mm}px ${ff}`;ctx.fillStyle="#b0a795";
+    ctx.fillText(days.length?"add a habit to begin":"pick a valid date range",W/2,H/2);
+    return;
+  }
+
+  const M=12*mm;                       // outer margin
+  const top=24*mm;                     // below title
+  const daysVertical=(state.orient==="days-left"||state.orient==="days-right");
+  const dayBand=(daysVertical?20:12)*mm;
+  const habBand=(daysVertical?18:34)*mm;
+
+  let gx,gy,gw,gh;
+
+  if(daysVertical){
+    const labelLeft=(state.orient==="days-left");
+    const totH=state.totals?9*mm:0;
+    gx=M+(labelLeft?dayBand:0);
+    gy=top+habBand;
+    gw=W-2*M-dayBand;
+    gh=H-gy-M-totH;
+    const cw=Math.min(gw/habits.length,34*mm);
+    gx+=(gw-cw*habits.length)/2;
+    gw=cw*habits.length;
+    const ch=gh/days.length;
+    // weekday-color / weekend + off-day shading
+    days.forEach((d,r)=>{ const col=colFor(d); if(col){ctx.fillStyle=col;ctx.fillRect(gx,gy+r*ch,gw,ch);} });
+    habits.forEach((h,c)=>days.forEach((d,r)=>{
+      if(!dayOn(h,d)){ctx.fillStyle=offShade;ctx.fillRect(gx+c*cw,gy+r*ch,cw,ch);}
+    }));
+    // habit headers on top
+    habits.forEach((h,c)=>{
+      const cx=gx+c*cw+cw/2;
+      const isz=Math.min(cw*0.55,habBand*0.62);
+      ctx.strokeStyle=ink;ctx.fillStyle=ink;
+      drawIcon(ctx,h.icon,cx-isz/2,top+1*mm,isz);
+      ctx.font=`${Math.min(3.4*mm,cw/(h.name.length*0.52))}px ${ff}`;
+      ctx.fillStyle=ink;ctx.textAlign="center";
+      ctx.fillText(h.name,cx,top+habBand-2.4*mm);
+    });
+    // day labels
+    ctx.textAlign=labelLeft?"right":"left";
+    days.forEach((d,r)=>{
+      const y=gy+r*ch+ch/2;
+      const lx=labelLeft?gx-1.8*mm:gx+gw+1.8*mm;
+      ctx.font=`${Math.min(3.6*mm,ch*0.66)}px ${ff}`;ctx.fillStyle=ink;
+      const lbl=(d.getDate()===1||r===0)?`${MO[d.getMonth()]} ${d.getDate()}`:`${WD[d.getDay()]} ${d.getDate()}`;
+      ctx.fillText(lbl,lx,y);
+    });
+    drawGrid(ctx,gx,gy,gw,gh,habits.length,days.length,mm,faint,ink);
+    // cell markers
+    if(state.marker!=="none"){
+      const sz=Math.min(Math.min(cw,ch)*0.42,6*mm);
+      ctx.lineWidth=0.35*mm;ctx.strokeStyle=faint;
+      habits.forEach((h,c)=>days.forEach((d,r)=>{
+        if(!dayOn(h,d))return;
+        const cx=gx+c*cw+cw/2,cy=gy+r*ch+ch/2;
+        if(state.marker==="circle"){ctx.beginPath();ctx.arc(cx,cy,sz/2,0,Math.PI*2);ctx.stroke();}
+        else wrect(ctx,cx-sz/2,cy-sz/2,sz,sz,mm);
+      }));
+    }
+    // totals row
+    if(state.totals){
+      ctx.lineWidth=0.5*mm;ctx.strokeStyle=ink;
+      habits.forEach((h,c)=>{
+        wrect(ctx,gx+c*cw,gy+gh,cw,totH,mm);
+        ctx.font=`${3.2*mm}px ${ff}`;ctx.fillStyle=sub;ctx.textAlign="right";
+        ctx.fillText("/ "+nTarget(h),gx+(c+1)*cw-1.5*mm,gy+gh+totH/2);
+      });
+      ctx.font=`${3.2*mm}px ${ff}`;ctx.fillStyle=sub;
+      ctx.textAlign=labelLeft?"right":"left";
+      ctx.fillText("total",labelLeft?gx-1.8*mm:gx+gw+1.8*mm,gy+gh+totH/2);
+    }
+  } else {
+    const labelTop=(state.orient==="days-top");
+    const totW=state.totals?15*mm:0;
+    gx=M+habBand;
+    gy=top+(labelTop?dayBand:0);
+    gw=W-2*M-habBand-totW;
+    gh=H-top-dayBand-M;
+    const cw=gw/days.length;
+    const ch=Math.min(gh/habits.length,26*mm);
+    gy+=(gh-ch*habits.length)/2;
+    gh=ch*habits.length;
+    // weekday-color / weekend + off-day shading
+    days.forEach((d,c)=>{ const col=colFor(d); if(col){ctx.fillStyle=col;ctx.fillRect(gx+c*cw,gy,cw,gh);} });
+    habits.forEach((h,r)=>days.forEach((d,c)=>{
+      if(!dayOn(h,d)){ctx.fillStyle=offShade;ctx.fillRect(gx+c*cw,gy+r*ch,cw,ch);}
+    }));
+    // habit headers on left
+    habits.forEach((h,r)=>{
+      const cy=gy+r*ch+ch/2;
+      const isz=Math.min(ch*0.52,11*mm);
+      ctx.strokeStyle=ink;ctx.fillStyle=ink;
+      drawIcon(ctx,h.icon,M+1*mm,cy-isz/2,isz);
+      ctx.font=`${3.4*mm}px ${ff}`;ctx.textAlign="left";ctx.fillStyle=ink;
+      const maxw=habBand-isz-4*mm;
+      let nm=h.name;
+      while(ctx.measureText(nm).width>maxw&&nm.length>2)nm=nm.slice(0,-1);
+      if(nm!==h.name)nm=nm.slice(0,-1)+"…";
+      ctx.fillText(nm,M+isz+2.5*mm,cy);
+    });
+    // day labels
+    days.forEach((d,c)=>{
+      const x=gx+c*cw+cw/2;
+      const base=labelTop?gy-1.6*mm:gy+gh+1.6*mm;
+      ctx.textAlign="center";ctx.fillStyle=ink;
+      const fs=Math.min(3.2*mm,cw*0.6);
+      ctx.font=`${fs}px ${ff}`;
+      if(labelTop){
+        ctx.textBaseline="bottom";
+        ctx.fillText(String(d.getDate()),x,base);
+        ctx.font=`${fs*0.78}px ${ff}`;ctx.fillStyle=sub;
+        ctx.fillText(WD[d.getDay()][0],x,base-fs*1.05);
+        if(d.getDate()===1||c===0){ctx.fillStyle=accent;ctx.fillText(MO[d.getMonth()],x,base-fs*2.1);}
+      }else{
+        ctx.textBaseline="top";
+        ctx.fillText(String(d.getDate()),x,base);
+        ctx.font=`${fs*0.78}px ${ff}`;ctx.fillStyle=sub;
+        ctx.fillText(WD[d.getDay()][0],x,base+fs*1.05);
+        if(d.getDate()===1||c===0){ctx.fillStyle=accent;ctx.fillText(MO[d.getMonth()],x,base+fs*2.1);}
+      }
+      ctx.textBaseline="middle";
+    });
+    drawGrid(ctx,gx,gy,gw,gh,days.length,habits.length,mm,faint,ink);
+    // cell markers
+    if(state.marker!=="none"){
+      const sz=Math.min(Math.min(cw,ch)*0.42,6*mm);
+      ctx.lineWidth=0.35*mm;ctx.strokeStyle=faint;
+      habits.forEach((h,r)=>days.forEach((d,c)=>{
+        if(!dayOn(h,d))return;
+        const cx=gx+c*cw+cw/2,cy=gy+r*ch+ch/2;
+        if(state.marker==="circle"){ctx.beginPath();ctx.arc(cx,cy,sz/2,0,Math.PI*2);ctx.stroke();}
+        else wrect(ctx,cx-sz/2,cy-sz/2,sz,sz,mm);
+      }));
+    }
+    // totals column
+    if(state.totals){
+      ctx.lineWidth=0.5*mm;ctx.strokeStyle=ink;
+      habits.forEach((h,r)=>{
+        wrect(ctx,gx+gw,gy+r*ch,totW,ch,mm);
+        ctx.font=`${3.2*mm}px ${ff}`;ctx.fillStyle=sub;ctx.textAlign="right";
+        ctx.fillText("/ "+nTarget(h),gx+gw+totW-1.5*mm,gy+r*ch+ch/2);
+      });
+    }
+  }
+}
+
+function drawGrid(ctx,x,y,w,h,cols,rows,mm,faint,ink){
+  ctx.lineCap="round";
+  ctx.lineWidth=0.35*mm;ctx.strokeStyle=faint;
+  ctx.beginPath();
+  for(let c=1;c<cols;c++)wline(ctx,x+c*w/cols,y,x+c*w/cols,y+h,mm);
+  for(let r=1;r<rows;r++)wline(ctx,x,y+r*h/rows,x+w,y+r*h/rows,mm);
+  ctx.stroke();
+  ctx.lineWidth=0.6*mm;ctx.strokeStyle=ink;
+  wrect(ctx,x,y,w,h,mm);
+}
+
+/* ================= PERSISTENCE & SHARING ================= */
+function getCfg(){
+  return {t:$("title").value,f:$("dateFrom").value,to:$("dateTo").value,
+          h:state.habits,o:state.orient,p:state.page,w:state.wobble,tot:state.totals?1:0,
+          dc:state.dayColors,ink:state.ink,ac:state.accent,mk:state.marker};
+}
+function applyCfg(c){
+  try{
+    if(c.t!=null)$("title").value=c.t;
+    if(c.f)$("dateFrom").value=c.f;
+    if(c.to)$("dateTo").value=c.to;
+    if(Array.isArray(c.h)&&c.h.length)state.habits=c.h.filter(x=>x&&x.name&&ICONS[x.icon]).slice(0,15)
+      .map(x=>({name:String(x.name).slice(0,28),icon:x.icon,days:Array.isArray(x.days)&&x.days.length===7?x.days.map(v=>v?1:0):ALLDAYS()}));
+    if(ORIENTS.some(([k])=>k===c.o))state.orient=c.o;
+    if(c.p==="p"||c.p==="l"){state.page=c.p;$("pageOrient").value=c.p;}
+    if(c.w!=null)state.wobble=Math.max(0,Math.min(3,+c.w||0));
+    if(c.tot!=null)state.totals=!!c.tot;
+    const okHex=v=>typeof v==="string"&&/^#[0-9a-fA-F]{6}$/.test(v);
+    if(Array.isArray(c.dc)&&c.dc.length===7)state.dayColors=c.dc.map(v=>okHex(v)?v:"");
+    if(okHex(c.ink))state.ink=c.ink;
+    if(okHex(c.ac))state.accent=c.ac;
+    if(["none","circle","box"].includes(c.mk))state.marker=c.mk;
+  }catch(e){}
+}
+function saveCfg(){ try{localStorage.setItem("doodleHabitTracker",JSON.stringify(getCfg()));}catch(e){} }
+function loadCfg(){
+  try{
+    if(location.hash.startsWith("#c=")){
+      applyCfg(JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(location.hash.slice(3)))))));
+      history.replaceState(null,"",location.pathname+location.search);
+      return;
+    }
+  }catch(e){}
+  try{
+    const s=localStorage.getItem("doodleHabitTracker");
+    if(s)applyCfg(JSON.parse(s));
+  }catch(e){}
+}
+$("shareBtn").onclick=()=>{
+  const url=location.href.split("#")[0]+"#c="+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(getCfg())))));
+  const done=()=>{const b=$("shareBtn");b.textContent="✓ Link copied!";setTimeout(()=>b.textContent="🔗 Copy share link",2000);};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url));
+  else prompt("Copy this link:",url);
+};
+
+/* ================= PREVIEW & PDF ================= */
+const pv=$("previewCanvas");
+function refresh(){
+  const port=state.page==="p";
+  const W=port?900:1273,H=port?1273:900;
+  pv.width=W;pv.height=H;
+  renderSheet(pv.getContext("2d"),W,H);
+  updateTotalsLbl();
+  saveCfg();
+}
+let t=null;
+function refreshSoon(){clearTimeout(t);t=setTimeout(refresh,200);}
+
+["title","dateFrom","dateTo"].forEach(id=>$(id).addEventListener("input",refreshSoon));
+$("pageOrient").addEventListener("change",e=>{state.page=e.target.value;refresh();});
+$("wobbleSlider").addEventListener("input",e=>{
+  state.wobble=+e.target.value;
+  $("wobbleVal").textContent=state.wobble===0?"off":state.wobble+"×";
+  refreshSoon();
+});
+$("totalsChk").addEventListener("change",e=>{state.totals=e.target.checked;refresh();});
+$("inkColor").addEventListener("input",e=>{state.ink=e.target.value;refreshSoon();});
+$("accentColor").addEventListener("input",e=>{state.accent=e.target.value;refreshSoon();});
+$("cellMarker").addEventListener("change",e=>{state.marker=e.target.value;refresh();});
+
+/* per-weekday color chips */
+function renderDayColors(){
+  $("dayColorRow").innerHTML=DAY_LETTERS.map((c,d)=>{
+    const set=!!state.dayColors[d];
+    return `<div class="dc ${set?"set":""}">
+      <span>${c}</span>
+      <input type="color" data-d="${d}" value="${set?state.dayColors[d]:"#ffffff"}">
+      <button class="dcx" data-d="${d}" title="Reset">✕</button>
+    </div>`;
+  }).join("");
+  $("dayColorRow").querySelectorAll("input[type=color]").forEach(inp=>
+    inp.addEventListener("input",e=>{state.dayColors[+inp.dataset.d]=e.target.value;
+      inp.closest(".dc").classList.add("set");refreshSoon();}));
+  $("dayColorRow").querySelectorAll(".dcx").forEach(b=>b.onclick=()=>{
+    state.dayColors[+b.dataset.d]="";renderDayColors();refresh();});
+}
+
+/* keep the totals label honest about the current day count */
+function updateTotalsLbl(){
+  const days=getDays();
+  $("totalsLbl").textContent="Totals column"+(days?` (___ / ${days.length})`:"");
+}
+
+/* Patrick Hand TTF for vector PDFs (fetched once, cached) */
+let phFontB64=null;
+async function pdfFont(doc){
+  try{
+    if(!phFontB64){
+      const r=await fetch("https://fonts.gstatic.com/s/patrickhand/v23/LDI1apSQOAYtSuYWp8ZhfYeMWcjKm7sp8g.ttf");
+      if(!r.ok)throw new Error("font fetch failed");
+      const u=new Uint8Array(await r.arrayBuffer());
+      let s="";const CH=0x8000;
+      for(let i=0;i<u.length;i+=CH)s+=String.fromCharCode.apply(null,u.subarray(i,i+CH));
+      phFontB64=btoa(s);
+    }
+    doc.addFileToVFS("PatrickHand.ttf",phFontB64);
+    doc.addFont("PatrickHand.ttf","PatrickHand","normal");
+    return "PatrickHand";
+  }catch(e){ return "helvetica"; }
+}
+
+$("pdfBtn").onclick=async()=>{
+  const days=getDays();
+  if(!days)return showErr("Please pick a valid date range (up to 92 days).");
+  if(!state.habits.length)return showErr("Add at least one habit first.");
+  if(!window.jspdf)return showErr("PDF library failed to load — check your connection and reload.");
+  const port=state.page==="p";
+  const fname=(($("title").value.trim()||"habit-tracker").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"habit-tracker")+".pdf";
+  try{
+    // vector PDF (crisp lines, tiny file)
+    const W=port?794:1123,H=port?1123:794;   // A4 @96dpi
+    const doc=new window.jspdf.jsPDF({orientation:port?"portrait":"landscape",unit:"px",format:[W,H],hotfixes:["px_scaling"]});
+    const ff=await pdfFont(doc);
+    renderSheet(doc.context2d,W,H,ff);
+    doc.save(fname);
+  }catch(err){
+    console.warn("Vector PDF failed, using raster fallback:",err);
+    const c=document.createElement("canvas");
+    c.width=port?2480:3508;c.height=port?3508:2480;    // A4 @300dpi
+    renderSheet(c.getContext("2d"),c.width,c.height);
+    const doc=new window.jspdf.jsPDF({orientation:port?"portrait":"landscape",unit:"mm",format:"a4"});
+    doc.addImage(c.toDataURL("image/jpeg",0.93),"JPEG",0,0,port?210:297,port?297:210);
+    doc.save(fname);
+  }
+};
+
+/* init: restore saved/shared config, then first render */
+loadCfg();
+$("wobbleSlider").value=state.wobble;
+$("wobbleVal").textContent=state.wobble===0?"off":state.wobble+"×";
+$("totalsChk").checked=state.totals;
+$("inkColor").value=state.ink;
+$("accentColor").value=state.accent;
+$("cellMarker").value=state.marker;
+renderDayColors();
+renderOrient();renderHabits();refresh();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(refresh);
+</script>
+</body>
+</html>

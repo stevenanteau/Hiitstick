@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIIT Stick — free HIIT workout builder & printable habit tracker</title>
+<meta name="description" content="Two free tools, no accounts, no ads: build your own stick-figure HIIT workout with a timer, or design a printable habit tracker PDF with hand-drawn doodles. Free forever.">
+<meta property="og:title" content="HIIT Stick — free fitness tools">
+<meta property="og:description" content="Build a custom HIIT workout or design a printable doodle habit tracker. 100% free, always.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/">
+<link rel="canonical" href="https://hiitstick.com/">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#faf7f0;--ink:#2b2b2b;--accent:#e07a5f;--accent2:#3d8168;--line:#e5ddcf}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);
+    font-family:'Nunito',sans-serif;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;padding:32px 20px}
+  h1{font-family:'Patrick Hand',cursive;font-size:clamp(2.2rem,6vw,3.4rem);margin:0;letter-spacing:.5px;text-align:center}
+  .sub{color:#7a7264;margin:8px 0 0;text-align:center;font-size:1.05rem}
+  .free{margin:10px 0 0;text-align:center;font-size:.95rem;color:#7a7264}
+  .free b{color:var(--accent2)}
+  .cards{display:flex;gap:24px;margin:42px 0 0;flex-wrap:wrap;justify-content:center;max-width:900px}
+  .card{flex:1 1 320px;max-width:400px;background:#fff;border:2px solid var(--line);border-radius:20px;
+    padding:34px 30px;text-decoration:none;color:var(--ink);text-align:center;
+    box-shadow:0 6px 20px rgba(90,70,40,.08);transition:transform .12s,border-color .12s,box-shadow .12s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(90,70,40,.14)}
+  .card.hiit:hover{border-color:var(--accent)}
+  .card.habit:hover{border-color:var(--accent2)}
+  .card svg{width:110px;height:110px}
+  .card h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.8rem;margin:14px 0 6px}
+  .card p{margin:0;color:#7a7264;font-size:.95rem;line-height:1.5}
+  .card .go{display:inline-block;margin-top:18px;font-weight:800;font-size:.95rem;
+    padding:10px 22px;border-radius:999px;color:#fff}
+  .hiit .go{background:var(--accent)}
+  .habit .go{background:var(--accent2)}
+  .coffee{margin-top:40px}
+  .coffee a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;
+    font-size:.9rem;padding:9px 18px;border-radius:999px;background:#ffdd00;color:#403200;
+    border:1.5px solid #e8c900}
+  .coffee a:hover{filter:brightness(1.04)}
+  footer{margin-top:26px;color:#a89e8b;font-size:.8rem;text-align:center}
+</style>
+</head>
+<body>
+  <h1>HIIT STICK</h1>
+  <p class="sub">Little stick figures, big results — pick your tool.</p>
+  <p class="free"><b>Everything here is free — and always will be.</b> No accounts, no ads, no watermarks.</p>
+
+  <div class="cards">
+    <a class="card hiit" href="/hiit">
+      <svg viewBox="0 0 100 100" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="63" cy="19" r="6" fill="#2b2b2b" stroke="none"/>
+        <path d="M60 27 L48 54 M57 32 L75 42 M57 32 L39 38 M48 54 L67 63 L62 82 M48 54 L36 72 L18 74"/>
+      </svg>
+      <h2>HIIT Workout Builder</h2>
+      <p>Design your own stick-figure HIIT session — pick moves, set rounds and intervals, hit start and follow the timer.</p>
+      <span class="go">Build a workout →</span>
+    </a>
+
+    <a class="card habit" href="/habit-tracker">
+      <svg viewBox="0 0 100 100" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M18 22 L82 22 L82 86 L18 86 Z M18 38 L82 38 M34 22 L34 14 M66 22 L66 14"/>
+        <path d="M28 52 L34 58 L44 46" stroke="#3d8168"/>
+        <path d="M56 50 L74 50 M56 62 L74 62 M28 74 L44 74"/>
+      </svg>
+      <h2>Doodle Habit Tracker</h2>
+      <p>Make a printable habit tracker PDF with cute hand-drawn doodles — your habits, your dates, your layout.</p>
+      <span class="go">Make a tracker →</span>
+    </a>
+  </div>
+
+  <div class="coffee">
+    <a href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Enjoying these? Buy me a coffee</a>
+  </div>
+  <footer>Made by Steven · both tools run entirely in your browser — nothing is uploaded anywhere.</footer>
+</body>
+</html>
