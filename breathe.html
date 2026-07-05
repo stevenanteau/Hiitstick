@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Breathing &amp; Meditation Timer — Box Breathing, 4-7-8 &amp; more</title>
-<meta name="description" content="A free breathing and meditation timer with a calming animated guide. Box breathing, 4-7-8, coherent breathing or your own pattern — plus a silent meditation timer with interval bells and ambient sound. No account, works offline, free forever.">
+<meta name="description" content="A free breathing and meditation timer with a calming animated stick-figure guide. Box breathing, 4-7-8, coherent breathing or your own pattern — plus a meditation timer with interval bells and ambient sound. No account, works offline, free forever.">
 <meta property="og:title" content="Breathe &amp; Meditate — free breathing and meditation timer">
 <meta property="og:description" content="Follow a gentle animated breathing guide (box, 4-7-8, coherent) or set a meditation timer with interval bells and ambient sound. Free forever, no account.">
 <meta property="og:type" content="website">
@@ -41,13 +41,12 @@
     padding:9px 22px;border-radius:999px;cursor:pointer}
   .modes button.on{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(60,80,80,.12)}
 
-  /* the breathing / meditation visual */
-  .visual{position:relative;width:min(340px,80vw);height:min(340px,80vw);margin:22px 0 6px;
+  .visual{position:relative;width:min(360px,84vw);height:min(360px,84vw);margin:22px 0 6px;
     display:flex;align-items:center;justify-content:center}
   .visual canvas{position:absolute;inset:0;width:100%;height:100%}
-  .vtext{position:relative;text-align:center;pointer-events:none;z-index:2}
+  .vtext{position:relative;text-align:center;pointer-events:none;z-index:2;margin-top:-32%}
   .vphase{font-family:'Patrick Hand',cursive;font-size:1.5rem;color:var(--accent);margin:0}
-  .vbig{font-family:'Patrick Hand',cursive;font-size:2.6rem;color:var(--ink);line-height:1;margin:2px 0 0}
+  .vbig{font-family:'Patrick Hand',cursive;font-size:2.4rem;color:var(--ink);line-height:1;margin:2px 0 0}
   .vsub{font-size:.8rem;color:#8a9a9a;margin-top:4px}
 
   .controls{display:flex;gap:12px;margin-top:6px}
@@ -128,7 +127,7 @@
   </div>
 
   <div class="visual">
-    <canvas id="cv" width="680" height="680"></canvas>
+    <canvas id="cv" width="700" height="700"></canvas>
     <div class="vtext">
       <p class="vphase" id="vphase">Ready</p>
       <p class="vbig" id="vbig">Box</p>
@@ -141,9 +140,8 @@
     <button class="sec hide" id="resetBtn">Reset</button>
   </div>
 
-  <!-- BREATHE settings -->
   <div class="panel" id="breathePanel">
-    <h2>Breathing pattern</h2>
+    <h2>Breathing style</h2>
     <div class="chips" id="patChips"></div>
     <div class="custom-row hide" id="customRow">
       <div class="cc"><span>Inhale</span><input type="number" id="cIn" min="0" max="20" value="4"></div>
@@ -162,12 +160,11 @@
     <p class="subline" id="bInfo"></p>
   </div>
 
-  <!-- MEDITATE settings -->
   <div class="panel hide" id="medPanel">
-    <h2>Meditation timer</h2>
+    <h2>Meditation style</h2>
     <label class="small">Length</label>
     <div class="chips" id="mLenChips"></div>
-    <div class="custom-row" id="mCustomRow" style="max-width:180px">
+    <div class="custom-row" id="mCustomRow" style="max-width:190px">
       <div class="cc"><span>Custom minutes</span><input type="number" id="mCustom" min="1" max="180" value="10"></div>
     </div>
     <label class="small">Interval bell</label>
@@ -176,160 +173,176 @@
     <div class="chips" id="mAmbChips"></div>
     <label class="small">Volume</label>
     <div class="slider-row"><input type="range" id="mVol" min="0" max="100" value="55"><span class="v" id="mVolV">55%</span></div>
-    <p class="subline">A bell marks the start and end. Interval bells chime along the way. Everything is synthesized — no files, works offline.</p>
+    <p class="subline">A bell marks the start and end; interval bells chime along the way. Everything is synthesized — no files, works offline.</p>
   </div>
 </div>
 
-<footer>Made for the quiet minutes. Runs entirely in your browser — keep this tab open and it'll keep the screen awake while a session runs.</footer>
+<footer>Made for the quiet minutes. Runs entirely in your browser — it'll keep the screen awake while a session runs.</footer>
 
 <script>
-const $ = id=>document.getElementById(id);
-const LS = {
-  get(k,d){ try{const v=localStorage.getItem("breathe_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;} },
-  set(k,v){ try{localStorage.setItem("breathe_"+k,JSON.stringify(v));}catch(e){} }
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+var LS = {
+  get:function(k,d){ try{var v=localStorage.getItem("breathe_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;} },
+  set:function(k,v){ try{localStorage.setItem("breathe_"+k,JSON.stringify(v));}catch(e){} }
 };
 
-/* ============ audio (synthesized, offline) ============ */
-let ac=null, master=null;
+/* ---------- audio (synthesized, offline) ---------- */
+var ac=null, master=null;
 function audioInit(){
   if(ac)return;
-  ac = new (window.AudioContext||window.webkitAudioContext)();
+  var AC = window.AudioContext||window.webkitAudioContext;
+  ac = new AC();
   master = ac.createGain(); master.gain.value=1; master.connect(ac.destination);
 }
 function vol(){ return (state.mode==="breathe"? state.bVol : state.mVol)/100; }
 function bell(v, base){
   if(!ac)return;
-  v = v==null? vol() : v; base = base||512;
-  const t=ac.currentTime;
-  [[1,1],[2.01,0.5],[2.97,0.26],[4.16,0.12]].forEach(([mult,amp],i)=>{
-    const o=ac.createOscillator(), g=ac.createGain();
+  if(v==null)v=vol(); base=base||512;
+  var t=ac.currentTime, parts=[[1,1],[2.01,0.5],[2.97,0.26],[4.16,0.12]];
+  for(var i=0;i<parts.length;i++){(function(mult,amp,i){
+    var o=ac.createOscillator(), g=ac.createGain();
     o.type="sine"; o.frequency.value=base*mult;
     g.gain.setValueAtTime(0,t);
     g.gain.linearRampToValueAtTime(v*amp, t+0.008);
     g.gain.exponentialRampToValueAtTime(0.0001, t+3.4/(1+i*0.5));
     o.connect(g).connect(master); o.start(t); o.stop(t+3.6);
-  });
+  })(parts[i][0],parts[i][1],i);}
 }
-function tick(v, base){        // short, soft phase cue
+function tick(v, base){
   if(!ac)return;
-  const t=ac.currentTime;
-  const o=ac.createOscillator(), g=ac.createGain();
+  if(v==null)v=vol();
+  var t=ac.currentTime, o=ac.createOscillator(), g=ac.createGain();
   o.type="sine"; o.frequency.value=base||660;
   g.gain.setValueAtTime(0,t);
-  g.gain.linearRampToValueAtTime((v==null?vol():v)*0.5, t+0.01);
+  g.gain.linearRampToValueAtTime(v*0.5, t+0.01);
   g.gain.exponentialRampToValueAtTime(0.0001, t+0.5);
   o.connect(g).connect(master); o.start(t); o.stop(t+0.55);
 }
-
-/* ---- ambient beds ---- */
-let amb=null;
+var amb=null;
 function noiseBuffer(){
-  const b=ac.createBuffer(1, ac.sampleRate*2, ac.sampleRate), d=b.getChannelData(0);
-  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  var b=ac.createBuffer(1, ac.sampleRate*2, ac.sampleRate), d=b.getChannelData(0), i;
+  for(i=0;i<d.length;i++) d[i]=Math.random()*2-1;
   return b;
 }
-function ambStop(){ if(amb){ try{amb.nodes.forEach(n=>{try{n.stop&&n.stop();}catch(e){}}); amb.gain.disconnect();}catch(e){} amb=null; } }
+function ambStop(){ if(amb){ try{ amb.nodes.forEach(function(n){try{n.stop&&n.stop();}catch(e){}}); amb.gain.disconnect(); }catch(e){} amb=null; } }
 function ambStart(kind){
   ambStop();
   if(!ac||kind==="off")return;
-  const g=ac.createGain(); g.gain.value=0; g.connect(master);
-  const nodes=[];
+  var g=ac.createGain(); g.gain.value=0; g.connect(master);
+  var nodes=[];
   if(kind==="rain"){
-    const src=ac.createBufferSource(); src.buffer=noiseBuffer(); src.loop=true;
-    const hp=ac.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=900;
-    const lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=6500;
+    var src=ac.createBufferSource(); src.buffer=noiseBuffer(); src.loop=true;
+    var hp=ac.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=900;
+    var lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=6500;
     src.connect(hp).connect(lp).connect(g); src.start(); nodes.push(src);
     g.gain.linearRampToValueAtTime(0.18*vol()+0.04, ac.currentTime+2);
   } else if(kind==="waves"){
-    const src=ac.createBufferSource(); src.buffer=noiseBuffer(); src.loop=true;
-    const lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=500;
-    src.connect(lp).connect(g); src.start(); nodes.push(src);
-    const lfo=ac.createOscillator(), lg=ac.createGain();
+    var s2=ac.createBufferSource(); s2.buffer=noiseBuffer(); s2.loop=true;
+    var l2=ac.createBiquadFilter(); l2.type="lowpass"; l2.frequency.value=500;
+    s2.connect(l2).connect(g); s2.start(); nodes.push(s2);
+    var lfo=ac.createOscillator(), lg=ac.createGain();
     lfo.frequency.value=0.09; lg.gain.value=0.12;
     lfo.connect(lg).connect(g.gain); lfo.start(); nodes.push(lfo);
     g.gain.setValueAtTime(0,ac.currentTime);
     g.gain.linearRampToValueAtTime(0.16*vol()+0.05, ac.currentTime+2);
   } else if(kind==="tone"){
-    [110,110.5,220].forEach((f,i)=>{ const o=ac.createOscillator(); o.type="sine"; o.frequency.value=f;
-      const og=ac.createGain(); og.gain.value=[0.5,0.5,0.14][i]; o.connect(og).connect(g); o.start(); nodes.push(o); });
+    var freqs=[110,110.5,220], amps=[0.5,0.5,0.14];
+    for(var i=0;i<freqs.length;i++){ var o=ac.createOscillator(); o.type="sine"; o.frequency.value=freqs[i];
+      var og=ac.createGain(); og.gain.value=amps[i]; o.connect(og).connect(g); o.start(); nodes.push(o); }
     g.gain.linearRampToValueAtTime(0.10*vol()+0.03, ac.currentTime+2);
   }
-  amb={gain:g,nodes,kind};
+  amb={gain:g,nodes:nodes,kind:kind};
 }
 
-/* ============ state ============ */
-const PATTERNS = {
-  box:      {label:"Box",        pat:[4,4,4,4], desc:"4-4-4-4"},
-  relax:    {label:"4-7-8",      pat:[4,7,8,0], desc:"4-7-8 relaxing"},
-  coherent: {label:"Coherent",   pat:[5,0,5,0], desc:"5-5 balance"},
-  custom:   {label:"Custom",     pat:[4,4,4,4], desc:"your own"}
+/* ---------- state ---------- */
+var PATTERNS = {
+  box:      {label:"Box",      pat:[4,4,4,4], desc:"4-4-4-4"},
+  relax:    {label:"4-7-8",    pat:[4,7,8,0], desc:"relaxing"},
+  coherent: {label:"Coherent", pat:[5,0,5,0], desc:"5-5 balance"},
+  custom:   {label:"Custom",   pat:[4,4,4,4], desc:"your own"}
 };
-const state = {
+var state = {
   mode:"breathe",
   pattern: LS.get("pattern","box"),
   custom: LS.get("custom",[4,4,4,4]),
-  bLen: LS.get("bLen",3),          // minutes
+  bLen: LS.get("bLen",3),
   bCue: LS.get("bCue",true),
   bVol: LS.get("bVol",55),
-  mLen: LS.get("mLen",10),         // minutes (preset or custom)
-  mInterval: LS.get("mInterval",0),// minutes between bells, 0=off
+  mLen: LS.get("mLen",10),
+  mInterval: LS.get("mInterval",0),
   mAmb: LS.get("mAmb","off"),
   mVol: LS.get("mVol",55),
   running:false, paused:false,
   elapsed:0, last:0, phases:[], cycleMs:0, totalMs:0,
-  lastPhaseIdx:-1, lastBellMin:0
+  lastPhaseIdx:-1, lastBellMin:0,
+  scale:0.6, raise:0
 };
 
-/* ============ build UI ============ */
-function chip(txt,on,extra){ return `<button class="chip ${on?'on':''}" ${extra||''}>${txt}</button>`; }
-
+/* ---------- build UI ---------- */
 function renderBreathe(){
-  $("patChips").innerHTML = Object.entries(PATTERNS).map(([k,v])=>
-    `<button class="chip ${state.pattern===k?'on':''}" data-p="${k}">${v.label} <small>${v.desc}</small></button>`).join("");
-  $("patChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.pattern=b.dataset.p;LS.set("pattern",state.pattern);renderBreathe();syncReady();});
+  $("patChips").innerHTML = Object.keys(PATTERNS).map(function(k){
+    var v=PATTERNS[k];
+    return '<button class="chip '+(state.pattern===k?'on':'')+'" data-p="'+k+'">'+v.label+' <small>'+v.desc+'</small></button>';
+  }).join("");
+  Array.prototype.forEach.call($("patChips").querySelectorAll("button"),function(b){
+    b.onclick=function(){ state.pattern=b.dataset.p; LS.set("pattern",state.pattern); renderBreathe(); syncReady(); };
+  });
   $("customRow").classList.toggle("hide", state.pattern!=="custom");
-  const [ci,ch1,ce,ch2]=state.custom;
-  $("cIn").value=ci;$("cH1").value=ch1;$("cEx").value=ce;$("cH2").value=ch2;
-  $("bLenChips").innerHTML=[1,2,3,5,10].map(m=>
-    `<button class="chip ${state.bLen===m?'on':''}" data-l="${m}">${m} min</button>`).join("");
-  $("bLenChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.bLen=+b.dataset.l;LS.set("bLen",state.bLen);renderBreathe();syncReady();});
+  $("cIn").value=state.custom[0]; $("cH1").value=state.custom[1]; $("cEx").value=state.custom[2]; $("cH2").value=state.custom[3];
+  $("bLenChips").innerHTML=[1,2,3,5,10].map(function(m){
+    return '<button class="chip '+(state.bLen===m?'on':'')+'" data-l="'+m+'">'+m+' min</button>';
+  }).join("");
+  Array.prototype.forEach.call($("bLenChips").querySelectorAll("button"),function(b){
+    b.onclick=function(){ state.bLen=+b.dataset.l; LS.set("bLen",state.bLen); renderBreathe(); syncReady(); };
+  });
   $("bCue").checked=state.bCue;
-  $("bVol").value=state.bVol;$("bVolV").textContent=state.bVol+"%";
-  const p=curPattern(); const cyc=p.reduce((a,b)=>a+b,0);
-  $("bInfo").textContent = `One breath ≈ ${cyc}s · about ${Math.round(state.bLen*60/cyc)} breaths this session.`;
+  $("bVol").value=state.bVol; $("bVolV").textContent=state.bVol+"%";
+  var cyc=curPattern().reduce(function(a,b){return a+b;},0);
+  $("bInfo").textContent="One breath ≈ "+cyc+"s · about "+Math.round(state.bLen*60/Math.max(1,cyc))+" breaths this session.";
 }
 function renderMed(){
-  $("mLenChips").innerHTML=[3,5,10,20].map(m=>
-    `<button class="chip ${state.mLen===m?'on':''}" data-l="${m}">${m} min</button>`).join("");
-  $("mLenChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.mLen=+b.dataset.l;$("mCustom").value=m2(state.mLen);LS.set("mLen",state.mLen);renderMed();syncReady();});
-  $("mCustom").value=state.mLen;
-  $("mIntChips").innerHTML=[[0,"Off"],[1,"1 min"],[3,"3 min"],[5,"5 min"],[10,"10 min"]].map(([v,l])=>
-    `<button class="chip ${state.mInterval===v?'on':''}" data-i="${v}">${l}</button>`).join("");
-  $("mIntChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.mInterval=+b.dataset.i;LS.set("mInterval",state.mInterval);renderMed();});
-  $("mAmbChips").innerHTML=[["off","None"],["rain","🌧 Rain"],["waves","🌊 Waves"],["tone","🎐 Soft tone"]].map(([v,l])=>
-    `<button class="chip ${state.mAmb===v?'on':''}" data-a="${v}">${l}</button>`).join("");
-  $("mAmbChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{
-    state.mAmb=b.dataset.a;LS.set("mAmb",state.mAmb);renderMed();
-    if(state.running&&!state.paused){audioInit();ambStart(state.mAmb);}
+  $("mLenChips").innerHTML=[3,5,10,20].map(function(m){
+    return '<button class="chip '+(state.mLen===m?'on':'')+'" data-l="'+m+'">'+m+' min</button>';
+  }).join("");
+  Array.prototype.forEach.call($("mLenChips").querySelectorAll("button"),function(b){
+    b.onclick=function(){ state.mLen=+b.dataset.l; $("mCustom").value=state.mLen; LS.set("mLen",state.mLen); renderMed(); syncReady(); };
   });
-  $("mVol").value=state.mVol;$("mVolV").textContent=state.mVol+"%";
+  $("mCustom").value=state.mLen;
+  $("mIntChips").innerHTML=[[0,"Off"],[1,"1 min"],[3,"3 min"],[5,"5 min"],[10,"10 min"]].map(function(p){
+    return '<button class="chip '+(state.mInterval===p[0]?'on':'')+'" data-i="'+p[0]+'">'+p[1]+'</button>';
+  }).join("");
+  Array.prototype.forEach.call($("mIntChips").querySelectorAll("button"),function(b){
+    b.onclick=function(){ state.mInterval=+b.dataset.i; LS.set("mInterval",state.mInterval); renderMed(); };
+  });
+  $("mAmbChips").innerHTML=[["off","None"],["rain","🌧 Rain"],["waves","🌊 Waves"],["tone","🎐 Soft tone"]].map(function(p){
+    return '<button class="chip '+(state.mAmb===p[0]?'on':'')+'" data-a="'+p[0]+'">'+p[1]+'</button>';
+  }).join("");
+  Array.prototype.forEach.call($("mAmbChips").querySelectorAll("button"),function(b){
+    b.onclick=function(){ state.mAmb=b.dataset.a; LS.set("mAmb",state.mAmb); renderMed();
+      if(state.running&&!state.paused){ audioInit(); ambStart(state.mAmb); } };
+  });
+  $("mVol").value=state.mVol; $("mVolV").textContent=state.mVol+"%";
 }
-function m2(x){return x;}
 
-$("cIn").oninput=$("cH1").oninput=$("cEx").oninput=$("cH2").oninput=()=>{
-  state.custom=[clampN($("cIn").value),clampN($("cH1").value),clampN($("cEx").value),clampN($("cH2").value)];
-  LS.set("custom",state.custom); const cyc=state.custom.reduce((a,b)=>a+b,0);
-  $("bInfo").textContent=`One breath ≈ ${cyc}s · about ${Math.round(state.bLen*60/Math.max(1,cyc))} breaths this session.`;
-};
 function clampN(v){ v=Math.max(0,Math.min(20,Math.round(+v||0))); return v; }
-$("bCue").onchange=e=>{state.bCue=e.target.checked;LS.set("bCue",state.bCue);};
-$("bVol").oninput=e=>{state.bVol=+e.target.value;$("bVolV").textContent=state.bVol+"%";LS.set("bVol",state.bVol);};
-$("mVol").oninput=e=>{state.mVol=+e.target.value;$("mVolV").textContent=state.mVol+"%";LS.set("mVol",state.mVol);
-  if(amb){ambStart(state.mAmb);} };
-$("mCustom").oninput=e=>{let v=Math.max(1,Math.min(180,Math.round(+e.target.value||1)));state.mLen=v;LS.set("mLen",v);
-  $("mLenChips").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.l===v));syncReady();};
+["cIn","cH1","cEx","cH2"].forEach(function(){});
+$("cIn").oninput=$("cH1").oninput=$("cEx").oninput=$("cH2").oninput=function(){
+  state.custom=[clampN($("cIn").value),clampN($("cH1").value),clampN($("cEx").value),clampN($("cH2").value)];
+  LS.set("custom",state.custom);
+  var cyc=state.custom.reduce(function(a,b){return a+b;},0);
+  $("bInfo").textContent="One breath ≈ "+cyc+"s · about "+Math.round(state.bLen*60/Math.max(1,cyc))+" breaths this session.";
+  syncReady();
+};
+$("bCue").onchange=function(e){ state.bCue=e.target.checked; LS.set("bCue",state.bCue); };
+$("bVol").oninput=function(e){ state.bVol=+e.target.value; $("bVolV").textContent=state.bVol+"%"; LS.set("bVol",state.bVol); };
+$("mVol").oninput=function(e){ state.mVol=+e.target.value; $("mVolV").textContent=state.mVol+"%"; LS.set("mVol",state.mVol); if(amb){ambStart(state.mAmb);} };
+$("mCustom").oninput=function(e){
+  var v=Math.max(1,Math.min(180,Math.round(+e.target.value||1))); state.mLen=v; LS.set("mLen",v);
+  Array.prototype.forEach.call($("mLenChips").querySelectorAll("button"),function(b){ b.classList.toggle("on",+b.dataset.l===v); });
+  syncReady();
+};
 
-/* ---- mode switch ---- */
 function setMode(m){
   if(state.running) stop(false);
   state.mode=m;
@@ -339,25 +352,24 @@ function setMode(m){
   $("medPanel").classList.toggle("hide",m!=="meditate");
   syncReady();
 }
-$("mBreathe").onclick=()=>setMode("breathe");
-$("mMeditate").onclick=()=>setMode("meditate");
+$("mBreathe").onclick=function(){ setMode("breathe"); };
+$("mMeditate").onclick=function(){ setMode("meditate"); };
 
-/* ============ session logic ============ */
+/* ---------- session logic ---------- */
 function curPattern(){ return state.pattern==="custom"? state.custom : PATTERNS[state.pattern].pat; }
 function buildPhases(){
-  const [i,h1,e,h2]=curPattern(); const mn=0.55,mx=1.0; const P=[];
+  var p=curPattern(), i=p[0],h1=p[1],e=p[2],h2=p[3], mn=0.55, mx=1.0, P=[];
   if(i>0)P.push({name:"Breathe in",dur:i,from:mn,to:mx});
   if(h1>0)P.push({name:"Hold",dur:h1,from:mx,to:mx});
   if(e>0)P.push({name:"Breathe out",dur:e,from:mx,to:mn});
   if(h2>0)P.push({name:"Hold",dur:h2,from:mn,to:mn});
   if(!P.length)P.push({name:"Breathe",dur:4,from:mn,to:mx});
-  state.phases=P; state.cycleMs=P.reduce((a,p)=>a+p.dur,0)*1000;
+  state.phases=P; state.cycleMs=P.reduce(function(a,x){return a+x.dur;},0)*1000;
 }
 function syncReady(){
-  // update the idle visual text
   if(state.running)return;
   if(state.mode==="breathe"){
-    const p=PATTERNS[state.pattern];
+    var p=PATTERNS[state.pattern];
     $("vphase").textContent="Ready";
     $("vbig").textContent=p.label;
     $("vsub").textContent=(state.pattern==="custom"? state.custom.join("-") : p.desc)+" · "+state.bLen+" min";
@@ -366,7 +378,7 @@ function syncReady(){
     $("vbig").textContent=state.mLen+":00";
     $("vsub").textContent="meditation"+(state.mInterval?" · bell every "+state.mInterval+"m":"")+(state.mAmb!=="off"?" · "+state.mAmb:"");
   }
-  draw(0.62,0);
+  state.scale=0.62; state.raise=0; draw(0);
 }
 
 function start(){
@@ -375,7 +387,7 @@ function start(){
   state.lastPhaseIdx=-1; state.lastBellMin=0;
   if(state.mode==="breathe"){ buildPhases(); state.totalMs=state.bLen*60000; }
   else{ state.totalMs=state.mLen*60000; ambStart(state.mAmb); }
-  bell(vol(), 512);                       // start bell
+  bell(vol(),512);
   $("startBtn").textContent="Pause"; $("resetBtn").classList.remove("hide");
   requestWake();
   requestAnimationFrame(loop);
@@ -386,104 +398,113 @@ function stop(finished){
   state.running=false; state.paused=false;
   $("startBtn").textContent="Start"; $("resetBtn").classList.add("hide");
   ambStop(); releaseWake();
-  if(finished){ bell(vol(),384); setTimeout(()=>bell(vol(),384),700); $("vphase").textContent="Complete"; $("vbig").textContent="🙏"; $("vsub").textContent="well done"; draw(0.62,0); }
-  else syncReady();
+  if(finished){ bell(vol(),384); setTimeout(function(){bell(vol(),384);},700);
+    $("vphase").textContent="Complete"; $("vbig").textContent="🙏"; $("vsub").textContent="well done";
+    state.scale=0.62; state.raise=0; draw(0);
+  } else syncReady();
 }
-$("startBtn").onclick=()=>{ if(!state.running)start(); else if(state.paused)resume(); else pause(); };
-$("resetBtn").onclick=()=>stop(false);
+$("startBtn").onclick=function(){ if(!state.running)start(); else if(state.paused)resume(); else pause(); };
+$("resetBtn").onclick=function(){ stop(false); };
 
 function loop(now){
   if(!state.running||state.paused)return;
-  const dt=now-state.last; state.last=now; state.elapsed+=dt;
-  const remain=state.totalMs-state.elapsed;
+  var dt=now-state.last; state.last=now; state.elapsed+=dt;
+  var remain=state.totalMs-state.elapsed;
   if(remain<=0){ stop(true); return; }
 
   if(state.mode==="breathe"){
-    const tc=state.elapsed % state.cycleMs;
-    let acc=0, idx=0, local=0;
-    for(let k=0;k<state.phases.length;k++){
-      const d=state.phases[k].dur*1000;
-      if(tc<acc+d){ idx=k; local=(tc-acc)/d; break; }
-      acc+=d;
-    }
-    const ph=state.phases[idx];
+    var tc=state.elapsed % state.cycleMs, acc=0, idx=0, local=0, k, d;
+    for(k=0;k<state.phases.length;k++){ d=state.phases[k].dur*1000; if(tc<acc+d){ idx=k; local=(tc-acc)/d; break; } acc+=d; }
+    var ph=state.phases[idx];
     if(idx!==state.lastPhaseIdx){
       state.lastPhaseIdx=idx;
       if(state.bCue) tick(vol(), ph.name==="Breathe in"?720:ph.name==="Breathe out"?480:600);
     }
-    const scale=ph.from+(ph.to-ph.from)*easeInOut(local);
-    const secLeft=Math.ceil(ph.dur-(ph.dur*local));
+    var sc=ph.from+(ph.to-ph.from)*easeInOut(local);
+    state.scale=sc;
+    state.raise=(sc-0.55)/0.45;                 // 0 at rest .. 1 at full inhale
+    var secLeft=Math.ceil(ph.dur-(ph.dur*local));
     $("vphase").textContent=ph.name;
     $("vbig").textContent=secLeft;
     $("vsub").textContent=fmt(remain)+" left";
-    draw(scale, local, ph.name);
+    draw(local);
   } else {
-    const mins=Math.floor(state.elapsed/60000);
-    if(state.mInterval>0 && mins>=state.lastBellMin+state.mInterval && remain>1500){
-      state.lastBellMin=mins; bell(vol()*0.85, 640);
-    }
+    var mins=Math.floor(state.elapsed/60000);
+    if(state.mInterval>0 && mins>=state.lastBellMin+state.mInterval && remain>1500){ state.lastBellMin=mins; bell(vol()*0.85,640); }
     $("vphase").textContent="Meditate";
     $("vbig").textContent=fmt(remain);
     $("vsub").textContent=state.mAmb!=="off"? state.mAmb : "breathe naturally";
-    const s=0.6+0.06*Math.sin(state.elapsed/2600);       // slow gentle pulse
-    draw(s, (state.elapsed%4000)/4000);
+    state.scale=0.60+0.05*Math.sin(state.elapsed/2600);
+    state.raise=0;
+    draw((state.elapsed%4000)/4000);
   }
   requestAnimationFrame(loop);
 }
-function easeInOut(t){ return 0.5-0.5*Math.cos(Math.PI*Math.min(1,Math.max(0,t))); }
-function fmt(ms){ ms=Math.max(0,ms); const s=Math.round(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function easeInOut(t){ t=Math.min(1,Math.max(0,t)); return 0.5-0.5*Math.cos(Math.PI*t); }
+function fmt(ms){ ms=Math.max(0,ms); var s=Math.round(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
 
-/* ============ canvas visual ============ */
-const cv=$("cv"), ctx=cv.getContext("2d");
-function draw(scale, prog, phaseName){
-  const W=cv.width, H=cv.height, cx=W/2, cy=H/2;
+/* ---------- canvas visual + animated stick figure ---------- */
+var cv=$("cv"), ctx=cv.getContext("2d");
+function draw(prog){
+  var W=cv.width, H=cv.height, cx=W/2, cy=H*0.52, Rmax=W*0.40;
   ctx.clearRect(0,0,W,H);
-  const Rmax=W*0.42;
   // faint outer ring
-  ctx.beginPath(); ctx.arc(cx,cy,Rmax,0,Math.PI*2);
-  ctx.strokeStyle="#cfe0e0"; ctx.lineWidth=4; ctx.stroke();
-  // soft filled breathing circle
-  const r=Rmax*scale;
-  const grd=ctx.createRadialGradient(cx,cy,r*0.2,cx,cy,r);
-  grd.addColorStop(0,"rgba(63,143,160,0.28)");
-  grd.addColorStop(1,"rgba(63,143,160,0.06)");
+  ctx.beginPath(); ctx.arc(cx,cy,Rmax,0,Math.PI*2); ctx.strokeStyle="#cfe0e0"; ctx.lineWidth=4; ctx.stroke();
+  // breathing circle
+  var r=Rmax*state.scale;
+  var grd=ctx.createRadialGradient(cx,cy,r*0.2,cx,cy,r);
+  grd.addColorStop(0,"rgba(63,143,160,0.26)");
+  grd.addColorStop(1,"rgba(63,143,160,0.05)");
   ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
   ctx.strokeStyle="rgba(63,143,160,0.85)"; ctx.lineWidth=5; ctx.stroke();
-  // progress guide dot around outer ring
+  // progress guide dot
   if(state.running){
-    const ang=-Math.PI/2 + prog*Math.PI*2;
-    const gx=cx+Math.cos(ang)*Rmax, gy=cy+Math.sin(ang)*Rmax;
-    ctx.beginPath(); ctx.arc(gx,gy,10,0,Math.PI*2); ctx.fillStyle="#3f8fa0"; ctx.fill();
+    var ang=-Math.PI/2 + prog*Math.PI*2;
+    ctx.beginPath(); ctx.arc(cx+Math.cos(ang)*Rmax, cy+Math.sin(ang)*Rmax, 10, 0, Math.PI*2);
+    ctx.fillStyle="#3f8fa0"; ctx.fill();
   }
-  // little seated stick figure at center
-  drawFigure(cx,cy,W*0.16);
+  // stick figure
+  var bob = state.mode==="meditate" ? Math.sin(state.elapsed/1400)*W*0.006 : 0;
+  drawFigure(cx, cy+W*0.05+bob, W*0.19, state.raise);
 }
-function drawFigure(cx,cy,s){
+function drawFigure(cx, cy, s, raise){
   ctx.save();
   ctx.strokeStyle="#2b2b2b"; ctx.fillStyle="#2b2b2b";
-  ctx.lineWidth=s*0.09; ctx.lineCap="round"; ctx.lineJoin="round";
-  const headR=s*0.22;
-  ctx.beginPath(); ctx.arc(cx, cy-s*0.55, headR, 0, Math.PI*2); ctx.fill();
+  ctx.lineWidth=s*0.085; ctx.lineCap="round"; ctx.lineJoin="round";
+  // slight lift of head/torso on inhale
+  var lift = raise*s*0.10;
+  var headY = cy - s*0.58 - lift;
+  ctx.beginPath(); ctx.arc(cx, headY, s*0.20, 0, Math.PI*2); ctx.fill();
   // torso
-  ctx.beginPath(); ctx.moveTo(cx, cy-s*0.30); ctx.lineTo(cx, cy+s*0.12); ctx.stroke();
-  // arms resting to knees
-  ctx.beginPath(); ctx.moveTo(cx, cy-s*0.14); ctx.quadraticCurveTo(cx-s*0.42, cy-s*0.02, cx-s*0.5, cy+s*0.22); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx, cy-s*0.14); ctx.quadraticCurveTo(cx+s*0.42, cy-s*0.02, cx+s*0.5, cy+s*0.22); ctx.stroke();
-  // crossed legs (base)
-  ctx.beginPath(); ctx.moveTo(cx, cy+s*0.12); ctx.lineTo(cx-s*0.5, cy+s*0.34); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx, cy+s*0.12); ctx.lineTo(cx+s*0.5, cy+s*0.34); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx-s*0.5, cy+s*0.34); ctx.lineTo(cx+s*0.5, cy+s*0.34); ctx.stroke();
+  var shoulderY = cy - s*0.30 - lift;
+  ctx.beginPath(); ctx.moveTo(cx, shoulderY); ctx.lineTo(cx, cy+s*0.10); ctx.stroke();
+  // arms: interpolate hands from resting-on-knees (raise 0) to overhead-open (raise 1)
+  function arm(dir){
+    var hx = cx + dir*( s*0.50 - raise*s*0.18 );
+    var hy = (cy+s*0.22) + raise*( (headY - s*0.55) - (cy+s*0.22) );  // sweep up past head
+    var ex = cx + dir*( s*0.30 + raise*s*0.02 );                       // elbow
+    var ey = shoulderY + (hy-shoulderY)*0.45 + s*0.04;
+    ctx.beginPath(); ctx.moveTo(cx, shoulderY+s*0.04);
+    ctx.quadraticCurveTo(ex, ey, hx, hy); ctx.stroke();
+  }
+  arm(-1); arm(1);
+  // crossed legs base (static)
+  ctx.beginPath(); ctx.moveTo(cx, cy+s*0.10); ctx.lineTo(cx-s*0.52, cy+s*0.32); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, cy+s*0.10); ctx.lineTo(cx+s*0.52, cy+s*0.32); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-s*0.52, cy+s*0.32); ctx.lineTo(cx+s*0.52, cy+s*0.32); ctx.stroke();
   ctx.restore();
 }
 
-/* ============ wake lock (best effort) ============ */
-let wake=null;
-async function requestWake(){ try{ if("wakeLock" in navigator) wake=await navigator.wakeLock.request("screen"); }catch(e){} }
+/* ---------- wake lock (best effort) ---------- */
+var wake=null;
+function requestWake(){ try{ if("wakeLock" in navigator){ navigator.wakeLock.request("screen").then(function(w){wake=w;}).catch(function(){}); } }catch(e){} }
 function releaseWake(){ try{ wake&&wake.release&&wake.release(); }catch(e){} wake=null; }
-document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&state.running&&!state.paused&&!wake)requestWake(); });
+document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"&&state.running&&!state.paused&&!wake)requestWake(); });
 
-/* ============ init ============ */
-renderBreathe(); renderMed(); setMode("breathe");
+/* ---------- init ---------- */
+renderBreathe();
+renderMed();
+setMode("breathe");
 </script>
 </body>
 </html>
