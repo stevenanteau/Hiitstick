@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- build: breathe v2 animated -->
+<!-- build: breathe v3 heads+belltext -->
 <title>Free Breathing &amp; Meditation Timer — Box Breathing, 4-7-8 &amp; more</title>
 <meta name="description" content="A free breathing and meditation timer with a calming animated stick-figure guide. Box breathing, 4-7-8, coherent breathing or your own pattern — plus a meditation timer with interval bells and ambient sound. No account, works offline, free forever.">
 <meta property="og:title" content="Breathe &amp; Meditate — free breathing and meditation timer">
@@ -45,7 +45,7 @@
   .visual{position:relative;width:min(360px,84vw);height:min(360px,84vw);margin:22px 0 6px;
     display:flex;align-items:center;justify-content:center}
   .visual canvas{position:absolute;inset:0;width:100%;height:100%}
-  .vtext{position:relative;text-align:center;pointer-events:none;z-index:2;margin-top:-32%}
+  .vtext{position:absolute;top:13%;left:0;right:0;text-align:center;pointer-events:none;z-index:2}
   .vphase{font-family:'Patrick Hand',cursive;font-size:1.5rem;color:var(--accent);margin:0}
   .vbig{font-family:'Patrick Hand',cursive;font-size:2.4rem;color:var(--ink);line-height:1;margin:2px 0 0}
   .vsub{font-size:.8rem;color:#8a9a9a;margin-top:4px}
@@ -91,6 +91,8 @@
   .switch input:checked+.slide{background:var(--accent)}
   .switch input:checked+.slide:before{transform:translateX(20px)}
   footer{padding:0 26px 34px;color:#9aa9a9;font-size:.8rem;text-align:center;max-width:820px;margin:0 auto}
+  .avatar-row{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+  .avatar-row .al{font-size:.74rem;font-weight:800;color:#8a9a9a;text-transform:uppercase;letter-spacing:.06em}
   .hide{display:none!important}
 </style>
 </head>
@@ -141,6 +143,11 @@
     <button class="sec hide" id="resetBtn">Reset</button>
   </div>
 
+  <div class="avatar-row">
+    <span class="al">Figure</span>
+    <div class="chips" id="avatarChips"></div>
+  </div>
+
   <div class="panel" id="breathePanel">
     <h2>Breathing style</h2>
     <div class="chips" id="patChips"></div>
@@ -156,7 +163,7 @@
       <span>🔔 Soft cue at each phase</span>
       <label class="switch"><input type="checkbox" id="bCue" checked><span class="slide"></span></label>
     </div>
-    <label class="small">Volume</label>
+    <label class="small">Bell volume</label>
     <div class="slider-row"><input type="range" id="bVol" min="0" max="100" value="55"><span class="v" id="bVolV">55%</span></div>
     <p class="subline" id="bInfo"></p>
   </div>
@@ -172,8 +179,10 @@
     <div class="chips" id="mIntChips"></div>
     <label class="small">Ambient sound</label>
     <div class="chips" id="mAmbChips"></div>
-    <label class="small">Volume</label>
+    <label class="small">Ambient volume</label>
     <div class="slider-row"><input type="range" id="mVol" min="0" max="100" value="55"><span class="v" id="mVolV">55%</span></div>
+    <label class="small">Bell volume</label>
+    <div class="slider-row"><input type="range" id="mBellVol" min="0" max="100" value="55"><span class="v" id="mBellVolV">55%</span></div>
     <p class="subline">A bell marks the start and end; interval bells chime along the way. Everything is synthesized — no files, works offline.</p>
   </div>
 </div>
@@ -199,7 +208,7 @@ function audioInit(){
 function vol(){ return (state.mode==="breathe"? state.bVol : state.mVol)/100; }
 function bell(v, base){
   if(!ac)return;
-  if(v==null)v=vol(); base=base||512;
+  if(v==null)v=state.bellVol/100; base=base||512;
   var t=ac.currentTime, parts=[[1,1],[2.01,0.5],[2.97,0.26],[4.16,0.12]];
   for(var i=0;i<parts.length;i++){(function(mult,amp,i){
     var o=ac.createOscillator(), g=ac.createGain();
@@ -212,7 +221,7 @@ function bell(v, base){
 }
 function tick(v, base){
   if(!ac)return;
-  if(v==null)v=vol();
+  if(v==null)v=state.bellVol/100;
   var t=ac.currentTime, o=ac.createOscillator(), g=ac.createGain();
   o.type="sine"; o.frequency.value=base||660;
   g.gain.setValueAtTime(0,t);
@@ -277,7 +286,9 @@ var state = {
   running:false, paused:false,
   elapsed:0, last:0, phases:[], cycleMs:0, totalMs:0,
   lastPhaseIdx:-1, lastBellMin:0,
-  scale:0.6, raise:0
+  scale:0.6, raise:0,
+  avatar: LS.get("avatar","man"),
+  bellVol: LS.get("bellVol",55)
 };
 
 /* ---------- build UI ---------- */
@@ -298,7 +309,7 @@ function renderBreathe(){
     b.onclick=function(){ state.bLen=+b.dataset.l; LS.set("bLen",state.bLen); renderBreathe(); syncReady(); };
   });
   $("bCue").checked=state.bCue;
-  $("bVol").value=state.bVol; $("bVolV").textContent=state.bVol+"%";
+  $("bVol").value=state.bellVol; $("bVolV").textContent=state.bellVol+"%";
   var cyc=curPattern().reduce(function(a,b){return a+b;},0);
   $("bInfo").textContent="One breath ≈ "+cyc+"s · about "+Math.round(state.bLen*60/Math.max(1,cyc))+" breaths this session.";
 }
@@ -324,6 +335,7 @@ function renderMed(){
       if(state.running&&!state.paused){ audioInit(); ambStart(state.mAmb); } };
   });
   $("mVol").value=state.mVol; $("mVolV").textContent=state.mVol+"%";
+  $("mBellVol").value=state.bellVol; $("mBellVolV").textContent=state.bellVol+"%";
 }
 
 function clampN(v){ v=Math.max(0,Math.min(20,Math.round(+v||0))); return v; }
@@ -336,8 +348,9 @@ $("cIn").oninput=$("cH1").oninput=$("cEx").oninput=$("cH2").oninput=function(){
   syncReady();
 };
 $("bCue").onchange=function(e){ state.bCue=e.target.checked; LS.set("bCue",state.bCue); };
-$("bVol").oninput=function(e){ state.bVol=+e.target.value; $("bVolV").textContent=state.bVol+"%"; LS.set("bVol",state.bVol); };
+$("bVol").oninput=function(e){ state.bellVol=+e.target.value; $("bVolV").textContent=state.bellVol+"%"; LS.set("bellVol",state.bellVol); if($("mBellVol")){$("mBellVol").value=state.bellVol;$("mBellVolV").textContent=state.bellVol+"%";} };
 $("mVol").oninput=function(e){ state.mVol=+e.target.value; $("mVolV").textContent=state.mVol+"%"; LS.set("mVol",state.mVol); if(amb){ambStart(state.mAmb);} };
+$("mBellVol").oninput=function(e){ state.bellVol=+e.target.value; $("mBellVolV").textContent=state.bellVol+"%"; LS.set("bellVol",state.bellVol); if($("bVol")){$("bVol").value=state.bellVol;$("bVolV").textContent=state.bellVol+"%";} };
 $("mCustom").oninput=function(e){
   var v=Math.max(1,Math.min(180,Math.round(+e.target.value||1))); state.mLen=v; LS.set("mLen",v);
   Array.prototype.forEach.call($("mLenChips").querySelectorAll("button"),function(b){ b.classList.toggle("on",+b.dataset.l===v); });
@@ -446,8 +459,79 @@ function fmt(ms){ ms=Math.max(0,ms); var s=Math.round(ms/1000); return Math.floo
 
 /* ---------- canvas visual + animated stick figure ---------- */
 var cv=$("cv"), ctx=cv.getContext("2d");
+
+var AVATARS=[["man","🧑 Man"],["woman","👩 Woman"],["cat","🐱 Cat"],["robot","🤖 Robot"],["horse","🐎 Horse"]];
+var HEADS={
+ woman:{rref:24,bottom:84,shapes:[
+   {t:"path",mode:"fillInk",ops:[["M",-30,58],["Q",-34,22,0,22],["Q",34,22,30,58],["L",28,92],["L",20,92],["Q",24,56,18,46],["Q",0,36,-18,46],["Q",-24,56,-20,92],["L",-28,92],["Z"]]},
+   {t:"oc",x:0,y:60,r:24}
+ ]},
+ cat:{rref:25,bottom:83,shapes:[
+   {t:"path",mode:"face",ops:[["M",-20,40],["L",-26,12],["L",2,34],["Z"]]},
+   {t:"path",mode:"face",ops:[["M",20,40],["L",26,12],["L",-2,34],["Z"]]},
+   {t:"oc",x:0,y:58,r:25},
+   {t:"dot",x:-9,y:54,r:3},{t:"dot",x:9,y:54,r:3},
+   {t:"path",mode:"stroke",ops:[["M",0,62],["L",-4,67]]},
+   {t:"path",mode:"stroke",ops:[["M",0,62],["L",4,67]]},
+   {t:"path",mode:"stroke",ops:[["M",-8,64],["L",-30,60]]},
+   {t:"path",mode:"stroke",ops:[["M",-8,68],["L",-30,70]]},
+   {t:"path",mode:"stroke",ops:[["M",8,64],["L",30,60]]},
+   {t:"path",mode:"stroke",ops:[["M",8,68],["L",30,70]]}
+ ]},
+ robot:{rref:26,bottom:80,shapes:[
+   {t:"path",mode:"stroke",ops:[["M",0,30],["L",0,20]]},
+   {t:"dot",x:0,y:16,r:5},
+   {t:"rrect",mode:"face",x:-26,y:34,w:52,h:46,r:9},
+   {t:"rrect",mode:"face",x:-32,y:50,w:6,h:14,r:2},
+   {t:"rrect",mode:"face",x:26,y:50,w:6,h:14,r:2},
+   {t:"dot",x:-10,y:52,r:4},{t:"dot",x:10,y:52,r:4},
+   {t:"path",mode:"stroke",ops:[["M",-12,68],["L",12,68]]}
+ ]},
+ horse:{rref:22,bottom:94,shapes:[
+   {t:"path",mode:"face",ops:[["M",-10,30],["L",-16,8],["L",-2,26]]},
+   {t:"path",mode:"face",ops:[["M",10,30],["L",16,8],["L",2,26]]},
+   {t:"path",mode:"face",ops:[["M",-22,42],["Q",-22,20,0,20],["Q",22,20,22,42],["L",16,84],["Q",16,94,4,94],["Q",-4,94,-4,84],["L",-4,60],["Q",-14,58,-22,42],["Z"]]},
+   {t:"dot",x:12,y:46,r:3.2},{t:"dot",x:8,y:86,r:2.6},
+   {t:"path",mode:"stroke",ops:[["M",-20,30],["Q",-30,44,-26,60],["Q",-30,70,-24,80]]}
+ ]}
+};
+function roundRect(x,y,w,h,rad){ ctx.beginPath(); ctx.moveTo(x+rad,y); ctx.arcTo(x+w,y,x+w,y+h,rad); ctx.arcTo(x+w,y+h,x,y+h,rad); ctx.arcTo(x,y+h,x,y,rad); ctx.arcTo(x,y,x+w,y,rad); ctx.closePath(); }
+function headPaint(mode,lw){
+  if(mode==="fillInk"){ ctx.fillStyle="#2b2b2b"; ctx.fill(); }
+  else if(mode==="face"){ ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=lw*0.9; ctx.strokeStyle="#2b2b2b"; ctx.stroke(); }
+  else { ctx.lineWidth=lw*0.8; ctx.strokeStyle="#2b2b2b"; ctx.stroke(); }
+}
+function drawHead(cx, chinY, r, avatar){
+  ctx.lineJoin="round"; ctx.lineCap="round";
+  if(avatar==="man"||!HEADS[avatar]){ ctx.beginPath(); ctx.arc(cx, chinY-r, r, 0, Math.PI*2); ctx.fillStyle="#2b2b2b"; ctx.fill(); return; }
+  var SF={horse:0.82,woman:0.98}; r=r*(SF[avatar]||1);
+  var H=HEADS[avatar], u=r/H.rref, lw=r*0.20;
+  function X(x){ return cx + x*u; }
+  function Y(y){ return chinY + (y-H.bottom)*u; }
+  H.shapes.forEach(function(sh){
+    if(sh.t==="dot"){ ctx.beginPath(); ctx.arc(X(sh.x),Y(sh.y),sh.r*u,0,Math.PI*2); ctx.fillStyle="#2b2b2b"; ctx.fill(); return; }
+    if(sh.t==="oc"){ ctx.beginPath(); ctx.arc(X(sh.x),Y(sh.y),sh.r*u,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=lw*0.9; ctx.strokeStyle="#2b2b2b"; ctx.stroke(); return; }
+    if(sh.t==="rrect"){ roundRect(X(sh.x),Y(sh.y),sh.w*u,sh.h*u,sh.r*u); headPaint(sh.mode,lw); return; }
+    ctx.beginPath();
+    sh.ops.forEach(function(o){
+      if(o[0]==="M")ctx.moveTo(X(o[1]),Y(o[2]));
+      else if(o[0]==="L")ctx.lineTo(X(o[1]),Y(o[2]));
+      else if(o[0]==="Q")ctx.quadraticCurveTo(X(o[1]),Y(o[2]),X(o[3]),Y(o[4]));
+      else if(o[0]==="Z")ctx.closePath();
+    });
+    headPaint(sh.mode,lw);
+  });
+}
+function renderAvatar(){
+  $("avatarChips").innerHTML=AVATARS.map(function(a){
+    return '<button class="chip '+(state.avatar===a[0]?"on":"")+'" data-av="'+a[0]+'">'+a[1]+'</button>';
+  }).join("");
+  Array.prototype.forEach.call($("avatarChips").querySelectorAll("button"),function(b){
+    b.onclick=function(){ state.avatar=b.dataset.av; LS.set("avatar",state.avatar); renderAvatar(); if(!state.running)draw(0); };
+  });
+}
 function draw(prog){
-  var W=cv.width, H=cv.height, cx=W/2, cy=H*0.52, Rmax=W*0.40;
+  var W=cv.width, H=cv.height, cx=W/2, cy=H*0.55, Rmax=W*0.40;
   ctx.clearRect(0,0,W,H);
   // faint outer ring
   ctx.beginPath(); ctx.arc(cx,cy,Rmax,0,Math.PI*2); ctx.strokeStyle="#cfe0e0"; ctx.lineWidth=4; ctx.stroke();
@@ -466,33 +550,36 @@ function draw(prog){
   }
   // stick figure
   var bob = state.mode==="meditate" ? Math.sin(state.elapsed/1400)*W*0.006 : 0;
-  drawFigure(cx, cy+W*0.05+bob, W*0.19, state.raise);
+  drawFigure(cx, cy+W*0.10+bob, W*0.18, state.raise);
 }
 function drawFigure(cx, cy, s, raise){
   ctx.save();
-  ctx.strokeStyle="#2b2b2b"; ctx.fillStyle="#2b2b2b";
-  ctx.lineWidth=s*0.085; ctx.lineCap="round"; ctx.lineJoin="round";
-  // slight lift of head/torso on inhale
+  ctx.lineCap="round"; ctx.lineJoin="round";
   var lift = raise*s*0.10;
-  var headY = cy - s*0.58 - lift;
-  ctx.beginPath(); ctx.arc(cx, headY, s*0.20, 0, Math.PI*2); ctx.fill();
-  // torso
+  var hipY = cy + s*0.10;
   var shoulderY = cy - s*0.30 - lift;
-  ctx.beginPath(); ctx.moveTo(cx, shoulderY); ctx.lineTo(cx, cy+s*0.10); ctx.stroke();
-  // arms: interpolate hands from resting-on-knees (raise 0) to overhead-open (raise 1)
+  var neckY = shoulderY - s*0.02;
+  // torso
+  ctx.strokeStyle="#2b2b2b"; ctx.lineWidth=s*0.085;
+  ctx.beginPath(); ctx.moveTo(cx, shoulderY); ctx.lineTo(cx, hipY); ctx.stroke();
+  // arms: rest on knees (raise 0) -> sweep up & open overhead (raise 1)
   function arm(dir){
-    var hx = cx + dir*( s*0.50 - raise*s*0.18 );
-    var hy = (cy+s*0.22) + raise*( (headY - s*0.55) - (cy+s*0.22) );  // sweep up past head
-    var ex = cx + dir*( s*0.30 + raise*s*0.02 );                       // elbow
+    var restHx = cx + dir*s*0.50, restHy = cy + s*0.22;
+    var upHx   = cx + dir*s*0.33, upHy   = neckY - s*0.78;
+    var hx = restHx + (upHx-restHx)*raise;
+    var hy = restHy + (upHy-restHy)*raise;
+    var ex = cx + dir*( s*0.30 + raise*s*0.02 );
     var ey = shoulderY + (hy-shoulderY)*0.45 + s*0.04;
     ctx.beginPath(); ctx.moveTo(cx, shoulderY+s*0.04);
     ctx.quadraticCurveTo(ex, ey, hx, hy); ctx.stroke();
   }
   arm(-1); arm(1);
   // crossed legs base (static)
-  ctx.beginPath(); ctx.moveTo(cx, cy+s*0.10); ctx.lineTo(cx-s*0.52, cy+s*0.32); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx, cy+s*0.10); ctx.lineTo(cx+s*0.52, cy+s*0.32); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx-s*0.52, cy+s*0.32); ctx.lineTo(cx+s*0.52, cy+s*0.32); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, hipY); ctx.lineTo(cx-s*0.52, hipY+s*0.22); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, hipY); ctx.lineTo(cx+s*0.52, hipY+s*0.22); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-s*0.52, hipY+s*0.22); ctx.lineTo(cx+s*0.52, hipY+s*0.22); ctx.stroke();
+  // head (drawn last, sits above the neck)
+  drawHead(cx, neckY, s*0.22, state.avatar);
   ctx.restore();
 }
 
@@ -505,6 +592,7 @@ document.addEventListener("visibilitychange",function(){ if(document.visibilityS
 /* ---------- init ---------- */
 renderBreathe();
 renderMed();
+renderAvatar();
 setMode("breathe");
 </script>
 </body>
