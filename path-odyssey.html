@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Odyssey Plans — three 5-year life plans (free life design worksheet)</title>
-<meta name="description" content="Sketch three very different 5-year lives — your current plan, your backup, and your wildcard — with timelines, six-word titles, and rating gauges. A free interactive Odyssey Plans exercise from Designing Your Life, with a PDF download.">
+<meta name="description" content="Sketch three very different 5-year lives, revealed one at a time — with timelines, six-word titles, and rating gauges. A free interactive Odyssey Plans exercise from Designing Your Life, with a PDF download.">
 <meta property="og:title" content="Odyssey Plans — three 5-year life plans">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hiitstick.com/path-odyssey">
@@ -24,23 +24,33 @@
     padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fbfdff;color:#5c6672}
   .pill:hover{border-color:var(--accent);color:var(--accent)}
   .pill.coffee{background:var(--coffee);border-color:#e8c900;color:#403200}
-  .wrap{max-width:840px;margin:0 auto;padding:8px 26px 70px}
+  .wrap{max-width:820px;margin:0 auto;padding:8px 26px 70px}
   h1{font-family:'Patrick Hand',cursive;font-size:2.4rem;margin:18px 0 2px;display:flex;align-items:center;gap:12px}
   h1 svg{width:46px;height:46px}
   .step{font-size:.74rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
   .lead{font-size:1.12rem;color:#4a5560;margin:8px 0}
   .lead b{color:var(--ink)}
-  section{margin-top:30px}
+  section{margin-top:26px}
   h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.6rem;margin:0 0 6px}
   p{margin:8px 0}
-  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
-  .three .t{background:#eef3f9;border-radius:12px;padding:12px 14px;font-size:.88rem}
-  .three .t b{display:block;font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.15rem;color:var(--accent);margin-bottom:3px}
+  .secret{background:#eef3f9;border:1.5px dashed var(--accent);border-radius:12px;padding:14px 16px;font-size:.95rem;color:#3f4a55}
+  .secret b{color:var(--accent)}
+  ul.mini{margin:6px 0;padding-left:20px}
+  ul.mini li{margin:3px 0}
   .example{background:var(--card);border:1.5px dashed var(--accent);border-radius:14px;padding:14px 18px;font-size:.9rem;color:#55606c}
   .example h3{font-family:'Patrick Hand',cursive;font-weight:400;margin:0 0 6px;color:var(--accent)}
   .plan{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:18px}
-  .plan .plabel{font-size:.72rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em}
-  .plan .pprompt{font-size:.9rem;color:#7b8591;margin:2px 0 12px}
+  .plan.locked{background:#f4f7fa;border-style:dashed}
+  .plabel{font-size:.72rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em}
+  .pprompt{font-size:.95rem;color:#7b8591;margin:2px 0 12px}
+  .acc-head{width:100%;text-align:left;background:none;border:none;font-family:inherit;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:10px}
+  .acc-head:disabled{cursor:default}
+  .acc-head .ah-title{font-family:'Patrick Hand',cursive;font-size:1.4rem}
+  .acc-head .ah-hint{font-size:.85rem;color:#8a94a0;font-weight:700}
+  .acc-head .ah-chev{margin-left:auto;color:var(--accent);font-weight:800;transition:transform .15s}
+  .plan.locked .acc-head .ah-title{color:#a7b1bd}
+  .plan.open .acc-head .ah-chev{transform:rotate(90deg)}
+  .acc-body{margin-top:12px}
   .fieldlabel{display:block;font-weight:800;font-size:.85rem;margin:14px 0 5px;color:#4c5560}
   input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:.95rem;background:#fbfdff;color:var(--ink)}
   input[type=text]:focus{outline:none;border-color:var(--accent)}
@@ -55,14 +65,16 @@
   .g .bar{flex:1;height:14px;background:#e2e9f0;border-radius:8px;overflow:hidden}
   .g .bar>i{display:block;height:100%;background:var(--accent);border-radius:8px}
   .g input[type=range]{flex:0 0 120px;accent-color:var(--accent);cursor:pointer}
+  .lockmsg{display:flex;align-items:center;gap:10px;color:#8a94a0;font-size:.92rem;padding:6px 0}
+  .lockmsg .lk{font-size:1.4rem}
+  .progresshint{font-size:.82rem;color:#9aa4b0;margin-top:6px}
   .actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
   button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer}
   button.primary:hover{filter:brightness(1.06)}
   .ghost{background:#fbfdff;border:1.5px solid var(--line);color:#5c6672;border-radius:12px;padding:13px 20px;font-family:inherit;font-weight:800;cursor:pointer}
   .ghost:hover{border-color:var(--accent);color:var(--accent)}
   .saved{font-size:.8rem;color:#9aa4b0;margin-top:10px}
-  footer{max-width:840px;margin:0 auto;padding:0 26px 50px;color:#9aa4b0;font-size:.82rem}
-  @media (max-width:620px){.three{grid-template-columns:1fr}}
+  footer{max-width:820px;margin:0 auto;padding:0 26px 50px;color:#9aa4b0;font-size:.82rem}
 </style>
 </head>
 <body>
@@ -85,22 +97,16 @@
     Three Odyssey Plans
   </h1>
 
-  <p class="lead">There isn't one right future — there are many. So instead of betting everything on a single plan, you sketch <b>three very different 5-year lives</b>. Seeing them side by side loosens the grip of “the one plan” and shows you what actually pulls at you.</p>
+  <p class="lead">There isn't one right future — there are many. So instead of betting everything on a single plan, you'll sketch <b>three very different 5-year lives</b>. Seeing them side by side loosens the grip of “the one plan” and shows you what actually pulls at you.</p>
 
   <section>
-    <h2>The three plans</h2>
-    <p>They should be genuinely different lives — not three flavors of the same idea.</p>
-    <div class="three">
-      <div class="t"><b>Plan A</b>That thing you do — your current life, carried five years forward.</div>
-      <div class="t"><b>Plan B</b>The backup — what you'd do if Plan A suddenly became impossible.</div>
-      <div class="t"><b>Plan C</b>The wildcard — what you'd do if money and what people think were no object.</div>
-    </div>
+    <div class="secret">🔒 <b>One at a time — no peeking.</b> Only your first plan is open right now. Finish it (a title and at least three years), and your <b>second plan unlocks</b> — with a twist we'll spring on you then. Finish that one and the <b>third</b> appears. Half the fun is not knowing what's coming.</div>
   </section>
 
   <section>
     <h2>For each plan you'll add</h2>
     <p>A <b>six-word title</b> (a headline for the life), a <b>5-year timeline</b> (a line or two per year), <b>2–3 questions</b> the plan is asking, and four gauges:</p>
-    <ul>
+    <ul class="mini">
       <li><b>Resources</b> — do you have the time, money, and skill?</li>
       <li><b>Likability</b> — how much do you like this plan?</li>
       <li><b>Confidence</b> — how sure are you that you could pull it off?</li>
@@ -114,11 +120,11 @@
   <section>
     <div id="plans"></div>
     <div class="actions">
-      <button class="primary" id="pdfBtn">⬇ Download my three plans (PDF)</button>
+      <button class="primary" id="pdfBtn">⬇ Download my plans (PDF)</button>
       <button class="ghost" id="resetBtn">Reset</button>
     </div>
     <p class="saved">Everything saves automatically in this browser — nothing is uploaded.</p>
-    <p style="font-size:.9rem;color:#7b8591;margin-top:18px">When you're done, share your plans with 3–5 supportive people. Ask only for “tell me more about…” curiosity — no critique, no advice. Notice which plan makes you lean forward.</p>
+    <p style="font-size:.9rem;color:#7b8591;margin-top:18px">When all three are done, share them with 3–5 supportive people. Ask only for “tell me more about…” curiosity — no critique, no advice. Notice which plan makes you lean forward.</p>
   </section>
 </div>
 
@@ -129,41 +135,91 @@
 var $=function(id){return document.getElementById(id);};
 var LS={get:function(k,d){try{var v=localStorage.getItem("dyl_ody_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
         set:function(k,v){try{localStorage.setItem("dyl_ody_"+k,JSON.stringify(v));}catch(e){}}};
-var PLANMETA=[
+/* Plan A is always open. B and C are the surprises — their prompts stay hidden until unlocked & revealed. */
+var REVEAL=[
   {label:"Plan A · That thing you do", prompt:"Your current life and plan, carried five years forward."},
-  {label:"Plan B · The backup", prompt:"What you'd do if Plan A suddenly became impossible."},
-  {label:"Plan C · The wildcard", prompt:"What you'd do if money and image were no object."}
+  {label:"Plan B · The backup", prompt:"Your first plan just vanished — it's off the table. What would you do instead?"},
+  {label:"Plan C · The wildcard", prompt:"Money is handled and no one would judge you. What would you do with the next five years?"}
 ];
 var METRICS=[["res","Resources"],["like","Likability"],["conf","Confidence"],["coh","Coherence"]];
 function blankPlan(){ return {title:"",years:["","","","",""],questions:"",m:{res:50,like:50,conf:50,coh:50}}; }
 var plans=LS.get("plans",[blankPlan(),blankPlan(),blankPlan()]);
 if(!Array.isArray(plans)||plans.length!==3)plans=[blankPlan(),blankPlan(),blankPlan()];
+var openState=[true,false,false]; // A open; B/C collapsed until user expands
 
 function esc(s){return (s||"").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
+function yearsFilled(pi){ return plans[pi].years.filter(function(v){return (v||"").trim();}).length; }
+function complete(pi){ return (plans[pi].title||"").trim()!=="" && yearsFilled(pi)>=3; }
+function unlocked(pi){ if(pi===0)return true; if(pi===1)return complete(0); return complete(0)&&complete(1); }
+
+function fieldsHTML(pi){
+  var pl=plans[pi];
+  var yearsHtml=pl.years.map(function(v,yi){ return '<div class="yr"><span class="yl">Year '+(yi+1)+'</span><input type="text" data-p="'+pi+'" data-yr="'+yi+'" value="'+esc(v)+'" placeholder="What happens this year?"></div>'; }).join("");
+  var gaugeHtml=METRICS.map(function(m){ var val=pl.m[m[0]]; return '<div class="g"><span class="gl">'+m[1]+'</span><span class="bar"><i data-bar="'+pi+'-'+m[0]+'" style="width:'+val+'%"></i></span><input type="range" min="0" max="100" value="'+val+'" data-p="'+pi+'" data-m="'+m[0]+'"></div>'; }).join("");
+  return '<label class="fieldlabel">Six-word title</label><input type="text" data-p="'+pi+'" data-title="1" value="'+esc(pl.title)+'" placeholder="A six-word headline for this life">'+
+    '<label class="fieldlabel">5-year timeline</label><div class="years">'+yearsHtml+'</div>'+
+    '<label class="fieldlabel">2–3 questions this plan is asking</label><textarea data-p="'+pi+'" data-q="1" placeholder="What does this plan make you wonder?">'+esc(pl.questions)+'</textarea>'+
+    '<label class="fieldlabel">Rate the plan</label><div class="gauges">'+gaugeHtml+'</div>';
+}
+
 function render(){
   var wrap=$("plans"); wrap.innerHTML="";
-  plans.forEach(function(pl,pi){
-    var d=document.createElement("div"); d.className="plan";
-    var yearsHtml=pl.years.map(function(v,yi){ return '<div class="yr"><span class="yl">Year '+(yi+1)+'</span><input type="text" data-p="'+pi+'" data-yr="'+yi+'" value="'+esc(v)+'" placeholder="What happens this year?"></div>'; }).join("");
-    var gaugeHtml=METRICS.map(function(m){ var val=pl.m[m[0]]; return '<div class="g"><span class="gl">'+m[1]+'</span><span class="bar"><i data-bar="'+pi+'-'+m[0]+'" style="width:'+val+'%"></i></span><input type="range" min="0" max="100" value="'+val+'" data-p="'+pi+'" data-m="'+m[0]+'"></div>'; }).join("");
-    d.innerHTML='<div class="plabel">'+PLANMETA[pi].label+'</div><div class="pprompt">'+PLANMETA[pi].prompt+'</div>'+
-      '<label class="fieldlabel">Six-word title</label><input type="text" data-p="'+pi+'" data-title="1" value="'+esc(pl.title)+'" placeholder="A six-word headline for this life">'+
-      '<label class="fieldlabel">5-year timeline</label><div class="years">'+yearsHtml+'</div>'+
-      '<label class="fieldlabel">2–3 questions this plan is asking</label><textarea data-p="'+pi+'" data-q="1" placeholder="What does this plan make you wonder?">'+esc(pl.questions)+'</textarea>'+
-      '<label class="fieldlabel">Rate the plan</label><div class="gauges">'+gaugeHtml+'</div>';
+  // Plan A — always open, no accordion
+  var a=document.createElement("div"); a.className="plan";
+  a.innerHTML='<div class="plabel">'+REVEAL[0].label+'</div><div class="pprompt">'+REVEAL[0].prompt+'</div>'+fieldsHTML(0);
+  wrap.appendChild(a);
+  // Plans B and C — accordions
+  [1,2].forEach(function(pi){
+    var d=document.createElement("div"); d.className="plan accordion"; d.dataset.plan=pi;
+    d.innerHTML=
+      '<button class="acc-head" data-toggle="'+pi+'"><span class="ah-title"></span><span class="ah-hint"></span><span class="ah-chev">▸</span></button>'+
+      '<div class="acc-body" style="display:none">'+
+        '<div class="plabel reveal"></div><div class="pprompt reveal"></div>'+fieldsHTML(pi)+
+      '</div>';
     wrap.appendChild(d);
   });
   bind();
+  refresh();
 }
 function bind(){
   var w=$("plans");
-  Array.prototype.forEach.call(w.querySelectorAll('input[data-title]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].title=el.value; save(); }); });
-  Array.prototype.forEach.call(w.querySelectorAll('input[data-yr]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].years[+el.dataset.yr]=el.value; save(); }); });
+  Array.prototype.forEach.call(w.querySelectorAll('input[data-title]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].title=el.value; save(); refresh(); }); });
+  Array.prototype.forEach.call(w.querySelectorAll('input[data-yr]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].years[+el.dataset.yr]=el.value; save(); refresh(); }); });
   Array.prototype.forEach.call(w.querySelectorAll('textarea[data-q]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].questions=el.value; save(); }); });
   Array.prototype.forEach.call(w.querySelectorAll('input[type=range]'),function(el){ el.addEventListener("input",function(){ var pi=+el.dataset.p,m=el.dataset.m; plans[pi].m[m]=+el.value; var bar=w.querySelector('[data-bar="'+pi+'-'+m+'"]'); if(bar)bar.style.width=el.value+"%"; save(); }); });
+  Array.prototype.forEach.call(w.querySelectorAll('.acc-head'),function(btn){ btn.addEventListener("click",function(){ var pi=+btn.dataset.toggle; if(!unlocked(pi))return; openState[pi]=!openState[pi]; refresh(); }); });
+}
+function refresh(){
+  [1,2].forEach(function(pi){
+    var card=$("plans").querySelector('.accordion[data-plan="'+pi+'"]'); if(!card)return;
+    var head=card.querySelector('.acc-head'), title=card.querySelector('.ah-title'), hint=card.querySelector('.ah-hint'),
+        body=card.querySelector('.acc-body'), rl=card.querySelector('.plabel.reveal'), rp=card.querySelector('.pprompt.reveal');
+    var un=unlocked(pi);
+    card.classList.toggle("locked",!un);
+    if(!un){
+      // locked — hide the surprise entirely
+      head.disabled=true;
+      title.textContent="🔒 "+(pi===1?"Your second plan":"Your third plan");
+      var need = pi===1 ? "Finish Plan A to unlock" : (complete(0)? "Finish Plan B to unlock" : "Finish Plans A and B to unlock");
+      hint.textContent=need;
+      card.querySelector('.ah-chev').style.visibility="hidden";
+      body.style.display="none";
+      openState[pi]=false;
+    } else {
+      head.disabled=false;
+      card.querySelector('.ah-chev').style.visibility="visible";
+      title.textContent = openState[pi] ? "" : "✨ "+(pi===1?"Your second plan is unlocked":"Your third plan is unlocked");
+      hint.textContent = openState[pi] ? "" : "tap to reveal";
+      card.classList.toggle("open",openState[pi]);
+      // reveal prompt only when expanded
+      rl.textContent = openState[pi] ? REVEAL[pi].label : "";
+      rp.textContent = openState[pi] ? REVEAL[pi].prompt : "";
+      body.style.display = openState[pi] ? "block" : "none";
+    }
+  });
 }
 function save(){ LS.set("plans",plans); }
-$("resetBtn").onclick=function(){ if(confirm("Clear all three plans and start over?")){ plans=[blankPlan(),blankPlan(),blankPlan()]; save(); render(); } };
+$("resetBtn").onclick=function(){ if(confirm("Clear all three plans and start over?")){ plans=[blankPlan(),blankPlan(),blankPlan()]; openState=[true,false,false]; save(); render(); } };
 
 var phFontB64=null;
 function pdfFont(doc){ return new Promise(function(res){ try{
@@ -177,16 +233,19 @@ $("pdfBtn").onclick=function(){
   if(!window.jspdf)return alert("PDF library failed to load — check your connection.");
   var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
   pdfFont(doc).then(function(ff){
-    var M=18, W=210-2*M;
+    var M=18, W=210-2*M, printed=0;
     plans.forEach(function(pl,pi){
-      if(pi>0) doc.addPage();
+      // only print plans the user actually opened/started
+      var hasContent=(pl.title||"").trim()||pl.years.some(function(v){return (v||"").trim();})||(pl.questions||"").trim();
+      if(pi>0 && !unlocked(pi) && !hasContent) return;
+      if(printed>0) doc.addPage(); printed++;
       var y=20;
-      doc.setFont(ff); doc.setFontSize(11); doc.setTextColor(63,110,165); doc.text(PLANMETA[pi].label,M,y); y+=8;
+      doc.setFont(ff); doc.setFontSize(11); doc.setTextColor(63,110,165); doc.text(REVEAL[pi].label,M,y); y+=8;
       doc.setFontSize(20); doc.setTextColor(43,43,43);
       var title=doc.splitTextToSize(pl.title||"(untitled plan)", W); doc.text(title,M,y); y+=title.length*8+2;
       doc.setDrawColor(63,110,165); doc.setLineWidth(.5); doc.line(M,y,M+60,y); y+=8;
       doc.setFontSize(12); doc.setTextColor(63,110,165); doc.text("5-year timeline",M,y); y+=7;
-      doc.setFontSize(10); doc.setTextColor(45,50,58);
+      doc.setFontSize(10);
       pl.years.forEach(function(v,yi){ doc.setFont(ff); doc.setTextColor(63,110,165); doc.text("Year "+(yi+1),M,y);
         doc.setTextColor(45,50,58); var l=doc.splitTextToSize(v||"—",W-22); doc.text(l,M+18,y); y+=Math.max(6,l.length*5.4); });
       y+=4;
@@ -203,6 +262,7 @@ $("pdfBtn").onclick=function(){
       });
       doc.setFontSize(8); doc.setTextColor(160,164,176); doc.text("hiitstick.com/path — adapted from Designing Your Life",105,290,{align:"center"});
     });
+    if(printed===0){ doc.setFont(ff); doc.setFontSize(14); doc.text("Start your first plan to build a PDF.",105,40,{align:"center"}); }
     doc.save("my-odyssey-plans.pdf");
   });
 };
