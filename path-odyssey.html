@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odyssey Plans — three 5-year life plans (free life design worksheet)</title>
+<meta name="description" content="Sketch three very different 5-year lives — your current plan, your backup, and your wildcard — with timelines, six-word titles, and rating gauges. A free interactive Odyssey Plans exercise from Designing Your Life, with a PDF download.">
+<meta property="og:title" content="Odyssey Plans — three 5-year life plans">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/path-odyssey">
+<link rel="canonical" href="https://hiitstick.com/path-odyssey">
+<meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="tHcINoNeV5qvscLEmxUxzGe1oP1LPsPMuwVT_jlhIQE" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{--paper:#f1f5f8;--ink:#2b2b2b;--accent:#3f6ea5;--accent2:#3d8168;--coffee:#ffdd00;--line:#d9e3ec;--card:#ffffff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;line-height:1.55}
+  header{padding:20px 26px 4px}
+  .toplinks{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:800;font-size:.85rem;
+    padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fbfdff;color:#5c6672}
+  .pill:hover{border-color:var(--accent);color:var(--accent)}
+  .pill.coffee{background:var(--coffee);border-color:#e8c900;color:#403200}
+  .wrap{max-width:840px;margin:0 auto;padding:8px 26px 70px}
+  h1{font-family:'Patrick Hand',cursive;font-size:2.4rem;margin:18px 0 2px;display:flex;align-items:center;gap:12px}
+  h1 svg{width:46px;height:46px}
+  .step{font-size:.74rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+  .lead{font-size:1.12rem;color:#4a5560;margin:8px 0}
+  .lead b{color:var(--ink)}
+  section{margin-top:30px}
+  h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.6rem;margin:0 0 6px}
+  p{margin:8px 0}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+  .three .t{background:#eef3f9;border-radius:12px;padding:12px 14px;font-size:.88rem}
+  .three .t b{display:block;font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.15rem;color:var(--accent);margin-bottom:3px}
+  .example{background:var(--card);border:1.5px dashed var(--accent);border-radius:14px;padding:14px 18px;font-size:.9rem;color:#55606c}
+  .example h3{font-family:'Patrick Hand',cursive;font-weight:400;margin:0 0 6px;color:var(--accent)}
+  .plan{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:18px}
+  .plan .plabel{font-size:.72rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em}
+  .plan .pprompt{font-size:.9rem;color:#7b8591;margin:2px 0 12px}
+  .fieldlabel{display:block;font-weight:800;font-size:.85rem;margin:14px 0 5px;color:#4c5560}
+  input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:.95rem;background:#fbfdff;color:var(--ink)}
+  input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .years{display:flex;flex-direction:column;gap:6px}
+  .yr{display:flex;align-items:center;gap:8px}
+  .yr .yl{flex:0 0 58px;font-weight:800;font-size:.8rem;color:var(--accent)}
+  textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:.95rem;resize:vertical;min-height:66px;background:#fbfdff;color:var(--ink)}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .gauges{margin-top:8px}
+  .g{display:flex;align-items:center;gap:10px;margin:8px 0}
+  .g .gl{flex:0 0 92px;font-weight:800;font-size:.82rem}
+  .g .bar{flex:1;height:14px;background:#e2e9f0;border-radius:8px;overflow:hidden}
+  .g .bar>i{display:block;height:100%;background:var(--accent);border-radius:8px}
+  .g input[type=range]{flex:0 0 120px;accent-color:var(--accent);cursor:pointer}
+  .actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer}
+  button.primary:hover{filter:brightness(1.06)}
+  .ghost{background:#fbfdff;border:1.5px solid var(--line);color:#5c6672;border-radius:12px;padding:13px 20px;font-family:inherit;font-weight:800;cursor:pointer}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .saved{font-size:.8rem;color:#9aa4b0;margin-top:10px}
+  footer{max-width:840px;margin:0 auto;padding:0 26px 50px;color:#9aa4b0;font-size:.82rem}
+  @media (max-width:620px){.three{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="toplinks">
+    <a class="pill" href="/path">← Finding Your Path</a>
+    <a class="pill" href="/path-compass">Compass</a>
+    <a class="pill coffee" href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+    <a class="pill" href="/">🏠 Home</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <span class="step">Activity 3 · Imagine futures</span>
+  <h1>
+    <svg viewBox="0 0 100 100" fill="none" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 78 Q30 40 50 40 Q70 40 80 22"/><path d="M20 78 Q34 60 50 60 Q66 60 80 46"/><path d="M20 78 Q28 24 50 24 Q72 24 80 12"/>
+      <circle cx="80" cy="22" r="4" fill="#2b2b2b" stroke="none"/><circle cx="80" cy="46" r="4" fill="#2b2b2b" stroke="none"/><circle cx="80" cy="12" r="4" fill="#2b2b2b" stroke="none"/>
+    </svg>
+    Three Odyssey Plans
+  </h1>
+
+  <p class="lead">There isn't one right future — there are many. So instead of betting everything on a single plan, you sketch <b>three very different 5-year lives</b>. Seeing them side by side loosens the grip of “the one plan” and shows you what actually pulls at you.</p>
+
+  <section>
+    <h2>The three plans</h2>
+    <p>They should be genuinely different lives — not three flavors of the same idea.</p>
+    <div class="three">
+      <div class="t"><b>Plan A</b>That thing you do — your current life, carried five years forward.</div>
+      <div class="t"><b>Plan B</b>The backup — what you'd do if Plan A suddenly became impossible.</div>
+      <div class="t"><b>Plan C</b>The wildcard — what you'd do if money and what people think were no object.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>For each plan you'll add</h2>
+    <p>A <b>six-word title</b> (a headline for the life), a <b>5-year timeline</b> (a line or two per year), <b>2–3 questions</b> the plan is asking, and four gauges:</p>
+    <ul>
+      <li><b>Resources</b> — do you have the time, money, and skill?</li>
+      <li><b>Likability</b> — how much do you like this plan?</li>
+      <li><b>Confidence</b> — how sure are you that you could pull it off?</li>
+      <li><b>Coherence</b> — does it fit your Workview &amp; Lifeview?</li>
+    </ul>
+    <div class="example"><h3>A sample title &amp; question:</h3>
+      <i>“Creating community, one drink at a time.”</i> — asking: <i>Am I ready for this much risk? Can a bar really build community? Will it pay the bills?</i>
+    </div>
+  </section>
+
+  <section>
+    <div id="plans"></div>
+    <div class="actions">
+      <button class="primary" id="pdfBtn">⬇ Download my three plans (PDF)</button>
+      <button class="ghost" id="resetBtn">Reset</button>
+    </div>
+    <p class="saved">Everything saves automatically in this browser — nothing is uploaded.</p>
+    <p style="font-size:.9rem;color:#7b8591;margin-top:18px">When you're done, share your plans with 3–5 supportive people. Ask only for “tell me more about…” curiosity — no critique, no advice. Notice which plan makes you lean forward.</p>
+  </section>
+</div>
+
+<footer>Adapted from the Odyssey Plans exercise in <i>Designing Your Life</i> (Burnett &amp; Evans).</footer>
+
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var LS={get:function(k,d){try{var v=localStorage.getItem("dyl_ody_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+        set:function(k,v){try{localStorage.setItem("dyl_ody_"+k,JSON.stringify(v));}catch(e){}}};
+var PLANMETA=[
+  {label:"Plan A · That thing you do", prompt:"Your current life and plan, carried five years forward."},
+  {label:"Plan B · The backup", prompt:"What you'd do if Plan A suddenly became impossible."},
+  {label:"Plan C · The wildcard", prompt:"What you'd do if money and image were no object."}
+];
+var METRICS=[["res","Resources"],["like","Likability"],["conf","Confidence"],["coh","Coherence"]];
+function blankPlan(){ return {title:"",years:["","","","",""],questions:"",m:{res:50,like:50,conf:50,coh:50}}; }
+var plans=LS.get("plans",[blankPlan(),blankPlan(),blankPlan()]);
+if(!Array.isArray(plans)||plans.length!==3)plans=[blankPlan(),blankPlan(),blankPlan()];
+
+function esc(s){return (s||"").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
+function render(){
+  var wrap=$("plans"); wrap.innerHTML="";
+  plans.forEach(function(pl,pi){
+    var d=document.createElement("div"); d.className="plan";
+    var yearsHtml=pl.years.map(function(v,yi){ return '<div class="yr"><span class="yl">Year '+(yi+1)+'</span><input type="text" data-p="'+pi+'" data-yr="'+yi+'" value="'+esc(v)+'" placeholder="What happens this year?"></div>'; }).join("");
+    var gaugeHtml=METRICS.map(function(m){ var val=pl.m[m[0]]; return '<div class="g"><span class="gl">'+m[1]+'</span><span class="bar"><i data-bar="'+pi+'-'+m[0]+'" style="width:'+val+'%"></i></span><input type="range" min="0" max="100" value="'+val+'" data-p="'+pi+'" data-m="'+m[0]+'"></div>'; }).join("");
+    d.innerHTML='<div class="plabel">'+PLANMETA[pi].label+'</div><div class="pprompt">'+PLANMETA[pi].prompt+'</div>'+
+      '<label class="fieldlabel">Six-word title</label><input type="text" data-p="'+pi+'" data-title="1" value="'+esc(pl.title)+'" placeholder="A six-word headline for this life">'+
+      '<label class="fieldlabel">5-year timeline</label><div class="years">'+yearsHtml+'</div>'+
+      '<label class="fieldlabel">2–3 questions this plan is asking</label><textarea data-p="'+pi+'" data-q="1" placeholder="What does this plan make you wonder?">'+esc(pl.questions)+'</textarea>'+
+      '<label class="fieldlabel">Rate the plan</label><div class="gauges">'+gaugeHtml+'</div>';
+    wrap.appendChild(d);
+  });
+  bind();
+}
+function bind(){
+  var w=$("plans");
+  Array.prototype.forEach.call(w.querySelectorAll('input[data-title]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].title=el.value; save(); }); });
+  Array.prototype.forEach.call(w.querySelectorAll('input[data-yr]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].years[+el.dataset.yr]=el.value; save(); }); });
+  Array.prototype.forEach.call(w.querySelectorAll('textarea[data-q]'),function(el){ el.addEventListener("input",function(){ plans[+el.dataset.p].questions=el.value; save(); }); });
+  Array.prototype.forEach.call(w.querySelectorAll('input[type=range]'),function(el){ el.addEventListener("input",function(){ var pi=+el.dataset.p,m=el.dataset.m; plans[pi].m[m]=+el.value; var bar=w.querySelector('[data-bar="'+pi+'-'+m+'"]'); if(bar)bar.style.width=el.value+"%"; save(); }); });
+}
+function save(){ LS.set("plans",plans); }
+$("resetBtn").onclick=function(){ if(confirm("Clear all three plans and start over?")){ plans=[blankPlan(),blankPlan(),blankPlan()]; save(); render(); } };
+
+var phFontB64=null;
+function pdfFont(doc){ return new Promise(function(res){ try{
+  if(phFontB64){doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");return res("PH");}
+  fetch("https://fonts.gstatic.com/s/patrickhand/v23/LDI1apSQOAYtSuYWp8ZhfYeMWcjKm7sp8g.ttf").then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(buf){
+    var u=new Uint8Array(buf),s="";for(var i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+    phFontB64=btoa(s);doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");res("PH");
+  }).catch(function(){res("helvetica");});
+}catch(e){res("helvetica");}});}
+$("pdfBtn").onclick=function(){
+  if(!window.jspdf)return alert("PDF library failed to load — check your connection.");
+  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+  pdfFont(doc).then(function(ff){
+    var M=18, W=210-2*M;
+    plans.forEach(function(pl,pi){
+      if(pi>0) doc.addPage();
+      var y=20;
+      doc.setFont(ff); doc.setFontSize(11); doc.setTextColor(63,110,165); doc.text(PLANMETA[pi].label,M,y); y+=8;
+      doc.setFontSize(20); doc.setTextColor(43,43,43);
+      var title=doc.splitTextToSize(pl.title||"(untitled plan)", W); doc.text(title,M,y); y+=title.length*8+2;
+      doc.setDrawColor(63,110,165); doc.setLineWidth(.5); doc.line(M,y,M+60,y); y+=8;
+      doc.setFontSize(12); doc.setTextColor(63,110,165); doc.text("5-year timeline",M,y); y+=7;
+      doc.setFontSize(10); doc.setTextColor(45,50,58);
+      pl.years.forEach(function(v,yi){ doc.setFont(ff); doc.setTextColor(63,110,165); doc.text("Year "+(yi+1),M,y);
+        doc.setTextColor(45,50,58); var l=doc.splitTextToSize(v||"—",W-22); doc.text(l,M+18,y); y+=Math.max(6,l.length*5.4); });
+      y+=4;
+      doc.setFontSize(12); doc.setTextColor(63,110,165); doc.text("Questions this plan asks",M,y); y+=7;
+      doc.setFontSize(10); doc.setTextColor(45,50,58); var q=doc.splitTextToSize(pl.questions||"—",W); doc.text(q,M,y); y+=q.length*5.4+8;
+      doc.setFontSize(12); doc.setTextColor(63,110,165); doc.text("Dashboard",M,y); y+=8;
+      METRICS.forEach(function(m){
+        doc.setFont(ff); doc.setFontSize(10); doc.setTextColor(45,50,58); doc.text(m[1],M,y+1);
+        var bx=M+34, bw=W-60, val=pl.m[m[0]];
+        doc.setFillColor(226,233,240); doc.roundedRect(bx,y-3,bw,5,2,2,"F");
+        doc.setFillColor(63,110,165); doc.roundedRect(bx,y-3,bw*val/100,5,2,2,"F");
+        doc.setTextColor(63,110,165); doc.text(val+"%",bx+bw+4,y+1);
+        y+=9;
+      });
+      doc.setFontSize(8); doc.setTextColor(160,164,176); doc.text("hiitstick.com/path — adapted from Designing Your Life",105,290,{align:"center"});
+    });
+    doc.save("my-odyssey-plans.pdf");
+  });
+};
+
+render();
+</script>
+</body>
+</html>

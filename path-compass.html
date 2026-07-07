@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workview &amp; Lifeview — build your compass (free life design worksheet)</title>
+<meta name="description" content="Write your Workview and Lifeview — short reflections on why you work and why we're here — then check that they line up. A free interactive compass exercise from Designing Your Life, with a PDF download. No account.">
+<meta property="og:title" content="Workview & Lifeview — build your compass">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/path-compass">
+<link rel="canonical" href="https://hiitstick.com/path-compass">
+<meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="tHcINoNeV5qvscLEmxUxzGe1oP1LPsPMuwVT_jlhIQE" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{--paper:#f1f5f8;--ink:#2b2b2b;--accent:#3f6ea5;--accent2:#3d8168;--coffee:#ffdd00;--line:#d9e3ec;--card:#ffffff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;line-height:1.55}
+  header{padding:20px 26px 4px}
+  .toplinks{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:800;font-size:.85rem;
+    padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fbfdff;color:#5c6672}
+  .pill:hover{border-color:var(--accent);color:var(--accent)}
+  .pill.coffee{background:var(--coffee);border-color:#e8c900;color:#403200}
+  .wrap{max-width:820px;margin:0 auto;padding:8px 26px 70px}
+  h1{font-family:'Patrick Hand',cursive;font-size:2.4rem;margin:18px 0 2px;display:flex;align-items:center;gap:12px}
+  h1 svg{width:46px;height:46px}
+  .step{font-size:.74rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+  .lead{font-size:1.12rem;color:#4a5560;margin:8px 0}
+  .lead b{color:var(--ink)}
+  section{margin-top:34px}
+  h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.6rem;margin:0 0 6px}
+  p{margin:8px 0}
+  .prompts{background:#eef3f9;border-radius:12px;padding:12px 16px;font-size:.9rem;color:#3f4a55}
+  .prompts b{color:var(--accent)}
+  .prompts ul{margin:6px 0 0;padding-left:20px}
+  .prompts li{margin:3px 0}
+  .example{background:var(--card);border:1.5px dashed var(--accent);border-radius:14px;padding:14px 18px;font-size:.92rem;color:#55606c}
+  .example h3{font-family:'Patrick Hand',cursive;font-weight:400;margin:0 0 6px;color:var(--accent)}
+  .example i{color:#7b8591}
+  textarea{width:100%;margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;
+    font-family:inherit;font-size:1rem;resize:vertical;min-height:180px;background:#fbfdff;color:var(--ink);line-height:1.6}
+  textarea.short{min-height:90px}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .count{font-size:.8rem;color:#9aa4b0;margin-top:5px;text-align:right}
+  .count b{color:var(--accent2)}
+  label.q{display:block;font-weight:800;margin-top:18px;font-size:.98rem}
+  label.q span{font-weight:600;color:#7b8591;font-size:.86rem;display:block;margin-top:2px}
+  .actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer}
+  button.primary:hover{filter:brightness(1.06)}
+  .ghost{background:#fbfdff;border:1.5px solid var(--line);color:#5c6672;border-radius:12px;padding:13px 20px;font-family:inherit;font-weight:800;cursor:pointer}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .saved{font-size:.8rem;color:#9aa4b0;margin-top:10px}
+  .divider{text-align:center;color:var(--accent);font-family:'Patrick Hand',cursive;font-size:1.4rem;margin:36px 0 0}
+  footer{max-width:820px;margin:0 auto;padding:0 26px 50px;color:#9aa4b0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="toplinks">
+    <a class="pill" href="/path">← Finding Your Path</a>
+    <a class="pill" href="/path-dashboard">Dashboard</a>
+    <a class="pill coffee" href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+    <a class="pill" href="/">🏠 Home</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <span class="step">Activity 2 · Build a compass</span>
+  <h1>
+    <svg viewBox="0 0 100 100" fill="none" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="50" cy="50" r="36"/>
+      <path d="M50 50 L63 31 L50 50 L37 69 Z" fill="#3f6ea5" stroke="#3f6ea5"/>
+      <circle cx="50" cy="50" r="3.5" fill="#2b2b2b" stroke="none"/>
+    </svg>
+    Your Compass
+  </h1>
+
+  <p class="lead">A compass has two needles: a <b>Workview</b> (what work is for) and a <b>Lifeview</b> (what life is for). Written down and read together, they help you tell whether a path is heading “true north” — even when you don't yet know the destination.</p>
+
+  <section>
+    <h2>Why do this?</h2>
+    <p>Big decisions get easier when you know what you actually believe. Most of us have never put our philosophy of work or life into words — so we drift by other people's definitions of success. Writing these two short reflections gives you a reference point you can hold any opportunity up against. The goal isn't a perfect essay; it's an honest one.</p>
+    <p><b>A tip:</b> write about <i>why</i>, not <i>what</i>. Not “I want to be a nurse,” but “work matters to me because…”. Aim for a paragraph or two each — around 250 words is plenty.</p>
+  </section>
+
+  <section>
+    <h2>1 · Your Workview</h2>
+    <div class="prompts"><b>Let these questions pull the writing out of you:</b>
+      <ul>
+        <li>Why work at all? What's work <i>for</i>?</li>
+        <li>What does work mean to you — and how does it serve others and society?</li>
+        <li>What makes work good or worthwhile?</li>
+        <li>What does money have to do with it?</li>
+        <li>How do experience, growth, and fulfillment fit in?</li>
+      </ul>
+    </div>
+    <div class="example"><h3>A snippet, to show the tone:</h3>
+      <i>“I believe work is how I turn my attention into something useful for other people. Money matters, but as fuel, not as the scoreboard. Good work stretches me a little and leaves the people around me better than it found them…”</i>
+    </div>
+    <textarea id="workview" placeholder="I believe work is…"></textarea>
+    <div class="count"><b id="wvCount">0</b> words</div>
+  </section>
+
+  <div class="divider">✦</div>
+
+  <section>
+    <h2>2 · Your Lifeview</h2>
+    <div class="prompts"><b>And these for the bigger picture:</b>
+      <ul>
+        <li>Why are we here? What's the meaning or purpose of life?</li>
+        <li>What's the relationship between you and others — family, community, world?</li>
+        <li>What is good, and what is evil?</li>
+        <li>Is there a higher power, or something transcendent?</li>
+        <li>What's the role of joy, sorrow, justice, love, and peace?</li>
+      </ul>
+    </div>
+    <div class="example"><h3>Again, just the tone:</h3>
+      <i>“I think life is mostly about paying attention and being kind while I'm here. Meaning isn't handed to you — you make it, in small acts, with the people you love. Sorrow is the price of caring, and worth paying…”</i>
+    </div>
+    <textarea id="lifeview" placeholder="I believe life is…"></textarea>
+    <div class="count"><b id="lvCount">0</b> words</div>
+  </section>
+
+  <div class="divider">✦</div>
+
+  <section>
+    <h2>3 · Read them together</h2>
+    <p>Now hold both up to the light. A good compass is <b>coherent</b> — your work and life views point roughly the same way.</p>
+    <label class="q">Where do they complement each other? <span>Where do your views on work and life reinforce one another?</span></label>
+    <textarea class="short" id="complement" placeholder="They agree that…"></textarea>
+    <label class="q">Where do they clash? <span>Any tension between what you believe about work and about life?</span></label>
+    <textarea class="short" id="clash" placeholder="They pull against each other when…"></textarea>
+    <label class="q">Does one drive the other? <span>Does your Lifeview shape your Workview, or the reverse?</span></label>
+    <textarea class="short" id="drive" placeholder="For me, ___ leads and ___ follows because…"></textarea>
+
+    <div class="actions">
+      <button class="primary" id="pdfBtn">⬇ Download my compass (PDF)</button>
+      <button class="ghost" id="resetBtn">Reset</button>
+    </div>
+    <p class="saved">Your writing saves automatically in this browser — nothing is uploaded.</p>
+  </section>
+</div>
+
+<footer>Adapted from the Workview &amp; Lifeview exercises in <i>Designing Your Life</i> (Burnett &amp; Evans).</footer>
+
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var FIELDS=["workview","lifeview","complement","clash","drive"];
+var LS={get:function(k,d){try{var v=localStorage.getItem("dyl_comp_"+k);return v==null?d:v;}catch(e){return d;}},
+        set:function(k,v){try{localStorage.setItem("dyl_comp_"+k,v);}catch(e){}}};
+function words(t){ t=(t||"").trim(); return t?t.split(/\s+/).length:0; }
+FIELDS.forEach(function(id){
+  var el=$(id); el.value=LS.get(id,"");
+  el.addEventListener("input",function(){ LS.set(id,el.value); updateCounts(); });
+});
+function updateCounts(){ $("wvCount").textContent=words($("workview").value); $("lvCount").textContent=words($("lifeview").value); }
+updateCounts();
+$("resetBtn").onclick=function(){ if(confirm("Clear your compass and start over?")){ FIELDS.forEach(function(id){ $(id).value=""; LS.set(id,""); }); updateCounts(); } };
+
+var phFontB64=null;
+function pdfFont(doc){ return new Promise(function(res){ try{
+  if(phFontB64){doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");return res("PH");}
+  fetch("https://fonts.gstatic.com/s/patrickhand/v23/LDI1apSQOAYtSuYWp8ZhfYeMWcjKm7sp8g.ttf").then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(buf){
+    var u=new Uint8Array(buf),s="";for(var i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+    phFontB64=btoa(s);doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");res("PH");
+  }).catch(function(){res("helvetica");});
+}catch(e){res("helvetica");}});}
+$("pdfBtn").onclick=function(){
+  if(!window.jspdf)return alert("PDF library failed to load — check your connection.");
+  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+  pdfFont(doc).then(function(ff){
+    var M=20, W=210-2*M, y;
+    function head(){ doc.setFont(ff); doc.setFontSize(24); doc.setTextColor(43,43,43); doc.text("My Compass",105,20,{align:"center"});
+      doc.setDrawColor(63,110,165); doc.setLineWidth(.6); doc.line(84,24,126,24); y=36; }
+    function section(title,txt){
+      if(y>250){ doc.addPage(); y=24; }
+      doc.setFont(ff); doc.setFontSize(15); doc.setTextColor(63,110,165); doc.text(title,M,y); y+=7;
+      doc.setFontSize(11); doc.setTextColor(45,50,58);
+      var lines=doc.splitTextToSize((txt||"—").trim()||"—", W);
+      for(var i=0;i<lines.length;i++){ if(y>282){doc.addPage();y=24;} doc.text(lines[i],M,y); y+=5.6; }
+      y+=8;
+    }
+    head();
+    section("Workview — why I work", $("workview").value);
+    section("Lifeview — why we're here", $("lifeview").value);
+    section("Where they complement each other", $("complement").value);
+    section("Where they clash", $("clash").value);
+    section("Which one drives the other", $("drive").value);
+    doc.setFontSize(8); doc.setTextColor(160,164,176); doc.text("hiitstick.com/path — adapted from Designing Your Life",105,290,{align:"center"});
+    doc.save("my-compass.pdf");
+  });
+};
+</script>
+</body>
+</html>
