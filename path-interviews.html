@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype Conversations — life design interviews (free worksheet)</title>
+<meta name="description" content="Plan life design interviews — informal conversations with people living the work you're curious about. A free interactive planner with an outreach script and PDF, from Designing Your Life. No account.">
+<meta property="og:title" content="Prototype Conversations — life design interviews">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/path-interviews">
+<link rel="canonical" href="https://hiitstick.com/path-interviews">
+<meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="tHcINoNeV5qvscLEmxUxzGe1oP1LPsPMuwVT_jlhIQE" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{--paper:#f1f5f8;--ink:#2b2b2b;--accent:#3f6ea5;--accent2:#3d8168;--coffee:#ffdd00;--line:#d9e3ec;--card:#ffffff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;line-height:1.55}
+  header{padding:20px 26px 4px}
+  .toplinks{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:800;font-size:.85rem;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fbfdff;color:#5c6672}
+  .pill:hover{border-color:var(--accent);color:var(--accent)}
+  .pill.coffee{background:var(--coffee);border-color:#e8c900;color:#403200}
+  .wrap{max-width:820px;margin:0 auto;padding:8px 26px 70px}
+  h1{font-family:'Patrick Hand',cursive;font-size:2.4rem;margin:18px 0 2px;display:flex;align-items:center;gap:12px}
+  h1 svg{width:46px;height:46px}
+  .step{font-size:.74rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+  .lead{font-size:1.12rem;color:#4a5560;margin:8px 0}
+  .lead b{color:var(--ink)}
+  section{margin-top:28px}
+  h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.6rem;margin:0 0 6px}
+  p{margin:8px 0}
+  ul.q{margin:6px 0;padding-left:20px} ul.q li{margin:4px 0;color:#3f4a55}
+  .callout{background:#eef3f9;border-left:4px solid var(--accent);border-radius:0 12px 12px 0;padding:12px 16px;font-size:.95rem;color:#3f4a55}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:16px}
+  .prow{border:1.5px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;background:#fbfdff;position:relative}
+  .prow .num{font-weight:800;color:var(--accent);font-size:.9rem}
+  .prow .del{position:absolute;top:10px;right:10px;border:none;background:none;color:#c2b79b;font-size:1.1rem;cursor:pointer}
+  .prow .del:hover{color:var(--accent)}
+  .flabel{display:block;font-weight:800;font-size:.82rem;margin:12px 0 5px;color:#4c5560}
+  input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:.95rem;background:#fff;color:var(--ink)}
+  input[type=text]:focus{outline:none;border-color:var(--accent)}
+  textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:.95rem;resize:vertical;min-height:52px;background:#fff;color:var(--ink)}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  button.add{background:#eef3f9;border:1.5px dashed var(--accent);color:var(--accent);border-radius:10px;padding:11px;font-family:inherit;font-weight:800;cursor:pointer;width:100%;margin-top:12px}
+  button.add:hover{background:#e3ecf6}
+  .scriptbox{background:#eef3f9;border-radius:12px;padding:14px 16px;margin-top:10px;font-family:'Patrick Hand',cursive;font-size:1.15rem;color:#2b3a48;line-height:1.55}
+  .scriptbox .blank{color:#adb8c4}
+  .fillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .fillrow .fc{flex:1;min-width:140px}
+  .fillrow .fc label{font-size:.72rem;font-weight:800;color:#7b8591;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px}
+  .actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer}
+  button.primary:hover{filter:brightness(1.06)}
+  .ghost{background:#fbfdff;border:1.5px solid var(--line);color:#5c6672;border-radius:12px;padding:13px 20px;font-family:inherit;font-weight:800;cursor:pointer}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .saved{font-size:.8rem;color:#9aa4b0;margin-top:10px}
+  .next{display:block;margin-top:30px;text-align:center;text-decoration:none;font-weight:800;color:var(--accent);border:1.5px dashed var(--accent);border-radius:14px;padding:14px}
+  footer{max-width:820px;margin:0 auto;padding:0 26px 50px;color:#9aa4b0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="toplinks">
+    <a class="pill" href="/path">← Finding Your Path</a>
+    <a class="pill" href="/path-mindmap">Mind Map</a>
+    <a class="pill coffee" href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+    <a class="pill" href="/">🏠 Home</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <span class="step">Activity 7 · Prototype by talking</span>
+  <h1>
+    <svg viewBox="0 0 100 100" fill="none" stroke="#2b2b2b" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 26 L60 26 Q70 26 70 36 L70 52 Q70 62 60 62 L40 62 L28 74 L30 62 L22 62 Q18 62 18 52 Z"/>
+      <path d="M30 40 L58 40 M30 48 L50 48"/>
+    </svg>
+    Prototype Conversations
+  </h1>
+
+  <p class="lead">The fastest way to learn what a path is really like is to ask someone who's on it. A “life design interview” is just a friendly conversation where you collect someone's <b>story</b> — what they love, what they don't, and how they got there.</p>
+
+  <section>
+    <h2>Why do this?</h2>
+    <p>Job postings and articles tell you the polished version. Real people tell you the truth — and doing enough of these quietly opens doors that were never posted. The one rule: it's <b>their</b> story, not your job interview. If you catch yourself pitching, flip it back to them.</p>
+  </section>
+
+  <section>
+    <h2>How to ask</h2>
+    <div class="callout">“I'm really interested in what you do and would love to hear your story. Could I buy you a coffee sometime and learn about your experience?”</div>
+    <p style="margin-top:12px"><b>Good questions to bring:</b></p>
+    <ul class="q">
+      <li>How did you end up doing what you do?</li>
+      <li>What's a typical day actually like?</li>
+      <li>What do you love most — and find most draining?</li>
+      <li>What would you tell someone considering this path?</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Who will you talk to?</h2>
+    <div class="card">
+      <div id="list"></div>
+      <button class="add" id="addBtn">＋ Add a person</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Your outreach message</h2>
+    <p>Fill these in and a ready-to-send note appears below.</p>
+    <div class="card">
+      <div class="fillrow">
+        <div class="fc"><label>Your name</label><input type="text" id="fName" placeholder="Alex"></div>
+        <div class="fc"><label>Who referred you (optional)</label><input type="text" id="fRef" placeholder="Jordan"></div>
+        <div class="fc"><label>What they do / you're into</label><input type="text" id="fWork" placeholder="community organizing"></div>
+      </div>
+      <div class="scriptbox" id="script"></div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="pdfBtn">⬇ Download my plan (PDF)</button>
+      <button class="ghost" id="resetBtn">Reset</button>
+    </div>
+    <p class="saved">Everything saves automatically in this browser — nothing is uploaded.</p>
+    <a class="next" href="/path-team">Next activity → Build your design team</a>
+  </section>
+</div>
+
+<footer>Adapted from the Prototype Conversations exercise in <i>Designing Your Life</i> (Burnett &amp; Evans).</footer>
+
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var LS={get:function(k,d){try{var v=localStorage.getItem("dyl_int_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+        set:function(k,v){try{localStorage.setItem("dyl_int_"+k,JSON.stringify(v));}catch(e){}}};
+var rows=LS.get("rows",[{who:"",why:"",learn:"",qs:""}]);
+if(!Array.isArray(rows)||!rows.length)rows=[{who:"",why:"",learn:"",qs:""}];
+var FILL=["fName","fRef","fWork"];
+
+function esc(s){return (s||"").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
+function renderList(){
+  var w=$("list"); w.innerHTML="";
+  rows.forEach(function(r,i){
+    var d=document.createElement("div"); d.className="prow";
+    d.innerHTML='<span class="num">Person '+(i+1)+'</span><button class="del" title="Remove">✕</button>'+
+      '<label class="flabel">Who? (name or role)</label><input type="text" data-f="who" value="'+esc(r.who)+'" placeholder="e.g. Maria, a UX researcher at a hospital">'+
+      '<label class="flabel">Why this person?</label><input type="text" data-f="why" value="'+esc(r.why)+'" placeholder="They live the life I\'m curious about">'+
+      '<label class="flabel">What do you want to learn?</label><input type="text" data-f="learn" value="'+esc(r.learn)+'" placeholder="What the day-to-day is really like">'+
+      '<label class="flabel">Key questions to ask</label><textarea data-f="qs" placeholder="Two or three things you most want to know…">'+esc(r.qs)+'</textarea>';
+    w.appendChild(d);
+    Array.prototype.forEach.call(d.querySelectorAll("[data-f]"),function(el){ el.addEventListener("input",function(){ rows[i][el.dataset.f]=el.value; save(); }); });
+    d.querySelector(".del").onclick=function(){ rows.splice(i,1); if(!rows.length)rows=[{who:"",why:"",learn:"",qs:""}]; save(); renderList(); };
+  });
+}
+$("addBtn").onclick=function(){ rows.push({who:"",why:"",learn:"",qs:""}); save(); renderList(); };
+FILL.forEach(function(id){ var el=$(id); el.value=LS.get(id,""); el.addEventListener("input",function(){ LS.set(id,el.value); renderScript(); }); });
+function blankSpan(t){ return '<span class="blank">'+t+'</span>'; }
+function renderScript(){
+  var name=$("fName").value.trim(), ref=$("fRef").value.trim(), work=$("fWork").value.trim();
+  var refPart = ref ? (ref+" suggested I reach out. ") : "";
+  var s="Hi [their name], I'm "+(name||blankSpan("your name"))+". "+
+    (ref?(esc(ref)+" suggested I reach out. "):blankSpan("(a mutual friend suggested I reach out) "))+
+    "I'm really interested in "+(work?esc(work):blankSpan("what you do"))+
+    " and would love to hear your story. Could I buy you a coffee sometime and learn about your experience?";
+  $("script").innerHTML=s;
+}
+function save(){ LS.set("rows",rows); }
+$("resetBtn").onclick=function(){ if(confirm("Clear your plan and start over?")){ rows=[{who:"",why:"",learn:"",qs:""}]; FILL.forEach(function(id){LS.set(id,"");$(id).value="";}); save(); renderList(); renderScript(); } };
+
+var phFontB64=null;
+function pdfFont(doc){ return new Promise(function(res){ try{
+  if(phFontB64){doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");return res("PH");}
+  fetch("https://fonts.gstatic.com/s/patrickhand/v23/LDI1apSQOAYtSuYWp8ZhfYeMWcjKm7sp8g.ttf").then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(buf){
+    var u=new Uint8Array(buf),s="";for(var i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+    phFontB64=btoa(s);doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");res("PH");
+  }).catch(function(){res("helvetica");});
+}catch(e){res("helvetica");}});}
+$("pdfBtn").onclick=function(){
+  if(!window.jspdf)return alert("PDF library failed to load — check your connection.");
+  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+  pdfFont(doc).then(function(ff){
+    var M=18,W=210-2*M,y=20;
+    doc.setFont(ff);doc.setFontSize(24);doc.setTextColor(43,43,43);doc.text("My Conversation Plan",105,y,{align:"center"});
+    doc.setDrawColor(63,110,165);doc.setLineWidth(.6);doc.line(70,y+4,140,y+4);y+=16;
+    var n=0;
+    rows.forEach(function(r){
+      if(!(r.who||"").trim())return; n++;
+      if(y>256){doc.addPage();y=24;}
+      doc.setFont(ff);doc.setFontSize(13);doc.setTextColor(63,110,165);doc.text("Person "+n+": "+r.who,M,y);y+=6;
+      doc.setFontSize(10);doc.setTextColor(45,50,58);
+      function ln(lbl,v){ if(!(v||"").trim())return; doc.setTextColor(63,110,165);doc.text(lbl,M,y);doc.setTextColor(45,50,58);var l=doc.splitTextToSize(v,W-28);doc.text(l,M+26,y);y+=Math.max(5,l.length*5)+1; }
+      ln("Why:",r.why); ln("To learn:",r.learn); ln("Questions:",r.qs); y+=5;
+    });
+    if(n===0){ doc.setFont(ff);doc.setFontSize(12);doc.setTextColor(120,133,145);doc.text("Add a person to build your PDF.",M,y);y+=10; }
+    if(y>250){doc.addPage();y=24;}
+    doc.setFont(ff);doc.setFontSize(13);doc.setTextColor(63,110,165);doc.text("My outreach message",M,y);y+=7;
+    doc.setFontSize(11);doc.setTextColor(45,50,58);
+    var name=$("fName").value.trim()||"[your name]", ref=$("fRef").value.trim(), work=$("fWork").value.trim()||"what you do";
+    var msg="Hi [their name], I'm "+name+". "+(ref?(ref+" suggested I reach out. "):"")+"I'm really interested in "+work+" and would love to hear your story. Could I buy you a coffee sometime and learn about your experience?";
+    doc.text(doc.splitTextToSize(msg,W),M,y);
+    doc.setFontSize(8);doc.setTextColor(160,164,176);doc.text("hiitstick.com/path — adapted from Designing Your Life",105,290,{align:"center"});
+    doc.save("my-conversation-plan.pdf");
+  });
+};
+
+renderList(); renderScript();
+</script>
+</body>
+</html>

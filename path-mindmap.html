@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Mapping — get unstuck &amp; find ideas (free life design worksheet)</title>
+<meta name="description" content="Free interactive mind-mapping tool from the Designing Your Life method. Free-associate around a topic, watch a doodle mind map grow, then combine outer ideas into new concepts. Download a PDF. No account.">
+<meta property="og:title" content="Mind Mapping — get unstuck & find ideas">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/path-mindmap">
+<link rel="canonical" href="https://hiitstick.com/path-mindmap">
+<meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="tHcINoNeV5qvscLEmxUxzGe1oP1LPsPMuwVT_jlhIQE" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{--paper:#f1f5f8;--ink:#2b2b2b;--accent:#3f6ea5;--accent2:#3d8168;--coffee:#ffdd00;--line:#d9e3ec;--card:#ffffff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;line-height:1.55}
+  header{padding:20px 26px 4px}
+  .toplinks{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:800;font-size:.85rem;
+    padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fbfdff;color:#5c6672}
+  .pill:hover{border-color:var(--accent);color:var(--accent)}
+  .pill.coffee{background:var(--coffee);border-color:#e8c900;color:#403200}
+  .wrap{max-width:840px;margin:0 auto;padding:8px 26px 70px}
+  h1{font-family:'Patrick Hand',cursive;font-size:2.4rem;margin:18px 0 2px;display:flex;align-items:center;gap:12px}
+  h1 svg{width:46px;height:46px}
+  .step{font-size:.74rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+  .lead{font-size:1.12rem;color:#4a5560;margin:8px 0}
+  .lead b{color:var(--ink)}
+  section{margin-top:28px}
+  h2{font-family:'Patrick Hand',cursive;font-weight:400;font-size:1.6rem;margin:0 0 6px}
+  p{margin:8px 0}
+  ol.how{margin:8px 0;padding-left:20px}
+  ol.how li{margin:5px 0}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:16px}
+  .mapwrap{width:100%;background:#fbfdff;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+  .mapwrap svg{width:100%;height:auto;display:block}
+  .center-in{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .center-in label{font-weight:800;font-size:.85rem;color:#4c5560;flex:0 0 auto}
+  input[type=text]{border:1.5px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;font-size:.92rem;background:#fff;color:var(--ink);width:100%}
+  input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .branch{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px;background:#fbfdff}
+  .branch .bhead{display:flex;align-items:center;gap:8px}
+  .branch .bhead .bi{flex:0 0 auto;font-weight:800;color:var(--accent);font-size:.82rem}
+  .branch .twigs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;margin-top:8px;padding-left:10px}
+  .branch .del{border:none;background:none;color:#c2b79b;font-size:1.05rem;cursor:pointer}
+  .branch .del:hover{color:var(--accent)}
+  button.add{background:#eef3f9;border:1.5px dashed var(--accent);color:var(--accent);border-radius:10px;padding:10px;font-family:inherit;font-weight:800;cursor:pointer;width:100%;margin-top:10px}
+  button.add:hover{background:#e3ecf6}
+  .concept{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:#fbfdff}
+  .combine{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  select{border:1.5px solid var(--line);border-radius:9px;padding:8px;font-family:inherit;font-size:.9rem;background:#fff;color:var(--ink);flex:1;min-width:100px}
+  select:focus{outline:none;border-color:var(--accent)}
+  .plus{font-weight:800;color:var(--accent)}
+  .concept input[type=text]{margin-top:8px}
+  textarea{width:100%;margin-top:8px;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:.95rem;resize:vertical;min-height:52px;background:#fff;color:var(--ink)}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer}
+  button.primary:hover{filter:brightness(1.06)}
+  .ghost{background:#fbfdff;border:1.5px solid var(--line);color:#5c6672;border-radius:12px;padding:13px 20px;font-family:inherit;font-weight:800;cursor:pointer}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .saved{font-size:.8rem;color:#9aa4b0;margin-top:10px}
+  .next{display:block;margin-top:30px;text-align:center;text-decoration:none;font-weight:800;color:var(--accent);border:1.5px dashed var(--accent);border-radius:14px;padding:14px}
+  footer{max-width:840px;margin:0 auto;padding:0 26px 50px;color:#9aa4b0;font-size:.82rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="toplinks">
+    <a class="pill" href="/path">← Finding Your Path</a>
+    <a class="pill coffee" href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+    <a class="pill" href="/">🏠 Home</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <span class="step">Activity 6 · Get unstuck</span>
+  <h1>
+    <svg viewBox="0 0 100 100" fill="none" stroke="#2b2b2b" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="50" cy="50" r="12"/>
+      <path d="M50 38 L50 18 M62 46 L82 32 M62 58 L82 72 M38 54 L20 70 M40 44 L18 34"/>
+      <circle cx="50" cy="16" r="5" fill="#2b2b2b" stroke="none"/><circle cx="84" cy="30" r="5" fill="#2b2b2b" stroke="none"/><circle cx="84" cy="74" r="5" fill="#2b2b2b" stroke="none"/><circle cx="18" cy="72" r="5" fill="#2b2b2b" stroke="none"/><circle cx="16" cy="32" r="5" fill="#2b2b2b" stroke="none"/>
+    </svg>
+    Mind Mapping
+  </h1>
+
+  <p class="lead">Stuck usually means “out of ideas.” A mind map fixes that fast: you free-associate around a word until surprising combinations appear — and one of them might be your next thing to try.</p>
+
+  <section>
+    <h2>How it works</h2>
+    <ol class="how">
+      <li>Put a word you care about in the <b>center</b> — something that engages or energizes you.</li>
+      <li>Add <b>branches</b>: the first words it makes you think of. Don't judge them.</li>
+      <li>Off each branch, add <b>twigs</b>: quick free-associations. Work fast, bypass your inner censor.</li>
+      <li>Look at the <b>outer edge</b>, grab three items that jump out, and <b>combine</b> them into a wild new idea.</li>
+    </ol>
+    <p>The goal is quantity and surprise, not a tidy diagram. Weird is good.</p>
+  </section>
+
+  <section>
+    <h2>Your mind map</h2>
+    <div class="card">
+      <div class="mapwrap"><div id="mapHost"></div></div>
+    </div>
+    <div class="card">
+      <div class="center-in"><label>Center word</label><input type="text" id="center" placeholder="e.g. Teaching, Water, Building things…"></div>
+      <div id="branches"></div>
+      <button class="add" id="addBranch">＋ Add a branch</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Combine into concepts</h2>
+    <p>Pick three words from the outer edge that spark something, and mash them into a possible role, project, or adventure. The stranger the better — you can tame it later.</p>
+    <div class="card">
+      <div id="concepts"></div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="pdfBtn">⬇ Download my mind map (PDF)</button>
+      <button class="ghost" id="resetBtn">Reset</button>
+    </div>
+    <p class="saved">Everything saves automatically in this browser — nothing is uploaded.</p>
+    <a class="next" href="/path-interviews">Next activity → Plan prototype conversations</a>
+  </section>
+</div>
+
+<footer>Adapted from the mind-mapping exercise in <i>Designing Your Life</i> (Burnett &amp; Evans).</footer>
+
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var LS={get:function(k,d){try{var v=localStorage.getItem("dyl_mm_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+        set:function(k,v){try{localStorage.setItem("dyl_mm_"+k,JSON.stringify(v));}catch(e){}}};
+function blank(){ return {center:"",branches:[{w:"",twigs:["","",""]},{w:"",twigs:["","",""]},{w:"",twigs:["","",""]}],concepts:[{a:"",b:"",c:"",name:"",sketch:""},{a:"",b:"",c:"",name:"",sketch:""}]}; }
+var state=LS.get("state",blank());
+if(!state||!state.branches)state=blank();
+
+function esc(s){return (s||"").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
+function save(){ LS.set("state",state); }
+
+/* ---- geometry shared by SVG + PDF ---- */
+function computeNodes(cx,cy,R1,R2){
+  var out={center:state.center,branches:[]};
+  var filled=state.branches.filter(function(b){return (b.w||"").trim();});
+  var nb=filled.length||1;
+  filled.forEach(function(b,i){
+    var a=-Math.PI/2 + i*(2*Math.PI/nb);
+    var bx=cx+Math.cos(a)*R1, by=cy+Math.sin(a)*R1;
+    var tw=b.twigs.filter(function(t){return (t||"").trim();});
+    var twigs=[];
+    var gap=0.34, n=tw.length;
+    tw.forEach(function(t,j){
+      var ta=a + (j-(n-1)/2)*gap;
+      twigs.push({w:t, x:cx+Math.cos(ta)*R2, y:cy+Math.sin(ta)*R2, a:ta});
+    });
+    out.branches.push({w:b.w, x:bx, y:by, a:a, twigs:twigs});
+  });
+  return out;
+}
+function renderMap(){
+  var W=640,H=560,cx=W/2,cy=H/2,R1=110,R2=210;
+  var nodes=computeNodes(cx,cy,R1,R2);
+  var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'"><rect width="'+W+'" height="'+H+'" fill="#fbfdff"/>';
+  // lines first
+  nodes.branches.forEach(function(b){
+    s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="#9db6d0" stroke-width="3"/>';
+    b.twigs.forEach(function(t){ s+='<line x1="'+b.x.toFixed(1)+'" y1="'+b.y.toFixed(1)+'" x2="'+t.x.toFixed(1)+'" y2="'+t.y.toFixed(1)+'" stroke="#c3d3e3" stroke-width="2"/>'; });
+  });
+  // twig labels
+  nodes.branches.forEach(function(b){
+    b.twigs.forEach(function(t){
+      var anchor=t.x<cx-6?"end":(t.x>cx+6?"start":"middle");
+      s+='<circle cx="'+t.x.toFixed(1)+'" cy="'+t.y.toFixed(1)+'" r="3.5" fill="#7b93ad"/>';
+      s+='<text x="'+(t.x+ (anchor==="end"?-6:anchor==="start"?6:0)).toFixed(1)+'" y="'+(t.y+4).toFixed(1)+'" font-family="Patrick Hand,cursive" font-size="15" fill="#4a5560" text-anchor="'+anchor+'">'+esc(t.w)+'</text>';
+    });
+  });
+  // branch nodes
+  nodes.branches.forEach(function(b){
+    s+='<circle cx="'+b.x.toFixed(1)+'" cy="'+b.y.toFixed(1)+'" r="20" fill="#eef3f9" stroke="#3f6ea5" stroke-width="2.5"/>';
+    s+='<text x="'+b.x.toFixed(1)+'" y="'+(b.y+5).toFixed(1)+'" font-family="Patrick Hand,cursive" font-size="16" fill="#2b3a48" text-anchor="middle">'+esc(b.w)+'</text>';
+  });
+  // center
+  var cfs=Math.min(20,Math.max(11,Math.floor(150/((state.center||"?").length||1))));
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="38" fill="#3f6ea5"/>';
+  s+='<text x="'+cx+'" y="'+(cy+cfs*0.34)+'" font-family="Patrick Hand,cursive" font-size="'+cfs+'" fill="#fff" text-anchor="middle">'+esc(state.center||"?")+'</text>';
+  s+='</svg>';
+  $("mapHost").innerHTML=s;
+}
+
+function renderBranches(){
+  var w=$("branches"); w.innerHTML="";
+  state.branches.forEach(function(b,i){
+    var d=document.createElement("div"); d.className="branch";
+    d.innerHTML='<div class="bhead"><span class="bi">Branch '+(i+1)+'</span><input type="text" data-b="'+i+'" value="'+esc(b.w)+'" placeholder="First word it makes you think of"><button class="del" title="Remove">✕</button></div>'+
+      '<div class="twigs">'+b.twigs.map(function(t,j){return '<input type="text" data-tb="'+i+'" data-tj="'+j+'" value="'+esc(t)+'" placeholder="free-associate…">';}).join("")+'</div>';
+    w.appendChild(d);
+    d.querySelector('input[data-b]').addEventListener("input",function(e){ state.branches[i].w=e.target.value; save(); renderMap(); refreshOptions(); });
+    Array.prototype.forEach.call(d.querySelectorAll('input[data-tb]'),function(el){ el.addEventListener("input",function(){ state.branches[i].twigs[+el.dataset.tj]=el.value; save(); renderMap(); refreshOptions(); }); });
+    d.querySelector(".del").onclick=function(){ state.branches.splice(i,1); if(!state.branches.length)state.branches=[{w:"",twigs:["","",""]}]; save(); renderBranches(); renderMap(); refreshOptions(); };
+  });
+}
+$("addBranch").onclick=function(){ state.branches.push({w:"",twigs:["","",""]}); save(); renderBranches(); };
+
+function allWords(){
+  var list=[];
+  state.branches.forEach(function(b){ if((b.w||"").trim())list.push(b.w.trim()); b.twigs.forEach(function(t){ if((t||"").trim())list.push(t.trim()); }); });
+  return list;
+}
+function renderConcepts(){
+  var w=$("concepts"); w.innerHTML="";
+  state.concepts.forEach(function(c,i){
+    var d=document.createElement("div"); d.className="concept";
+    function sel(key){ return '<select data-c="'+i+'" data-k="'+key+'"><option value="">— pick —</option></select>'; }
+    d.innerHTML='<div class="combine">'+sel("a")+'<span class="plus">+</span>'+sel("b")+'<span class="plus">+</span>'+sel("c")+'</div>'+
+      '<input type="text" data-c="'+i+'" data-k="name" value="'+esc(c.name)+'" placeholder="Name the mashup — e.g. “Pirate camp for kids”">'+
+      '<textarea data-c="'+i+'" data-k="sketch" placeholder="Napkin sketch: what would this actually be?">'+esc(c.sketch)+'</textarea>';
+    w.appendChild(d);
+    Array.prototype.forEach.call(d.querySelectorAll("select"),function(s){ s.addEventListener("change",function(){ state.concepts[i][s.dataset.k]=s.value; save(); }); });
+    Array.prototype.forEach.call(d.querySelectorAll("input,textarea"),function(el){ el.addEventListener("input",function(){ state.concepts[i][el.dataset.k]=el.value; save(); }); });
+  });
+  refreshOptions();
+}
+function refreshOptions(){
+  var words=allWords();
+  Array.prototype.forEach.call($("concepts").querySelectorAll("select"),function(s){
+    var cur=state.concepts[+s.dataset.c][s.dataset.k];
+    s.innerHTML='<option value="">— pick —</option>'+words.map(function(x){return '<option value="'+esc(x)+'" '+(cur===x?"selected":"")+'>'+esc(x)+'</option>';}).join("");
+  });
+}
+$("center").value=state.center||"";
+$("center").addEventListener("input",function(e){ state.center=e.target.value; save(); renderMap(); });
+$("resetBtn").onclick=function(){ if(confirm("Clear your mind map and start over?")){ state=blank(); save(); $("center").value=""; renderBranches(); renderConcepts(); renderMap(); } };
+
+/* ---- PDF ---- */
+var phFontB64=null;
+function pdfFont(doc){ return new Promise(function(res){ try{
+  if(phFontB64){doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");return res("PH");}
+  fetch("https://fonts.gstatic.com/s/patrickhand/v23/LDI1apSQOAYtSuYWp8ZhfYeMWcjKm7sp8g.ttf").then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(buf){
+    var u=new Uint8Array(buf),s="";for(var i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+    phFontB64=btoa(s);doc.addFileToVFS("PH.ttf",phFontB64);doc.addFont("PH.ttf","PH","normal");res("PH");
+  }).catch(function(){res("helvetica");});
+}catch(e){res("helvetica");}});}
+$("pdfBtn").onclick=function(){
+  if(!window.jspdf)return alert("PDF library failed to load — check your connection.");
+  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+  pdfFont(doc).then(function(ff){
+    doc.setFont(ff);doc.setFontSize(24);doc.setTextColor(43,43,43);doc.text("My Mind Map",105,20,{align:"center"});
+    doc.setDrawColor(63,110,165);doc.setLineWidth(.6);doc.line(80,24,130,24);
+    // draw map centered
+    var cx=105, cy=150, R1=42, R2=78;
+    var nodes=computeNodes(cx,cy,R1,R2);
+    doc.setDrawColor(157,182,208);doc.setLineWidth(1);
+    nodes.branches.forEach(function(b){ doc.line(cx,cy,b.x,b.y);
+      doc.setDrawColor(195,211,227);doc.setLineWidth(.6); b.twigs.forEach(function(t){ doc.line(b.x,b.y,t.x,t.y); }); doc.setDrawColor(157,182,208);doc.setLineWidth(1); });
+    doc.setFont(ff);
+    nodes.branches.forEach(function(b){ b.twigs.forEach(function(t){
+      doc.setFillColor(123,147,173); doc.circle(t.x,t.y,1.1,"F");
+      doc.setFontSize(9);doc.setTextColor(74,85,96);
+      var an=t.x<cx-2?"right":(t.x>cx+2?"left":"center"); doc.text(t.w,t.x+(an==="right"?-2:an==="left"?2:0),t.y+1,{align:an});
+    });});
+    nodes.branches.forEach(function(b){
+      doc.setFillColor(238,243,249);doc.setDrawColor(63,110,165);doc.setLineWidth(.8);doc.circle(b.x,b.y,7,"FD");
+      doc.setFontSize(10);doc.setTextColor(43,58,72);doc.text(b.w,b.x,b.y+1,{align:"center"});
+    });
+    doc.setFillColor(63,110,165);doc.circle(cx,cy,13,"F");
+    var cfs=Math.min(13,Math.max(7,Math.floor(95/((state.center||"?").length||1))));
+    doc.setFontSize(cfs);doc.setTextColor(255,255,255);doc.text(state.center||"?",cx,cy+cfs*0.14,{align:"center"});
+    // concepts
+    var y=235;
+    doc.setFontSize(15);doc.setTextColor(63,110,165);doc.text("Concepts I combined",20,y);y+=8;
+    state.concepts.forEach(function(c){
+      if(!(c.name||"").trim() && !(c.a||c.b||c.c))return;
+      if(y>280){doc.addPage();y=24;}
+      var combo=[c.a,c.b,c.c].filter(Boolean).join(" + ");
+      doc.setFontSize(12);doc.setTextColor(43,43,43);doc.text((c.name||"(unnamed)")+(combo?"  ["+combo+"]":""),20,y);y+=6;
+      if((c.sketch||"").trim()){ doc.setFontSize(10);doc.setTextColor(60,66,74);var l=doc.splitTextToSize(c.sketch,170);doc.text(l,20,y);y+=l.length*5+3; }
+      y+=2;
+    });
+    doc.setFontSize(8);doc.setTextColor(160,164,176);doc.text("hiitstick.com/path — adapted from Designing Your Life",105,290,{align:"center"});
+    doc.save("my-mind-map.pdf");
+  });
+};
+
+renderBranches(); renderConcepts(); renderMap();
+</script>
+</body>
+</html>
