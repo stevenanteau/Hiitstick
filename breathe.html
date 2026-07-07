@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- build: breathe v3 heads+belltext -->
+<!-- build: breathe v4 textabove nohorse -->
 <title>Free Breathing &amp; Meditation Timer — Box Breathing, 4-7-8 &amp; more</title>
 <meta name="description" content="A free breathing and meditation timer with a calming animated stick-figure guide. Box breathing, 4-7-8, coherent breathing or your own pattern — plus a meditation timer with interval bells and ambient sound. No account, works offline, free forever.">
 <meta property="og:title" content="Breathe &amp; Meditate — free breathing and meditation timer">
@@ -42,10 +42,10 @@
     padding:9px 22px;border-radius:999px;cursor:pointer}
   .modes button.on{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(60,80,80,.12)}
 
-  .visual{position:relative;width:min(360px,84vw);height:min(360px,84vw);margin:22px 0 6px;
+  .visual{position:relative;width:min(320px,78vw);height:min(320px,78vw);margin:6px 0 6px;
     display:flex;align-items:center;justify-content:center}
   .visual canvas{position:absolute;inset:0;width:100%;height:100%}
-  .vtext{position:absolute;top:13%;left:0;right:0;text-align:center;pointer-events:none;z-index:2}
+  .vtext{text-align:center;margin:16px 0 2px;min-height:96px;display:flex;flex-direction:column;justify-content:flex-end}
   .vphase{font-family:'Patrick Hand',cursive;font-size:1.5rem;color:var(--accent);margin:0}
   .vbig{font-family:'Patrick Hand',cursive;font-size:2.4rem;color:var(--ink);line-height:1;margin:2px 0 0}
   .vsub{font-size:.8rem;color:#8a9a9a;margin-top:4px}
@@ -129,13 +129,13 @@
     <button id="mMeditate">🧘 Meditate</button>
   </div>
 
+  <div class="vtext">
+    <p class="vphase" id="vphase">Ready</p>
+    <p class="vbig" id="vbig">Box</p>
+    <p class="vsub" id="vsub">4-4-4-4 · 3 min</p>
+  </div>
   <div class="visual">
     <canvas id="cv" width="700" height="700"></canvas>
-    <div class="vtext">
-      <p class="vphase" id="vphase">Ready</p>
-      <p class="vbig" id="vbig">Box</p>
-      <p class="vsub" id="vsub">4-4-4-4 · 3 min</p>
-    </div>
   </div>
 
   <div class="controls">
@@ -460,7 +460,7 @@ function fmt(ms){ ms=Math.max(0,ms); var s=Math.round(ms/1000); return Math.floo
 /* ---------- canvas visual + animated stick figure ---------- */
 var cv=$("cv"), ctx=cv.getContext("2d");
 
-var AVATARS=[["man","🧑 Man"],["woman","👩 Woman"],["cat","🐱 Cat"],["robot","🤖 Robot"],["horse","🐎 Horse"]];
+var AVATARS=[["man","🧑 Man"],["woman","👩 Woman"],["cat","🐱 Cat"],["robot","🤖 Robot"]];
 var HEADS={
  woman:{rref:24,bottom:84,shapes:[
    {t:"path",mode:"fillInk",ops:[["M",-30,58],["Q",-34,22,0,22],["Q",34,22,30,58],["L",28,92],["L",20,92],["Q",24,56,18,46],["Q",0,36,-18,46],["Q",-24,56,-20,92],["L",-28,92],["Z"]]},
@@ -486,13 +486,6 @@ var HEADS={
    {t:"rrect",mode:"face",x:26,y:50,w:6,h:14,r:2},
    {t:"dot",x:-10,y:52,r:4},{t:"dot",x:10,y:52,r:4},
    {t:"path",mode:"stroke",ops:[["M",-12,68],["L",12,68]]}
- ]},
- horse:{rref:22,bottom:94,shapes:[
-   {t:"path",mode:"face",ops:[["M",-10,30],["L",-16,8],["L",-2,26]]},
-   {t:"path",mode:"face",ops:[["M",10,30],["L",16,8],["L",2,26]]},
-   {t:"path",mode:"face",ops:[["M",-22,42],["Q",-22,20,0,20],["Q",22,20,22,42],["L",16,84],["Q",16,94,4,94],["Q",-4,94,-4,84],["L",-4,60],["Q",-14,58,-22,42],["Z"]]},
-   {t:"dot",x:12,y:46,r:3.2},{t:"dot",x:8,y:86,r:2.6},
-   {t:"path",mode:"stroke",ops:[["M",-20,30],["Q",-30,44,-26,60],["Q",-30,70,-24,80]]}
  ]}
 };
 function roundRect(x,y,w,h,rad){ ctx.beginPath(); ctx.moveTo(x+rad,y); ctx.arcTo(x+w,y,x+w,y+h,rad); ctx.arcTo(x+w,y+h,x,y+h,rad); ctx.arcTo(x,y+h,x,y,rad); ctx.arcTo(x,y,x+w,y,rad); ctx.closePath(); }
@@ -504,7 +497,7 @@ function headPaint(mode,lw){
 function drawHead(cx, chinY, r, avatar){
   ctx.lineJoin="round"; ctx.lineCap="round";
   if(avatar==="man"||!HEADS[avatar]){ ctx.beginPath(); ctx.arc(cx, chinY-r, r, 0, Math.PI*2); ctx.fillStyle="#2b2b2b"; ctx.fill(); return; }
-  var SF={horse:0.82,woman:0.98}; r=r*(SF[avatar]||1);
+  var SF={woman:0.98}; r=r*(SF[avatar]||1);
   var H=HEADS[avatar], u=r/H.rref, lw=r*0.20;
   function X(x){ return cx + x*u; }
   function Y(y){ return chinY + (y-H.bottom)*u; }
@@ -531,7 +524,7 @@ function renderAvatar(){
   });
 }
 function draw(prog){
-  var W=cv.width, H=cv.height, cx=W/2, cy=H*0.55, Rmax=W*0.40;
+  var W=cv.width, H=cv.height, cx=W/2, cy=H*0.52, Rmax=W*0.40;
   ctx.clearRect(0,0,W,H);
   // faint outer ring
   ctx.beginPath(); ctx.arc(cx,cy,Rmax,0,Math.PI*2); ctx.strokeStyle="#cfe0e0"; ctx.lineWidth=4; ctx.stroke();
@@ -550,7 +543,7 @@ function draw(prog){
   }
   // stick figure
   var bob = state.mode==="meditate" ? Math.sin(state.elapsed/1400)*W*0.006 : 0;
-  drawFigure(cx, cy+W*0.10+bob, W*0.18, state.raise);
+  drawFigure(cx, cy+W*0.06+bob, W*0.19, state.raise);
 }
 function drawFigure(cx, cy, s, raise){
   ctx.save();
@@ -590,6 +583,7 @@ function releaseWake(){ try{ wake&&wake.release&&wake.release(); }catch(e){} wak
 document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"&&state.running&&!state.paused&&!wake)requestWake(); });
 
 /* ---------- init ---------- */
+if(!AVATARS.some(function(a){return a[0]===state.avatar;})){ state.avatar="man"; LS.set("avatar","man"); }
 renderBreathe();
 renderMed();
 renderAvatar();
