@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Stretch &amp; Mobility Routine Builder — printable stretching routines</title>
+<meta name="description" content="Build your own stretching and mobility routine with animated stick-figure demos and a guided hold timer. Pick stretches or a preset (morning, desk break, post-workout, bedtime), set your hold time, and print or start a follow-along routine. Free forever, no account.">
+<meta property="og:title" content="Stretch &amp; Mobility Routine Builder — free stretching timer">
+<meta property="og:description" content="Build a stretching routine with stick-figure demos, a guided hold timer, and a printable PDF. Free forever, no account.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiitstick.com/stretch">
+<link rel="canonical" href="https://hiitstick.com/stretch">
+<meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="tHcINoNeV5qvscLEmxUxzGe1oP1LPsPMuwVT_jlhIQE" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#f7f3ea; --ink:#2b2b2b; --accent:#c98a2e; --accent2:#3d8168; --coffee:#ffdd00;
+    --line:#e6ddc8; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif}
+  header{padding:22px 26px 6px}
+  .headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .toplinks{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:6px}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:800;font-size:.85rem;
+    padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fffdf8;color:#6f6753;transition:transform .1s}
+  .pill:hover{transform:translateY(-1px);border-color:var(--accent);color:var(--accent)}
+  .pill.coffee{background:var(--coffee);border-color:#e8c900;color:#403200}
+  .pill.coffee:hover{color:#403200;border-color:#c9ae00}
+  h1{font-family:'Patrick Hand',cursive;font-size:2.2rem;margin:0;letter-spacing:.5px;display:flex;align-items:center;gap:12px}
+  h1 svg{width:46px;height:46px;flex:0 0 46px}
+  header p{margin:4px 0 0;color:#7a725f}
+  .freenote{margin:6px 0 0;color:#7a725f;font-size:.85rem}
+  .freenote b{color:var(--accent2)}
+
+  .wrap{display:flex;gap:22px;padding:18px 26px 44px;align-items:flex-start;flex-wrap:wrap}
+  .panel{flex:0 0 320px;max-width:100%;display:flex;flex-direction:column;gap:16px}
+  .main{flex:1 1 460px;min-width:300px;display:flex;flex-direction:column;gap:16px}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 2px 6px rgba(120,90,30,.05)}
+  .card h2{font-family:'Patrick Hand',cursive;font-size:1.25rem;margin:0 0 10px;font-weight:400}
+  label.small{font-size:.74rem;font-weight:800;color:#8a8168;text-transform:uppercase;letter-spacing:.06em;display:block;margin:14px 0 6px}
+  label.small:first-of-type{margin-top:0}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1.5px solid var(--line);background:#fffdf8;border-radius:999px;padding:6px 12px;
+    font-family:inherit;font-size:.82rem;font-weight:700;color:#6f6753;cursor:pointer}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.on{background:#f7edd9;border-color:var(--accent);color:var(--accent)}
+  .togrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-weight:700;font-size:.9rem;color:#4c463a}
+  .switch{position:relative;width:46px;height:26px;flex:0 0 46px}
+  .switch input{opacity:0;width:0;height:0}
+  .slide{position:absolute;inset:0;background:#d8cfb8;border-radius:999px;cursor:pointer;transition:.15s}
+  .slide:before{content:"";position:absolute;height:20px;width:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s}
+  .switch input:checked+.slide{background:var(--accent)}
+  .switch input:checked+.slide:before{transform:translateX(20px)}
+  button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px;
+    font-family:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;width:100%}
+  button.primary:hover{filter:brightness(1.06)}
+  button.primary:disabled{background:#c7bfab;cursor:default}
+  .ghost{background:#fffdf8;border:1.5px solid var(--line);color:#6f6753;border-radius:10px;padding:10px;
+    font-family:inherit;font-weight:800;font-size:.85rem;cursor:pointer;width:100%;margin-top:8px}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .err{color:#b3452e;font-size:.85rem;margin-top:8px;display:none}
+
+  /* library grid */
+  .libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:6px}
+  .libcard{border:1.5px solid var(--line);border-radius:12px;background:#fffdf8;cursor:pointer;padding:8px 6px 6px;text-align:center;font-family:inherit}
+  .libcard:hover{border-color:var(--accent);background:#fbf5e8;transform:translateY(-2px);transition:.1s}
+  .libcard canvas{width:78px;height:78px;display:block;margin:0 auto}
+  .libcard .nm{font-size:.72rem;font-weight:700;color:#5f5844;margin-top:2px;line-height:1.15}
+  .libcard .ar{font-size:.62rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.03em}
+
+  /* selected routine list */
+  ul.routine{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  ul.routine li{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:11px;padding:6px 8px;background:#fffdf8}
+  ul.routine li canvas{width:46px;height:46px;flex:0 0 46px}
+  ul.routine li .info{flex:1;min-width:0}
+  ul.routine li .info b{font-weight:800;font-size:.92rem;display:block}
+  ul.routine li .info small{color:#8a8168;font-size:.75rem}
+  ul.routine li .grip{cursor:grab;color:#cfc4a8;font-size:.9rem;letter-spacing:-2px;user-select:none;padding:2px}
+  ul.routine li .del{border:none;background:none;color:#c2b79b;font-size:1.05rem;cursor:pointer;padding:2px 4px}
+  ul.routine li .del:hover{color:var(--accent)}
+  ul.routine li.dragging{opacity:.4}
+  .empty{color:#9a917b;font-size:.88rem;text-align:center;padding:14px 0}
+  .rtotal{font-size:.85rem;color:#8a8168;margin-top:10px;text-align:right}
+  .rtotal b{color:var(--accent)}
+
+  /* guided player overlay */
+  .player{position:fixed;inset:0;background:#f7f3ea;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  .player.open{display:flex}
+  .p-top{position:absolute;top:16px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 22px}
+  .p-count{font-weight:800;color:#8a8168;font-size:.9rem}
+  .p-quit{border:1.5px solid var(--line);background:#fffdf8;border-radius:999px;padding:7px 15px;font-family:inherit;font-weight:800;color:#6f6753;cursor:pointer}
+  .p-quit:hover{border-color:var(--accent);color:var(--accent)}
+  .p-side{font-family:'Patrick Hand',cursive;font-size:1.3rem;color:var(--accent);margin:0;min-height:26px}
+  .p-name{font-family:'Patrick Hand',cursive;font-size:2rem;margin:2px 0 0;text-align:center}
+  .p-canvas{width:min(320px,74vw);height:min(320px,74vw);margin:6px 0}
+  .p-big{font-family:'Patrick Hand',cursive;font-size:3.4rem;line-height:1;color:var(--ink);margin:0}
+  .p-tip{color:#7a725f;font-size:.9rem;max-width:420px;text-align:center;margin:6px 0 0}
+  .p-next{color:#9a917b;font-size:.85rem;margin-top:10px}
+  .p-controls{display:flex;gap:12px;margin-top:16px}
+  .p-controls button{border-radius:12px;padding:13px 26px;font-family:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;border:1.5px solid var(--line);background:#fffdf8;color:#6f6753}
+  .p-controls .go{background:var(--accent);color:#fff;border:none}
+  .p-controls button:hover{filter:brightness(1.03)}
+  footer{padding:0 26px 30px;color:#a89e85;font-size:.8rem;text-align:center;max-width:900px;margin:0 auto}
+  .hide{display:none!important}
+  @media (max-width:820px){.panel{flex:1 1 100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="headrow">
+    <div>
+      <h1>
+        <svg viewBox="0 0 100 100" fill="none" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 84 L90 84"/><path d="M22 82 L54 44"/><path d="M54 44 L84 82"/>
+          <circle cx="30" cy="64" r="5" fill="#2b2b2b" stroke="none"/>
+        </svg>
+        Stretch &amp; Mobility
+      </h1>
+      <p>Build a stretching routine with little stick-figure demos — then follow the guided timer or print it.</p>
+      <p class="freenote"><b>Free — and always will be.</b> No account, works in your browser, nothing uploaded.</p>
+    </div>
+    <div class="toplinks">
+      <a class="pill coffee" href="https://buymeacoffee.com/stevenanteau" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="pill" href="/hiit">🏋️ HIIT</a>
+      <a class="pill" href="/breathe">🫁 Breathe</a>
+      <a class="pill" href="/habit-tracker">✓ Habits</a>
+      <a class="pill" href="/journal">✎ Journal</a>
+      <a class="pill" href="/">🏠 Home</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="card">
+      <h2>Quick start</h2>
+      <label class="small">Preset routines</label>
+      <div class="chips" id="presetChips"></div>
+    </div>
+
+    <div class="card">
+      <h2>Timing</h2>
+      <label class="small">Hold each stretch</label>
+      <div class="chips" id="holdChips"></div>
+      <label class="small">Rest between</label>
+      <div class="chips" id="restChips"></div>
+      <label class="togrow"><span>⏱ 5-second get-ready lead-in</span>
+        <span class="switch"><input type="checkbox" id="leadChk" checked><span class="slide"></span></span></label>
+      <label class="togrow"><span>🔔 Bell &amp; countdown cues</span>
+        <span class="switch"><input type="checkbox" id="cueChk" checked><span class="slide"></span></span></label>
+    </div>
+
+    <div class="card">
+      <button class="primary" id="startBtn">▶ Start routine</button>
+      <button class="ghost" id="pdfBtn">⬇ Download printable PDF</button>
+      <button class="ghost" id="shareBtn">🔗 Copy routine link</button>
+      <div class="err" id="errBox"></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="card">
+      <h2>Your routine <span id="rCount" style="color:#a89e85;font-size:.9rem"></span></h2>
+      <ul class="routine" id="routineList"></ul>
+      <p class="empty" id="routineEmpty">No stretches yet — tap a preset, or add some from the library below.</p>
+      <div class="rtotal" id="rTotal"></div>
+    </div>
+
+    <div class="card">
+      <h2>Add stretches</h2>
+      <div class="chips" id="areaChips"></div>
+      <div class="libgrid" id="libGrid"></div>
+    </div>
+  </div>
+</div>
+
+<footer>Stretch gently and never force a position. If something hurts, ease off. This tool is for general wellbeing, not medical advice.</footer>
+
+<div class="player" id="player">
+  <div class="p-top">
+    <span class="p-count" id="pCount"></span>
+    <button class="p-quit" id="pQuit">✕ End</button>
+  </div>
+  <p class="p-side" id="pSide"></p>
+  <p class="p-name" id="pName"></p>
+  <canvas class="p-canvas" id="pCanvas" width="640" height="640"></canvas>
+  <p class="p-big" id="pBig"></p>
+  <p class="p-tip" id="pTip"></p>
+  <p class="p-next" id="pNext"></p>
+  <div class="p-controls">
+    <button id="pPrev">← Back</button>
+    <button class="go" id="pPause">Pause</button>
+    <button id="pSkip">Skip →</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+var STRETCHES = [{"id":"reach","name":"Overhead reach","area":"Full body","both":false,"tip":"Stand tall and reach both hands to the sky, lengthening your whole body.","ops":[["F",50,20,7],["M",50,27],["L",50,58],["M",50,58],["L",44,90],["M",50,58],["L",56,90],["M",50,33],["L",42,13],["M",50,33],["L",58,13]]},{"id":"side_bend","name":"Standing side bend","area":"Spine","both":true,"tip":"Reach overhead and lean gently to one side, feeling the stretch along your ribs.","ops":[["F",52,20,7],["M",52,27],["Q",56,43,52,58],["M",52,58],["L",46,90],["M",52,58],["L",58,90],["M",52,33],["Q",60,18,72,24],["M",52,33],["Q",58,22,68,26]]},{"id":"neck_side","name":"Neck release","area":"Neck","both":true,"tip":"Tilt your head toward one shoulder; rest a hand over your head for a light pull.","ops":[["F",58,23,7],["M",52,30],["L",50,58],["M",50,58],["L",44,90],["M",50,58],["L",56,90],["M",50,37],["Q",73,26,63,20],["M",50,37],["L",41,52]]},{"id":"chest_open","name":"Chest opener","area":"Chest","both":false,"tip":"Clasp your hands behind you, lift your chest and squeeze your shoulder blades.","ops":[["F",50,18,7],["M",50,25],["L",50,58],["M",50,58],["L",44,90],["M",50,58],["L",56,90],["M",50,32],["Q",34,42,28,54],["M",50,32],["Q",66,42,72,54],["M",28,54],["L",72,54]]},{"id":"cross_shoulder","name":"Cross-body shoulder","area":"Shoulders","both":true,"tip":"Draw one straight arm across your chest; hug it closer with the other forearm.","ops":[["F",50,18,7],["M",50,25],["L",50,58],["M",50,58],["L",44,90],["M",50,58],["L",56,90],["M",50,36],["L",26,40],["M",50,47],["Q",38,43,30,46]]},{"id":"triceps","name":"Overhead triceps","area":"Shoulders","both":true,"tip":"Bend one arm behind your head; gently press the elbow with your other hand.","ops":[["F",50,18,7],["M",50,25],["L",50,58],["M",50,58],["L",44,90],["M",50,58],["L",56,90],["M",50,34],["L",57,20],["M",57,20],["L",46,27],["M",50,34],["Q",64,18,57,20]]},{"id":"wrist","name":"Wrist & forearm","area":"Wrists","both":true,"tip":"Extend one arm, palm out, and gently draw the fingers back with the other hand.","ops":[["F",50,18,7],["M",50,25],["L",50,58],["M",50,58],["L",44,90],["M",50,58],["L",56,90],["M",50,36],["L",76,42],["M",50,36],["Q",67,30,79,38]]},{"id":"forward_fold","name":"Standing forward fold","area":"Hamstrings","both":false,"tip":"Hinge at the hips and let your hands and head hang toward the floor.","ops":[["M",52,56],["L",47,90],["M",52,56],["L",57,90],["M",52,56],["Q",48,42,40,48],["F",36,52,7],["M",42,50],["L",39,68],["M",42,50],["L",46,68]]},{"id":"quad","name":"Standing quad","area":"Legs","both":true,"tip":"Balance on one leg; pull the other heel toward your seat, knees together.","ops":[["F",50,18,7],["M",50,25],["L",50,58],["M",50,58],["L",50,90],["M",50,58],["L",61,66],["M",61,66],["L",51,61],["M",50,40],["L",53,60],["M",50,32],["L",36,40]]},{"id":"calf","name":"Calf / wall lunge","area":"Legs","both":true,"tip":"Press your hands to a wall; step one leg back with the heel down, knee straight.","ops":[["M",20,18],["L",20,72],["F",38,32,7],["M",42,38],["L",50,56],["M",50,56],["L",44,72],["M",44,72],["L",44,90],["M",50,56],["L",72,90],["M",44,42],["L",24,40]]},{"id":"down_dog","name":"Downward dog","area":"Full body","both":false,"tip":"Hands and feet down, hips up into an upside-down V; let your head relax.","ops":[["M",10,88],["L",90,88],["M",20,86],["L",54,42],["M",54,42],["L",84,86],["F",27,66,6]]},{"id":"low_lunge","name":"Low lunge","area":"Hips","both":true,"tip":"Front knee over the ankle, back knee down; sink the hips and lift the chest.","ops":[["M",10,88],["L",90,88],["F",48,24,7],["M",48,31],["L",48,56],["M",48,56],["L",40,72],["M",40,72],["L",40,88],["M",48,56],["L",66,74],["M",66,74],["L",80,88],["M",48,37],["L",42,21],["M",48,37],["L",54,21]]},{"id":"childs_pose","name":"Child's pose","area":"Back","both":false,"tip":"Kneel, sit back on your heels and fold forward with your arms stretched ahead.","ops":[["M",10,82],["L",90,82],["M",76,80],["L",72,66],["M",72,66],["Q",50,74,26,72],["F",24,72,6],["M",40,72],["L",20,78],["M",72,66],["L",80,80]]},{"id":"cat_cow","name":"Cat & cow","area":"Spine","both":false,"tip":"On hands and knees, round your spine up, then let it dip; move with your breath.","ops":[["M",10,84],["L",90,84],["F",22,62,6],["M",28,64],["L",28,84],["M",28,60],["Q",50,48,72,60],["M",72,60],["L",76,84]]},{"id":"cobra","name":"Cobra","area":"Back","both":false,"tip":"Lie face down; press through your hands and lift your chest, shoulders relaxed.","ops":[["M",10,84],["L",90,84],["M",78,84],["L",42,84],["M",42,84],["Q",34,66,42,56],["F",46,50,6],["M",42,66],["L",38,84]]},{"id":"seated_fold","name":"Seated forward fold","area":"Hamstrings","both":false,"tip":"Sit with your legs straight ahead; hinge forward and reach toward your feet.","ops":[["M",10,84],["L",90,84],["M",40,82],["L",82,82],["M",40,82],["Q",44,64,56,66],["F",60,62,6],["M",52,68],["L",80,78]]},{"id":"butterfly","name":"Butterfly","area":"Hips","both":false,"tip":"Sit with the soles of your feet together and let your knees fall open.","ops":[["M",10,86],["L",90,86],["F",50,48,7],["M",50,55],["L",50,78],["M",50,78],["L",34,86],["M",34,86],["L",44,80],["M",50,78],["L",66,86],["M",66,86],["L",56,80],["M",50,62],["L",45,80],["M",50,62],["L",55,80]]},{"id":"seated_twist","name":"Seated spinal twist","area":"Spine","both":true,"tip":"Sit tall, cross one knee up and twist toward it, using your arm as a lever.","ops":[["M",10,84],["L",90,84],["F",50,48,7],["M",50,55],["L",50,78],["M",50,78],["L",76,82],["M",50,78],["L",40,74],["M",40,74],["L",44,82],["M",50,60],["L",44,72],["M",50,60],["L",38,66]]},{"id":"knees_chest","name":"Knees to chest","area":"Back","both":false,"tip":"Lie on your back and hug both knees toward your chest; breathe slowly.","ops":[["M",10,82],["L",90,82],["F",26,80,6],["M",32,80],["L",54,80],["M",54,80],["Q",62,60,48,62],["M",42,74],["Q",54,58,60,64]]},{"id":"supine_twist","name":"Lying spinal twist","area":"Spine","both":true,"tip":"On your back, drop both knees to one side and open the opposite arm wide.","ops":[["M",10,84],["L",90,84],["F",24,82,6],["M",30,82],["L",58,82],["M",58,82],["Q",64,70,76,74],["M",40,82],["L",34,72]]},{"id":"happy_baby","name":"Happy baby","area":"Hips","both":false,"tip":"On your back, hold the outsides of your feet and draw your knees toward the floor.","ops":[["M",10,86],["L",90,86],["F",26,84,6],["M",32,84],["L",50,84],["M",50,84],["Q",54,64,44,60],["M",50,84],["Q",64,66,56,60],["M",42,72],["L",45,61],["M",58,72],["L",55,61]]},{"id":"figure_four","name":"Figure-4 hip","area":"Hips","both":true,"tip":"On your back, cross one ankle over the opposite knee and draw the thigh in.","ops":[["M",10,84],["L",90,84],["F",24,82,6],["M",30,82],["L",52,82],["M",52,82],["Q",60,64,50,60],["M",44,72],["L",60,66],["M",46,74],["Q",54,68,58,76]]}];
+var BY = {}; STRETCHES.forEach(function(s){ BY[s.id]=s; });
+var $ = function(id){ return document.getElementById(id); };
+var LS = {
+  get:function(k,d){ try{var v=localStorage.getItem("stretch_"+k);return v==null?d:JSON.parse(v);}catch(e){return d;} },
+  set:function(k,v){ try{localStorage.setItem("stretch_"+k,JSON.stringify(v));}catch(e){} }
+};
+
+/* ---------- pose drawing (canvas) ---------- */
+function drawPose(ctx, ops, cx, cy, size, bob){
+  var k=size/100, ink="#2b2b2b";
+  bob=bob||0;
+  function X(x){ return cx+(x-50)*k; }
+  function Y(y){ return cy+(y-50)*k+bob; }
+  ctx.lineWidth=Math.max(2,6*k); ctx.lineCap="round"; ctx.lineJoin="round";
+  ctx.strokeStyle=ink; ctx.fillStyle=ink;
+  ctx.beginPath(); var started=false;
+  function flush(){ if(started)ctx.stroke(); ctx.beginPath(); started=false; }
+  for(var i=0;i<ops.length;i++){
+    var op=ops[i], t=op[0];
+    if(t==="M"){ ctx.moveTo(X(op[1]),Y(op[2])); started=true; }
+    else if(t==="L"){ ctx.lineTo(X(op[1]),Y(op[2])); }
+    else if(t==="Q"){ ctx.quadraticCurveTo(X(op[1]),Y(op[2]),X(op[3]),Y(op[4])); }
+    else if(t==="F"){ flush(); ctx.beginPath(); ctx.arc(X(op[1]),Y(op[2]),op[3]*k,0,Math.PI*2); ctx.fill(); ctx.beginPath(); }
+    else if(t==="O"){ flush(); ctx.beginPath(); ctx.arc(X(op[1]),Y(op[2]),op[3]*k,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); }
+  }
+  flush();
+}
+function poseThumb(ops, px){
+  var c=document.createElement("canvas"); c.width=px*2; c.height=px*2;
+  var ctx=c.getContext("2d");
+  drawPose(ctx, ops, px, px, px*1.72, 0);
+  return c;
+}
+
+/* ---------- audio (synth bell + tick) ---------- */
+var ac=null, master=null;
+function audioInit(){ if(ac)return; var AC=window.AudioContext||window.webkitAudioContext; ac=new AC(); master=ac.createGain(); master.gain.value=1; master.connect(ac.destination); }
+function bell(v, base){
+  if(!ac||!state.cue)return; if(v==null)v=0.5; base=base||520;
+  var t=ac.currentTime, parts=[[1,1],[2.01,0.5],[2.97,0.26],[4.16,0.12]];
+  for(var i=0;i<parts.length;i++){(function(mult,amp,i){
+    var o=ac.createOscillator(), g=ac.createGain(); o.type="sine"; o.frequency.value=base*mult;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v*amp,t+0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+3.2/(1+i*0.5));
+    o.connect(g).connect(master); o.start(t); o.stop(t+3.4);
+  })(parts[i][0],parts[i][1],i);}
+}
+function tick(base){
+  if(!ac||!state.cue)return;
+  var t=ac.currentTime, o=ac.createOscillator(), g=ac.createGain();
+  o.type="sine"; o.frequency.value=base||660;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.3,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.35);
+  o.connect(g).connect(master); o.start(t); o.stop(t+0.4);
+}
+
+/* ---------- state ---------- */
+var PRESETS = {
+  morning:  {label:"🌅 Morning",     ids:["reach","side_bend","chest_open","low_lunge","forward_fold","down_dog"]},
+  desk:     {label:"💻 Desk break",  ids:["neck_side","cross_shoulder","triceps","wrist","seated_twist","chest_open"]},
+  post:     {label:"🏋️ Post-workout",ids:["forward_fold","quad","calf","low_lunge","seated_fold","knees_chest"]},
+  bedtime:  {label:"🌙 Bedtime",     ids:["childs_pose","cat_cow","knees_chest","supine_twist","happy_baby","butterfly"]},
+  full:     {label:"🤸 Full body",   ids:["reach","down_dog","low_lunge","forward_fold","cobra","seated_twist","butterfly"]}
+};
+var HOLDS=[20,30,45,60], RESTS=[0,5,10];
+var state = {
+  routine: LS.get("routine",["reach","forward_fold","low_lunge","seated_twist","childs_pose"]),
+  hold: LS.get("hold",30),
+  rest: LS.get("rest",5),
+  lead: LS.get("lead",true),
+  cue: LS.get("cue",true),
+  area: "All"
+};
+
+/* ---------- build UI ---------- */
+function areas(){ var a=["All"]; STRETCHES.forEach(function(s){ if(a.indexOf(s.area)<0)a.push(s.area); }); return a; }
+function renderPresets(){
+  $("presetChips").innerHTML=Object.keys(PRESETS).map(function(k){
+    return '<button class="chip" data-p="'+k+'">'+PRESETS[k].label+'</button>';
+  }).join("");
+  els($("presetChips")).forEach(function(b){ b.onclick=function(){ state.routine=PRESETS[b.dataset.p].ids.slice(); save(); renderRoutine(); }; });
+}
+function renderTiming(){
+  $("holdChips").innerHTML=HOLDS.map(function(h){ return '<button class="chip '+(state.hold===h?"on":"")+'" data-h="'+h+'">'+h+'s</button>'; }).join("");
+  els($("holdChips")).forEach(function(b){ b.onclick=function(){ state.hold=+b.dataset.h; save(); renderTiming(); renderRoutine(); }; });
+  $("restChips").innerHTML=RESTS.map(function(r){ return '<button class="chip '+(state.rest===r?"on":"")+'" data-r="'+r+'">'+(r?r+"s":"none")+'</button>'; }).join("");
+  els($("restChips")).forEach(function(b){ b.onclick=function(){ state.rest=+b.dataset.r; save(); renderTiming(); renderRoutine(); }; });
+  $("leadChk").checked=state.lead; $("cueChk").checked=state.cue;
+}
+function renderArea(){
+  $("areaChips").innerHTML=areas().map(function(a){ return '<button class="chip '+(state.area===a?"on":"")+'" data-a="'+a+'">'+a+'</button>'; }).join("");
+  els($("areaChips")).forEach(function(b){ b.onclick=function(){ state.area=b.dataset.a; renderArea(); renderLib(); }; });
+}
+function renderLib(){
+  var list = STRETCHES.filter(function(s){ return state.area==="All"||s.area===state.area; });
+  var g=$("libGrid"); g.innerHTML="";
+  list.forEach(function(s){
+    var d=document.createElement("button"); d.className="libcard";
+    d.innerHTML='<span class="ar">'+s.area+'</span><div class="nm">'+s.name+'</div>';
+    var cvWrap=document.createElement("canvas"); cvWrap.width=120; cvWrap.height=120;
+    drawPose(cvWrap.getContext("2d"), s.ops, 60, 60, 104, 0);
+    d.insertBefore(cvWrap, d.firstChild);
+    d.onclick=function(){ if(state.routine.length>=20){showErr("That's plenty for one routine!");return;} state.routine.push(s.id); save(); renderRoutine(); };
+    g.appendChild(d);
+  });
+}
+var dragIdx=null;
+function stepsFor(id){ return BY[id] && BY[id].both ? 2 : 1; }
+function routineSeconds(){
+  var total=0;
+  state.routine.forEach(function(id,i){ total += stepsFor(id)*state.hold; });
+  total += Math.max(0, totalSteps()-1)*state.rest;
+  if(state.lead) total += 5;
+  return total;
+}
+function totalSteps(){ var n=0; state.routine.forEach(function(id){ n+=stepsFor(id); }); return n; }
+function renderRoutine(){
+  var ul=$("routineList"); ul.innerHTML="";
+  state.routine.forEach(function(id,i){
+    var s=BY[id]; if(!s)return;
+    var li=document.createElement("li");
+    li.innerHTML='<span class="grip" title="Drag to reorder">⋮⋮</span>'+
+      '<div class="info"><b>'+(i+1)+'. '+s.name+'</b><small>'+s.area+(s.both?" · each side":"")+' · '+state.hold+'s'+(s.both?" ×2":"")+'</small></div>'+
+      '<button class="del" title="Remove">✕</button>';
+    var cv=document.createElement("canvas"); cv.width=92; cv.height=92;
+    drawPose(cv.getContext("2d"), s.ops, 46, 46, 82, 0);
+    li.insertBefore(cv, li.querySelector(".info"));
+    li.querySelector(".del").onclick=function(){ state.routine.splice(i,1); save(); renderRoutine(); };
+    var grip=li.querySelector(".grip");
+    grip.onmousedown=function(){ li.draggable=true; };
+    li.addEventListener("dragstart",function(){ dragIdx=i; li.classList.add("dragging"); });
+    li.addEventListener("dragend",function(){ li.draggable=false; li.classList.remove("dragging"); });
+    li.addEventListener("dragover",function(e){ e.preventDefault(); });
+    li.addEventListener("drop",function(e){ e.preventDefault(); if(dragIdx!=null&&dragIdx!==i){ var m=state.routine.splice(dragIdx,1)[0]; state.routine.splice(i,0,m); dragIdx=null; save(); renderRoutine(); } });
+    ul.appendChild(li);
+  });
+  $("routineEmpty").style.display=state.routine.length?"none":"block";
+  $("rCount").textContent=state.routine.length?"("+state.routine.length+")":"";
+  var secs=routineSeconds();
+  $("rTotal").innerHTML=state.routine.length?("about <b>"+Math.round(secs/60)+" min</b> · "+totalSteps()+" holds"):"";
+  $("startBtn").disabled=!state.routine.length;
+  save();
+}
+function els(container){ return Array.prototype.slice.call(container.querySelectorAll("button")); }
+function showErr(m){ var e=$("errBox"); e.textContent=m; e.style.display="block"; setTimeout(function(){e.style.display="none";},3500); }
+
+$("leadChk").onchange=function(e){ state.lead=e.target.checked; save(); renderRoutine(); };
+$("cueChk").onchange=function(e){ state.cue=e.target.checked; save(); };
+function save(){ LS.set("routine",state.routine); LS.set("hold",state.hold); LS.set("rest",state.rest); LS.set("lead",state.lead); LS.set("cue",state.cue); }
+
+/* ---------- guided player ---------- */
+var play = { steps:[], i:0, remain:0, last:0, running:false, paused:false, lastSec:0 };
+function buildSteps(){
+  var steps=[];
+  if(state.lead) steps.push({type:"ready", secs:5});
+  state.routine.forEach(function(id){
+    var s=BY[id];
+    if(s.both){ steps.push({type:"hold",id:id,side:"Left side",secs:state.hold}); steps.push({type:"hold",id:id,side:"Right side",secs:state.hold}); }
+    else steps.push({type:"hold",id:id,side:"",secs:state.hold});
+  });
+  // insert rests between holds
+  if(state.rest>0){
+    var withRest=[];
+    for(var i=0;i<steps.length;i++){ withRest.push(steps[i]); if(steps[i].type==="hold" && i<steps.length-1) withRest.push({type:"rest",secs:state.rest}); }
+    steps=withRest;
+  }
+  return steps;
+}
+function startPlayer(){
+  if(!state.routine.length)return;
+  audioInit(); if(ac&&ac.state==="suspended")ac.resume();
+  play.steps=buildSteps(); play.i=0; play.running=true; play.paused=false;
+  $("player").classList.add("open");
+  requestWake();
+  enterStep();
+  play.last=performance.now();
+  requestAnimationFrame(ploop);
+}
+function enterStep(){
+  var st=play.steps[play.i]; if(!st){ finishPlayer(); return; }
+  play.remain=st.secs; play.lastSec=Math.ceil(st.secs);
+  if(st.type==="hold") bell(0.5, 520);
+  else if(st.type==="rest") bell(0.32, 400);
+  renderStep();
+}
+function holdIndexInfo(){
+  var h=0, tot=0;
+  play.steps.forEach(function(s){ if(s.type==="hold")tot++; });
+  for(var j=0;j<=play.i && j<play.steps.length;j++){ if(play.steps[j].type==="hold" && j<=play.i) h++; }
+  return {cur:h, total:tot};
+}
+function renderStep(){
+  var st=play.steps[play.i]; if(!st)return;
+  var info=holdIndexInfo();
+  $("pCount").textContent = st.type==="hold" ? ("Stretch "+info.cur+" / "+info.total) : "";
+  if(st.type==="ready"){ $("pSide").textContent="Get ready"; $("pName").textContent="Find some space"; $("pTip").textContent="Stand or sit comfortably. We'll begin in a moment."; }
+  else if(st.type==="rest"){ $("pSide").textContent=""; $("pName").textContent="Rest"; $("pTip").textContent="Shake it out and relax before the next stretch."; }
+  else { var s=BY[st.id]; $("pSide").textContent=st.side; $("pName").textContent=s.name; $("pTip").textContent=s.tip; }
+  // next up
+  var nx=play.steps[play.i+1];
+  if(nx){ var label = nx.type==="hold" ? (BY[nx.id].name+(nx.side?" ("+nx.side.replace(" side","")+")":"")) : nx.type==="ready"?"Get ready":"Rest";
+    $("pNext").textContent="Next: "+label; } else $("pNext").textContent="Last one!";
+  drawPlayer(0);
+}
+function drawPlayer(bob){
+  var cv=$("pCanvas"), ctx=cv.getContext("2d"), W=cv.width, H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  var st=play.steps[play.i]; if(!st)return;
+  if(st.type==="hold"){ drawPose(ctx, BY[st.id].ops, W/2, H/2, W*0.72, bob); }
+  else {
+    // simple resting figure for ready/rest
+    ctx.strokeStyle="#c8bfa6"; ctx.fillStyle="#c8bfa6"; ctx.lineWidth=W*0.02; ctx.lineCap="round"; ctx.lineJoin="round";
+    var cx=W/2, cy=H/2, s=W*0.5;
+    ctx.beginPath(); ctx.arc(cx, cy-s*0.34, s*0.12,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx,cy-s*0.2); ctx.lineTo(cx,cy+s*0.12);
+    ctx.moveTo(cx,cy-s*0.12); ctx.lineTo(cx-s*0.2,cy+s*0.02); ctx.moveTo(cx,cy-s*0.12); ctx.lineTo(cx+s*0.2,cy+s*0.02);
+    ctx.moveTo(cx,cy+s*0.12); ctx.lineTo(cx-s*0.16,cy+s*0.4); ctx.moveTo(cx,cy+s*0.12); ctx.lineTo(cx+s*0.16,cy+s*0.4);
+    ctx.stroke();
+  }
+}
+function ploop(now){
+  if(!play.running||play.paused)return;
+  var dt=(now-play.last)/1000; play.last=now; play.remain-=dt;
+  var st=play.steps[play.i];
+  var sec=Math.ceil(Math.max(0,play.remain));
+  $("pBig").textContent = sec;
+  if(sec!==play.lastSec){ play.lastSec=sec; if(sec<=3 && sec>0 && st && st.type==="hold") tick(700); }
+  if(play.remain<=0){ play.i++; if(play.i>=play.steps.length){ finishPlayer(); return; } enterStep(); play.last=performance.now(); }
+  else { var bob=(st&&st.type==="hold")? Math.sin(now/650)*($("pCanvas").width*0.008):0; drawPlayer(bob); }
+  requestAnimationFrame(ploop);
+}
+function finishPlayer(){
+  play.running=false; releaseWake();
+  bell(0.55,384); setTimeout(function(){bell(0.55,384);},650);
+  $("pSide").textContent="✔ Complete"; $("pName").textContent="Nicely done"; $("pBig").textContent="🙏";
+  $("pTip").textContent="Your routine is complete. Take a breath."; $("pNext").textContent="";
+  var cv=$("pCanvas"); cv.getContext("2d").clearRect(0,0,cv.width,cv.height);
+}
+$("startBtn").onclick=startPlayer;
+$("pQuit").onclick=function(){ play.running=false; releaseWake(); $("player").classList.remove("open"); };
+$("pPause").onclick=function(){ if(!play.running)return; play.paused=!play.paused; $("pPause").textContent=play.paused?"Resume":"Pause"; if(!play.paused){ play.last=performance.now(); requestAnimationFrame(ploop); } };
+$("pSkip").onclick=function(){ if(!play.running)return; play.i++; if(play.i>=play.steps.length){ finishPlayer(); return; } enterStep(); play.last=performance.now(); if(play.paused){play.paused=false;$("pPause").textContent="Pause";requestAnimationFrame(ploop);} };
+$("pPrev").onclick=function(){ if(!play.running)return; play.i=Math.max(0,play.i-1); enterStep(); play.last=performance.now(); if(play.paused){play.paused=false;$("pPause").textContent="Pause";requestAnimationFrame(ploop);} };
+
+/* ---------- PDF ---------- */
+var phFontB64=null;
+function pdfFont(doc){
+  return new Promise(function(resolve){
+    try{
+      if(phFontB64){ doc.addFileToVFS("PatrickHand.ttf",phFontB64); doc.addFont("PatrickHand.ttf","PatrickHand","normal"); return resolve("PatrickHand"); }
+      fetch("https://fonts.gstatic.com/s/patrickhand/v23/LDI1apSQOAYtSuYWp8ZhfYeMWcjKm7sp8g.ttf").then(function(r){
+        if(!r.ok)throw 0; return r.arrayBuffer();
+      }).then(function(buf){
+        var u=new Uint8Array(buf), s=""; for(var i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+        phFontB64=btoa(s); doc.addFileToVFS("PatrickHand.ttf",phFontB64); doc.addFont("PatrickHand.ttf","PatrickHand","normal"); resolve("PatrickHand");
+      }).catch(function(){ resolve("helvetica"); });
+    }catch(e){ resolve("helvetica"); }
+  });
+}
+function pdfPose(doc, ops, cx, cy, size){
+  var k=size/100;
+  function X(x){ return cx+(x-50)*k; } function Y(y){ return cy+(y-50)*k; }
+  doc.setDrawColor(43,43,43); doc.setFillColor(43,43,43); doc.setLineWidth(Math.max(0.4,1.6*k));
+  var i, op;
+  for(i=0;i<ops.length;i++){
+    op=ops[i];
+    if(op[0]==="M"){ var startx=X(op[1]), starty=Y(op[2]); var px=startx, py=starty;
+      var j=i+1;
+      while(j<ops.length && (ops[j][0]==="L"||ops[j][0]==="Q")){
+        if(ops[j][0]==="L"){ doc.line(px,py,X(ops[j][1]),Y(ops[j][2])); px=X(ops[j][1]); py=Y(ops[j][2]); }
+        else { // quadratic -> sample
+          var qx=X(ops[j][3]), qy=Y(ops[j][4]), cxq=X(ops[j][1]), cyq=Y(ops[j][2]), n=8, lastx=px, lasty=py;
+          for(var t=1;t<=n;t++){ var tt=t/n, mx=(1-tt)*(1-tt)*px+2*(1-tt)*tt*cxq+tt*tt*qx, my=(1-tt)*(1-tt)*py+2*(1-tt)*tt*cyq+tt*tt*qy; doc.line(lastx,lasty,mx,my); lastx=mx; lasty=my; }
+          px=qx; py=qy;
+        }
+        j++;
+      }
+      i=j-1;
+    }
+    else if(op[0]==="F"){ doc.circle(X(op[1]),Y(op[2]),op[3]*k,"F"); }
+    else if(op[0]==="O"){ doc.circle(X(op[1]),Y(op[2]),op[3]*k,"S"); }
+  }
+}
+$("pdfBtn").onclick=function(){
+  if(!state.routine.length)return showErr("Add some stretches first.");
+  if(!window.jspdf)return showErr("PDF library failed to load — check your connection.");
+  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+  pdfFont(doc).then(function(ff){
+    var M=16, W=210-2*M, y=0, page=0;
+    function header(){ if(page++)doc.addPage(); doc.setFont(ff); doc.setFontSize(22); doc.setTextColor(43,43,43);
+      doc.text("My Stretch Routine",105,18,{align:"center"});
+      doc.setDrawColor(201,138,46); doc.setLineWidth(.6); doc.line(72,22,138,22);
+      doc.setFontSize(10); doc.setTextColor(150,140,110);
+      doc.text(Math.round(routineSeconds()/60)+" min · hold "+state.hold+"s each",105,28,{align:"center"});
+      y=40; }
+    header();
+    state.routine.forEach(function(id,idx){
+      var s=BY[id]; var rowH=30;
+      if(y+rowH>285){ header(); }
+      // pose box
+      doc.setDrawColor(224,221,200); doc.setLineWidth(.3); doc.roundedRect(M,y,26,26,3,3,"S");
+      pdfPose(doc, s.ops, M+13, y+13, 22);
+      // text
+      doc.setFont(ff); doc.setFontSize(14); doc.setTextColor(43,43,43);
+      doc.text((idx+1)+". "+s.name, M+32, y+7);
+      doc.setFontSize(9); doc.setTextColor(201,138,46);
+      doc.text(s.area+(s.both?"  ·  each side ("+state.hold+"s ×2)":"  ·  "+state.hold+"s"), M+32, y+13);
+      doc.setFontSize(9); doc.setTextColor(90,84,66);
+      var tip=doc.splitTextToSize(s.tip, W-34);
+      doc.text(tip, M+32, y+19);
+      y+=rowH;
+    });
+    doc.setFontSize(8); doc.setTextColor(168,158,133); doc.text("hiitstick.com/stretch — free forever",105,292,{align:"center"});
+    doc.save("stretch-routine.pdf");
+  });
+};
+
+/* ---------- share link + persistence ---------- */
+function encodeRoutine(){
+  var cfg={r:state.routine,h:state.hold,rest:state.rest,l:state.lead?1:0};
+  return btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
+}
+function applyRoutine(cfg){
+  try{
+    if(Array.isArray(cfg.r)) state.routine=cfg.r.filter(function(id){return BY[id];}).slice(0,20);
+    if(HOLDS.indexOf(cfg.h)>=0) state.hold=cfg.h;
+    if(RESTS.indexOf(cfg.rest)>=0) state.rest=cfg.rest;
+    if(cfg.l!=null) state.lead=!!cfg.l;
+  }catch(e){}
+}
+$("shareBtn").onclick=function(){
+  var url=location.href.split("#")[0]+"#r="+encodeURIComponent(encodeRoutine());
+  var done=function(){ $("shareBtn").textContent="✓ Link copied!"; setTimeout(function(){$("shareBtn").textContent="🔗 Copy routine link";},2000); };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,function(){ prompt("Copy this link:",url); });
+  else prompt("Copy this link:",url);
+};
+function loadShared(){
+  if(location.hash.indexOf("#r=")===0){
+    try{ applyRoutine(JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(location.hash.slice(3))))))); history.replaceState(null,"",location.pathname); }catch(e){}
+  }
+}
+
+/* ---------- wake lock ---------- */
+var wake=null;
+function requestWake(){ try{ if("wakeLock" in navigator) navigator.wakeLock.request("screen").then(function(w){wake=w;}).catch(function(){}); }catch(e){} }
+function releaseWake(){ try{ wake&&wake.release&&wake.release(); }catch(e){} wake=null; }
+
+/* ---------- init ---------- */
+loadShared();
+renderPresets(); renderTiming(); renderArea(); renderLib(); renderRoutine();
+</script>
+</body>
+</html>
